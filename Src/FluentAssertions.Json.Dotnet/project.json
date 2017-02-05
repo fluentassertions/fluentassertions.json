@@ -1,13 +1,11 @@
 ﻿{
-  "supports": {
-  },
+  "supports": {},
   "dependencies": {
+    "FluentAssertions": "4.19.0",
     "NETStandard.Library": "1.6.0",
     "Newtonsoft.Json": "9.0.1"
   },
   "frameworks": {
-    "netstandard1.3": {
-      
-    }
+    "netstandard1.3": {}
   }
 }

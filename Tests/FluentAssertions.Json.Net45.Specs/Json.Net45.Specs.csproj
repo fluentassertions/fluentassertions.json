@@ -36,6 +36,12 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentAssertions, Version=4.19.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentAssertions.4.19.0\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions.Core, Version=4.19.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentAssertions.4.19.0\lib\net45\FluentAssertions.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -54,14 +60,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Src\FluentAssertions.Core\Core.pcl.csproj">
-      <Project>{8931c5ef-3bac-473a-a343-57791d0917b1}</Project>
-      <Name>Core.pcl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Src\FluentAssertions.Net45\Net45.csproj">
-      <Project>{81d1792f-3c87-49cf-a502-9f232ff3719c}</Project>
-      <Name>Net45</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Src\FluentAssertions.Json.Net45\Json.Net45.csproj">
       <Project>{0d460ce7-4b94-4d2c-9f2a-97426a29c533}</Project>
       <Name>Json.Net45</Name>
