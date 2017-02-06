@@ -17,11 +17,11 @@
     <projectUrl>http://www.fluentassertions.com</projectUrl>
     <dependencies>
       <group>
-        <dependency id="FluentAssertions" version="$Version$" />
+        <dependency id="FluentAssertions" version="[4.0.0,)" />
         <dependency id="Newtonsoft.Json" version="[6.0.7,)" />
       </group>
       <group targetFramework="netstandard1.3">
-        <dependency id="FluentAssertions" version="$Version$" />
+        <dependency id="FluentAssertions" version="[4.0.0,)" />
         <dependency id="Newtonsoft.Json" version="[9.0.1,)" />
       </group>
     </dependencies>

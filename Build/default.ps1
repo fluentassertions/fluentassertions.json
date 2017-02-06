@@ -8,15 +8,13 @@ properties {
     $GitVersionExe = "$BaseDirectory\Lib\GitVersion.exe"
     $ArtifactsDirectory = "$BaseDirectory\Artifacts"
 
-    $NuGetPushSource = ""
-    
     $MsBuildLoggerPath = ""
     $Branch = ""
     $MsTestPath = "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe"
     $RunTests = $false
 }
 
-task default -depends Clean, ApplyAssemblyVersioning, ApplyPackageVersioning, RestoreNugetPackages, Compile, RunTests, BuildZip, BuildJsonPackage, PublishToMyget
+task default -depends Clean, ApplyAssemblyVersioning, ApplyPackageVersioning, RestoreNugetPackages, Compile, RunTests, BuildZip, BuildJsonPackage
 
 task Clean {    
 	Get-ChildItem $PackageDirectory *.nupkg | foreach { Remove-Item $_.FullName }
@@ -96,11 +94,11 @@ task RunTests -precondition { return $RunTests -eq $true } {
 
 task BuildZip {
     TeamCity-Block "Zipping up the binaries" {
-        $assembly = Get-ChildItem -Path "$ArtifactsDirectory\Lib" -Filter FluentAssertions.dll -Recurse | Select-Object -first 1
+        $assembly = Get-ChildItem -Path "$ArtifactsDirectory\Json\Lib" -Filter FluentAssertions.dll -Recurse | Select-Object -first 1
                 
         $versionNumber = $assembly.VersionInfo.FileVersion
 
-        & $7zip a -r "$ArtifactsDirectory\Fluent.Assertions.$versionNumber.zip" "$ArtifactsDirectory\Lib\*" -y
+        & $7zip a -r "$ArtifactsDirectory\Fluent.Assertions.Json.$versionNumber.zip" "$ArtifactsDirectory\Json\Lib\*" -y
     }
 }
 
@@ -110,19 +108,5 @@ task BuildJsonPackage -depends ExtractVersionsFromGit {
     }
 }
 
-task PublishToMyget -precondition { return $env:NuGetApiKey } {
-    TeamCity-Block "Publishing NuGet Package to Myget" {  
-        $packages = Get-ChildItem $ArtifactsDirectory *.nupkg
-        
-        foreach ($package in $packages) {
-        
-            if ($NuGetPushSource) {
-                & $Nuget push $package.FullName $env:NuGetApiKey -Source "$NuGetPushSource"
-            } else {
-                & $Nuget push $package.FullName $env:NuGetApiKey 
-            }
-        }
-    }
-}
 
 
