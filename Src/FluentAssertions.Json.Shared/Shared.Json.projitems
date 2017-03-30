@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)JTokenAssertions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JTokenFormatter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectDiffPatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectAssertionsExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)..\SolutionInfo.cs">
       <Link>SolutionInfo.cs</Link>
     </Compile>
