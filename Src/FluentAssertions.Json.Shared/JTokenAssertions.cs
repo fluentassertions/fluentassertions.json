@@ -105,7 +105,7 @@ namespace FluentAssertions.Json
         /// <param name="expected">The expected element</param>
         /// <remarks>
         /// Json tokens are compared by inspecting all properties. They are considered equal
-        /// when all property names and values match (independent of their order). 
+        /// when all property names and values match (independent of their order).
         /// When not equal, the first mismatching property or value is included in the assertion failure message.
         /// </remarks>
         public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected)
@@ -208,6 +208,28 @@ namespace FluentAssertions.Json
         }
 
         /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> does not have the specified <paramref name="unexpected" /> value.
+        /// </summary>
+        /// <param name="unexpected">The unexpected element</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> NotHaveValue(string unexpected, string because = "", params object[] becauseArgs)
+        {
+            Execute.Assertion
+                .ForCondition(Subject.Value<string>() != unexpected)
+                .BecauseOf(because, becauseArgs)
+                .FailWith("Did not expect JSON property {0} to have value {1}{reason}.",
+                    Subject.Path, unexpected, Subject.Value<string>());
+
+            return new AndConstraint<JTokenAssertions>(this);
+        }
+
+        /// <summary>
         ///     Asserts that the current <see cref="JToken" /> has a direct child element with the specified
         ///     <paramref name="expected" /> name.
         /// </summary>
@@ -238,6 +260,30 @@ namespace FluentAssertions.Json
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected JSON document {0} to have element \"" + expected.Escape(true) + "\"{reason}" +
                           ", but no such element was found.", Subject);
+
+            return new AndWhichConstraint<JTokenAssertions, JToken>(this, jToken);
+        }
+
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> does not have a direct child element with the specified
+        ///     <paramref name="unexpected" /> name.
+        /// </summary>
+        /// <param name="unexpected">The name of the not expected child element</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndWhichConstraint<JTokenAssertions, JToken> NotHaveElement(string unexpected, string because = "",
+            params object[] becauseArgs)
+        {
+            JToken jToken = Subject[unexpected];
+            Execute.Assertion
+                .ForCondition(jToken == null)
+                .BecauseOf(because, becauseArgs)
+                .FailWith("Did not expect JSON document {0} to have element \"" + unexpected.Escape(true) + "\"{reason}.", Subject);
 
             return new AndWhichConstraint<JTokenAssertions, JToken>(this, jToken);
         }
