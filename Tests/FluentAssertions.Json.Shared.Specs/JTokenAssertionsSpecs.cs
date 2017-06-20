@@ -8,14 +8,17 @@ namespace FluentAssertions.Json
     // ReSharper disable InconsistentNaming
     public class JTokenAssertionsSpecs
     {
+
+        private static readonly JTokenFormatter _formatter = new JTokenFormatter();
+
         [TestMethod]
         public void When_both_values_are_the_same_or_equal_Be_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var a = JToken.Parse("{\"id\":1}");
-            var b = JToken.Parse("{\"id\":1}");
+            var a = JToken.Parse("{ \"id\": 1 }");
+            var b = JToken.Parse("{ \"id\": 1 }");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
@@ -31,8 +34,8 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var a = JToken.Parse("{\"id\":1}");
-            var b = JToken.Parse("{\"id\":2}");
+            var a = JToken.Parse("{ \"id\": 1 }");
+            var b = JToken.Parse("{ \"id\": 2 }");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
@@ -48,8 +51,8 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var a = JToken.Parse("{\"id\":1}");
-            var b = JToken.Parse("{\"id\":1}");
+            var a = JToken.Parse("{ \"id\": 1 }");
+            var b = JToken.Parse("{ \"id\": 1 }");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
@@ -68,8 +71,14 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             var testCases = new Dictionary<string, string>
             {
-                { "{friends:[{id:123,name:\"Corby Page\"},{id:456,name:\"Carter Page\"}]}", "{friends:[{name:\"Corby Page\",id:123},{id:456,name:\"Carter Page\"}]}" },
-                { "{id:2,admin:true}", "{admin:true,id:2}" }
+                {
+                    "{ friends: [{ id: 123, name: \"Corby Page\" }, { id: 456, name: \"Carter Page\" }] }",
+                    "{ friends: [{ name: \"Corby Page\", id: 123 }, { id: 456, name: \"Carter Page\" }] }"
+                },
+                {
+                    "{ id: 2, admin: true }",
+                    "{ admin: true, id: 2}"
+                }
             };
 
             foreach (var testCase in testCases)
@@ -94,7 +103,10 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             var testCases = new Dictionary<string, string>
             {
-                { "{id:1,admin:true}", "{id:1,admin:false}" }
+                {
+                    "{ id: 1, admin: true }",
+                    "{ id: 1, admin: false }"
+                }
             };
 
             foreach (var testCase in testCases)
@@ -120,8 +132,14 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             var testCases = new Dictionary<string, string>
             {
-                { "{id:1}", "{id:2}" }
-                , { "{id:1,admin:true}", "{id:1,admin:false}" }
+                {
+                    "{ id: 1 }",
+                    "{ id: 2 }"
+                },
+                {
+                    "{ id: 1, admin: true }",
+                    "{ id: 1, admin: false }"
+                }
             };
 
             foreach (var testCase in testCases)
@@ -152,7 +170,10 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             var testCases = new Dictionary<string, string>
             {
-                { "{id:1,admin:true}", "{id:1,admin:false}" }
+                {
+                    "{ id: 1, admin: true }",
+                    "{ id: 1, admin: false }"
+                }
             };
 
             foreach (var testCase in testCases)
@@ -180,8 +201,8 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var subject = JToken.Parse("{child:{subject:'foo'}}");
-            var expected = JToken.Parse("{child:{expected:'bar'}}");
+            var subject = JToken.Parse("{ child: { subject: 'foo' } }");
+            var expected = JToken.Parse("{ child: { expected: 'bar' } }");
 
             var expectedMessage = GetNotEquivalentMessage(subject, expected, "we want to test the failure {0}", "message");
 
@@ -193,13 +214,32 @@ namespace FluentAssertions.Json
                 .WithMessage(expectedMessage);
         }
 
+        private static string GetNotEquivalentMessage(JToken actual, JToken expected,
+            string reason = null, params object[] reasonArgs)
+        {
+            var diff = ObjectDiffPatch.GenerateDiff(actual, expected);
+            var key = diff.NewValues?.First ?? diff.OldValues?.First;
+
+            var because = string.Empty;
+            if (!string.IsNullOrWhiteSpace(reason))
+            {
+                because = " because " + string.Format(reason, reasonArgs);
+            }
+
+            var expectedMessage = $"Expected JSON document {_formatter.ToString(actual, true)}" +
+                                  $" to be equivalent to {_formatter.ToString(expected, true)}" +
+                                  $"{because}, but differs at {key}.";
+
+            return expectedMessage;
+        }
+
         [TestMethod]
         public void When_jtoken_has_value_HaveValue_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var subject = JToken.Parse("{ 'id':42}");
+            var subject = JToken.Parse("{ 'id': 42 }");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
@@ -213,7 +253,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var subject = JToken.Parse("{ 'id':42}");
+            var subject = JToken.Parse("{ 'id': 42 }");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
@@ -224,21 +264,47 @@ namespace FluentAssertions.Json
         }
 
         [TestMethod]
+        public void When_jtoken_does_not_have_value_NotHaveValue_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 43 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject["id"].Should().NotHaveValue("42");
+        }
+
+        [TestMethod]
+        public void When_jtoken_does_have_value_NotHaveValue_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject["id"].Should().Invoking(x => x.NotHaveValue("42", "because foo"))
+                .ShouldThrow<AssertFailedException>()
+                .WithMessage("Did not expect JSON property \"id\" to have value \"42\" because foo.");
+        }
+
+        [TestMethod]
         public void When_jtoken_has_element_HaveElement_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var subject = JToken.Parse("{ 'id':42}");
+            var subject = JToken.Parse("{ 'id': 42 }");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject.Should().HaveElement("id");
-
-            subject.Should().Invoking(x => x.HaveElement("name", "because foo"))
-                .ShouldThrow<AssertFailedException>()
-                .WithMessage($"Expected JSON document {_formatter.ToString(subject)} to have element \"name\" because foo, but no such element was found.");
         }
 
         [TestMethod]
@@ -247,7 +313,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var subject = JToken.Parse("{ 'id':42}");
+            var subject = JToken.Parse("{ 'id': 42 }");
 
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
@@ -257,22 +323,34 @@ namespace FluentAssertions.Json
                 .WithMessage($"Expected JSON document {_formatter.ToString(subject)} to have element \"name\" because foo, but no such element was found.");
         }
 
-        private static readonly JTokenFormatter _formatter = new JTokenFormatter();
-
-        private static string GetNotEquivalentMessage(JToken actual, JToken expected,
-            string reason = null, params object[] reasonArgs)
+        [TestMethod]
+        public void When_jtoken_does_not_have_element_NotHaveElement_should_succeed()
         {
-            var diff = ObjectDiffPatch.GenerateDiff(actual, expected);
-            var key = diff.NewValues?.First ?? diff.OldValues?.First;
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
 
-            var because = string.Empty;
-            if (!string.IsNullOrWhiteSpace(reason))
-                because = " because " + string.Format(reason, reasonArgs);
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().NotHaveElement("name");
+        }
 
-            var expectedMessage = $"Expected JSON document {_formatter.ToString(actual, true)}" +
-                                  $" to be equivalent to {_formatter.ToString(expected, true)}" +
-                                  $"{because}, but differs at {key}.";
-            return expectedMessage;
+        [TestMethod]
+        public void When_jtoken_does_have_element_NotHaveElement_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().Invoking(x => x.NotHaveElement("id", "because foo"))
+                .ShouldThrow<AssertFailedException>()
+                .WithMessage($"Did not expect JSON document {_formatter.ToString(subject)} to have element \"id\" because foo.");
         }
     }
 }
