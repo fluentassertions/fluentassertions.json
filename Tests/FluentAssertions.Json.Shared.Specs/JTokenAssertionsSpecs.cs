@@ -12,6 +12,8 @@ namespace FluentAssertions.Json
 
         private static readonly JTokenFormatter _formatter = new JTokenFormatter();
 
+        #region (Not)Be
+
         [TestMethod]
         public void When_both_values_are_the_same_or_equal_Be_should_succeed()
         {
@@ -27,101 +29,6 @@ namespace FluentAssertions.Json
             a.Should().Be(a);
             b.Should().Be(b);
             a.Should().Be(b);
-        }
-
-        [TestMethod]
-        public void When_values_differ_NotBe_should_succeed()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            var a = JToken.Parse("{ \"id\": 1 }");
-            var b = JToken.Parse("{ \"id\": 2 }");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act & Assert
-            //-----------------------------------------------------------------------------------------------------------
-            a.Should().NotBeNull();
-            a.Should().NotBe(null);
-            a.Should().NotBe(b);
-        }
-
-        [TestMethod]
-        public void When_values_are_equal_or_equivalent_NotBe_should_fail()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            var a = JToken.Parse("{ \"id\": 1 }");
-            var b = JToken.Parse("{ \"id\": 1 }");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act & Assert
-            //-----------------------------------------------------------------------------------------------------------
-            a.Invoking(x => x.Should().NotBe(b))
-                .ShouldThrow<AssertFailedException>()
-                .WithMessage($"Expected JSON document not to be {_formatter.ToString(b)}.");
-        }
-
-
-        [TestMethod]
-        public void When_both_values_are_equal_BeEquivalentTo_should_succeed()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            var testCases = new Dictionary<string, string>
-            {
-                {
-                    "{ friends: [{ id: 123, name: \"Corby Page\" }, { id: 456, name: \"Carter Page\" }] }",
-                    "{ friends: [{ name: \"Corby Page\", id: 123 }, { id: 456, name: \"Carter Page\" }] }"
-                },
-                {
-                    "{ id: 2, admin: true }",
-                    "{ admin: true, id: 2}" }
-            };
-
-            foreach (var testCase in testCases)
-            {
-                var actualJson = testCase.Key;
-                var expectedJson = testCase.Value;
-                var a = JToken.Parse(actualJson);
-                var b = JToken.Parse(expectedJson);
-
-                //-----------------------------------------------------------------------------------------------------------
-                // Act & Assert
-                //-----------------------------------------------------------------------------------------------------------
-                a.Should().BeEquivalentTo(b);
-            }
-        }
-
-        [TestMethod]
-        public void When_values_differ_NotBeEquivalentTo_should_succeed()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            var testCases = new Dictionary<string, string>
-            {
-                {
-                    "{ id: 1, admin: true }",
-                    "{ id: 1, admin: false }"
-                }
-            };
-
-            foreach (var testCase in testCases)
-            {
-                var actualJson = testCase.Key;
-                var expectedJson = testCase.Value;
-
-                var a = JToken.Parse(actualJson);
-                var b = JToken.Parse(expectedJson);
-
-                //-----------------------------------------------------------------------------------------------------------
-                // Act & Assert
-                //-----------------------------------------------------------------------------------------------------------
-                a.Should().NotBeEquivalentTo(b);
-            }
         }
 
         [TestMethod]
@@ -163,6 +70,75 @@ namespace FluentAssertions.Json
         }
 
         [TestMethod]
+        public void When_values_differ_NotBe_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var a = JToken.Parse("{ \"id\": 1 }");
+            var b = JToken.Parse("{ \"id\": 2 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            a.Should().NotBeNull();
+            a.Should().NotBe(null);
+            a.Should().NotBe(b);
+        }
+
+        [TestMethod]
+        public void When_values_are_equal_or_equivalent_NotBe_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var a = JToken.Parse("{ \"id\": 1 }");
+            var b = JToken.Parse("{ \"id\": 1 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            a.Invoking(x => x.Should().NotBe(b))
+                .ShouldThrow<AssertFailedException>()
+                .WithMessage($"Expected JSON document not to be {_formatter.ToString(b)}.");
+        }
+
+        #endregion (Not)Be
+
+        #region (Not)BeEquivalentTo
+
+        [TestMethod]
+        public void When_both_values_are_equal_BeEquivalentTo_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var testCases = new Dictionary<string, string>
+            {
+                {
+                    "{ friends: [{ id: 123, name: \"Corby Page\" }, { id: 456, name: \"Carter Page\" }] }",
+                    "{ friends: [{ name: \"Corby Page\", id: 123 }, { id: 456, name: \"Carter Page\" }] }"
+                },
+                {
+                    "{ id: 2, admin: true }",
+                    "{ admin: true, id: 2}" }
+            };
+
+            foreach (var testCase in testCases)
+            {
+                var actualJson = testCase.Key;
+                var expectedJson = testCase.Value;
+                var a = JToken.Parse(actualJson);
+                var b = JToken.Parse(expectedJson);
+
+                //-----------------------------------------------------------------------------------------------------------
+                // Act & Assert
+                //-----------------------------------------------------------------------------------------------------------
+                a.Should().BeEquivalentTo(b);
+            }
+        }
+
+        [TestMethod]
         public void When_values_differ_BeEquivalentTo_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -192,6 +168,35 @@ namespace FluentAssertions.Json
                 a.Should().Invoking(x => x.BeEquivalentTo(b))
                     .ShouldThrow<AssertFailedException>()
                     .WithMessage(expectedMessage);
+            }
+        }
+
+        [TestMethod]
+        public void When_values_differ_NotBeEquivalentTo_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var testCases = new Dictionary<string, string>
+            {
+                {
+                    "{ id: 1, admin: true }",
+                    "{ id: 1, admin: false }"
+                }
+            };
+
+            foreach (var testCase in testCases)
+            {
+                var actualJson = testCase.Key;
+                var expectedJson = testCase.Value;
+
+                var a = JToken.Parse(actualJson);
+                var b = JToken.Parse(expectedJson);
+
+                //-----------------------------------------------------------------------------------------------------------
+                // Act & Assert
+                //-----------------------------------------------------------------------------------------------------------
+                a.Should().NotBeEquivalentTo(b);
             }
         }
 
@@ -229,6 +234,10 @@ namespace FluentAssertions.Json
                                   $"{because}, but differs at {key}.";
             return expectedMessage;
         }
+
+        #endregion (Not)BeEquivalentTo
+
+        #region (Not)HaveValue
 
         [TestMethod]
         public void When_jtoken_has_value_HaveValue_should_succeed()
@@ -290,6 +299,10 @@ namespace FluentAssertions.Json
                 .WithMessage("Did not expect JSON property \"id\" to have value \"42\" because foo.");
         }
 
+        #endregion (Not)HaveValue
+
+        #region (Not)HaveElement
+
         [TestMethod]
         public void When_jtoken_has_element_HaveElement_should_succeed()
         {
@@ -349,6 +362,10 @@ namespace FluentAssertions.Json
                 .ShouldThrow<AssertFailedException>()
                 .WithMessage($"Did not expect JSON document {_formatter.ToString(subject)} to have element \"id\" because foo.");
         }
+
+        #endregion (Not)HaveElement
+
+        #region ContainSingleItem
 
         [TestMethod]
         public void When_jtoken_has_a_single_element_ContainSingleItem_should_succeed()
@@ -529,5 +546,7 @@ namespace FluentAssertions.Json
             act.ShouldThrow<AssertFailedException>()
                 .WithMessage($"Expected JSON document {formattedSubject} to contain a single item because more is not allowed, but found {formattedSubject}.");
         }
+
+        #endregion ContainSingleItem
     }
 }
