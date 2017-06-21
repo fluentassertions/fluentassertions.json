@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using FluentAssertions.Collections;
 using FluentAssertions.Common;
 using FluentAssertions.Execution;
 using FluentAssertions.Formatting;
@@ -13,6 +14,8 @@ namespace FluentAssertions.Json
     [DebuggerNonUserCode]
     public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions>
     {
+        private GenericCollectionAssertions<JToken> EnumerableSubject { get; }
+
         static JTokenAssertions()
         {
             Formatter.AddFormatter(new JTokenFormatter());
@@ -25,6 +28,7 @@ namespace FluentAssertions.Json
         public JTokenAssertions(JToken subject)
         {
             Subject = subject;
+            EnumerableSubject = new GenericCollectionAssertions<JToken>(subject);
         }
 
         /// <summary>
@@ -286,6 +290,28 @@ namespace FluentAssertions.Json
                 .FailWith("Did not expect JSON document {0} to have element \"" + unexpected.Escape(true) + "\"{reason}.", Subject);
 
             return new AndWhichConstraint<JTokenAssertions, JToken>(this, jToken);
+        }
+
+        /// <summary>
+        /// Expects the current <see cref="JToken" /> to contain only a single item.
+        /// </summary>
+        /// <param name="because">
+        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        /// Zero or more objects to format using the placeholders in <see cref="because" />.
+        /// </param>
+        public AndWhichConstraint<JTokenAssertions, JToken> ContainSingleItem(string because = "", params object[] becauseArgs)
+        {
+            var formatter = new JTokenFormatter();
+            string formattedDocument = formatter.ToString(Subject).Replace("{", "{{").Replace("}", "}}");
+
+            using (new AssertionScope("JSON document " + formattedDocument))
+            {
+                var constraint = EnumerableSubject.ContainSingle(because, becauseArgs);
+                return new AndWhichConstraint<JTokenAssertions, JToken>(this, constraint.Which);
+            }
         }
     }
 }
