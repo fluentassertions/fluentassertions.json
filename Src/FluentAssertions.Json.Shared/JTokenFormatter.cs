@@ -41,7 +41,8 @@ namespace FluentAssertions.Json
             int nestedPropertyLevel = 0)
         {
             var jToken = (JToken)value;
-            return useLineBreaks ? jToken.ToString(Newtonsoft.Json.Formatting.Indented) : jToken.ToString().RemoveNewLines();
+            string result = useLineBreaks ? jToken?.ToString(Newtonsoft.Json.Formatting.Indented) : jToken?.ToString().RemoveNewLines();
+            return result ?? "<null>";
         }
     }
 }
