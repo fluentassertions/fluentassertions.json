@@ -332,5 +332,28 @@ namespace FluentAssertions.Json
                 return new AndWhichConstraint<JTokenAssertions, JToken>(this, constraint.Which);
             }
         }
+
+        /// <summary>
+        /// Asserts that the number of items in the current <see cref="JToken" /> matches the supplied <paramref name="expected" /> amount.
+        /// </summary>
+        /// <param name="expected">The expected number of items in the current <see cref="JToken" />.</param>
+        /// <param name="because">
+        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion 
+        /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        /// Zero or more objects to format using the placeholders in <see cref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> HaveCount(int expected, string because = "", params object[] becauseArgs)
+        {
+            var formatter = new JTokenFormatter();
+            string formattedDocument = formatter.ToString(Subject).Replace("{", "{{").Replace("}", "}}");
+
+            using (new AssertionScope("JSON document " + formattedDocument))
+            {
+                EnumerableSubject.HaveCount(expected, because, becauseArgs);
+                return new AndConstraint<JTokenAssertions>(this);
+            }
+        }
     }
 }
