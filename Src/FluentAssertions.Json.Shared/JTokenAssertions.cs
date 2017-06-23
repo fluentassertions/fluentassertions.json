@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using FluentAssertions.Collections;
 using FluentAssertions.Common;
 using FluentAssertions.Execution;
@@ -43,15 +44,6 @@ namespace FluentAssertions.Json
         ///     Asserts that the current <see cref="JToken" /> equals the <paramref name="expected" /> element.
         /// </summary>
         /// <param name="expected">The expected element</param>
-        public AndConstraint<JTokenAssertions> Be(JToken expected)
-        {
-            return Be(expected, string.Empty);
-        }
-
-        /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> equals the <paramref name="expected" /> element.
-        /// </summary>
-        /// <param name="expected">The expected element</param>
         /// <param name="because">
         ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
         ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
@@ -59,7 +51,7 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
-        public AndConstraint<JTokenAssertions> Be(JToken expected, string because, params object[] becauseArgs)
+        public AndConstraint<JTokenAssertions> Be(JToken expected, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion
                 .ForCondition(JToken.DeepEquals(Subject, expected))
@@ -74,16 +66,6 @@ namespace FluentAssertions.Json
         ///     using its <see cref="object.Equals(object)" /> implementation.
         /// </summary>
         /// <param name="unexpected">The unexpected element</param>
-        public AndConstraint<JTokenAssertions> NotBe(JToken unexpected)
-        {
-            return NotBe(unexpected, string.Empty);
-        }
-
-        /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> does not equal the <paramref name="unexpected" /> element,
-        ///     using its <see cref="object.Equals(object)" /> implementation.
-        /// </summary>
-        /// <param name="unexpected">The unexpected element</param>
         /// <param name="because">
         ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
         ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
@@ -91,7 +73,7 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
-        public AndConstraint<JTokenAssertions> NotBe(JToken unexpected, string because, params object[] becauseArgs)
+        public AndConstraint<JTokenAssertions> NotBe(JToken unexpected, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion
                 .ForCondition((ReferenceEquals(Subject, null) && !ReferenceEquals(unexpected, null)) ||
@@ -100,6 +82,58 @@ namespace FluentAssertions.Json
                 .FailWith("Expected JSON document not to be {0}{reason}.", unexpected);
 
             return new AndConstraint<JTokenAssertions>(this);
+        }
+
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> equals the parsed <paramref name="expected" /> JSON.
+        /// </summary>
+        /// <param name="expected">The expected JSON string that will be parsed before comparing</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> Equal(string expected, string because = "", params object[] becauseArgs)
+        {
+            JToken parsedValue;
+            try
+            {
+                parsedValue = JToken.Parse(expected);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Unable to compare JSON document, because the expected string is no valid JSON.", ex);
+            }
+
+            return Be(parsedValue, because, becauseArgs);
+        }
+
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> does not equal the parsed <paramref name="unexpected" /> JSON.
+        /// </summary>
+        /// <param name="unexpected">The unexpected JSON string that will be parsed before comparing</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> NotEqual(string unexpected, string because = "", params object[] becauseArgs)
+        {
+            JToken parsedValue;
+            try
+            {
+                parsedValue = JToken.Parse(unexpected);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Unable to compare JSON document, because the unexpected string is no valid JSON.", ex);
+            }
+
+            return NotBe(parsedValue, because, becauseArgs);
         }
 
         /// <summary>
