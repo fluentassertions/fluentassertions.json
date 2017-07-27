@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using FluentAssertions.Collections;
 using FluentAssertions.Common;
 using FluentAssertions.Execution;
 using FluentAssertions.Formatting;
@@ -13,6 +14,8 @@ namespace FluentAssertions.Json
     [DebuggerNonUserCode]
     public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions>
     {
+        private GenericCollectionAssertions<JToken> EnumerableSubject { get; }
+
         static JTokenAssertions()
         {
             Formatter.AddFormatter(new JTokenFormatter());
@@ -25,6 +28,7 @@ namespace FluentAssertions.Json
         public JTokenAssertions(JToken subject)
         {
             Subject = subject;
+            EnumerableSubject = new GenericCollectionAssertions<JToken>(subject);
         }
 
         /// <summary>
@@ -105,7 +109,7 @@ namespace FluentAssertions.Json
         /// <param name="expected">The expected element</param>
         /// <remarks>
         /// Json tokens are compared by inspecting all properties. They are considered equal
-        /// when all property names and values match (independent of their order). 
+        /// when all property names and values match (independent of their order).
         /// When not equal, the first mismatching property or value is included in the assertion failure message.
         /// </remarks>
         public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected)
@@ -208,6 +212,28 @@ namespace FluentAssertions.Json
         }
 
         /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> does not have the specified <paramref name="unexpected" /> value.
+        /// </summary>
+        /// <param name="unexpected">The unexpected element</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> NotHaveValue(string unexpected, string because = "", params object[] becauseArgs)
+        {
+            Execute.Assertion
+                .ForCondition(Subject.Value<string>() != unexpected)
+                .BecauseOf(because, becauseArgs)
+                .FailWith("Did not expect JSON property {0} to have value {1}{reason}.",
+                    Subject.Path, unexpected, Subject.Value<string>());
+
+            return new AndConstraint<JTokenAssertions>(this);
+        }
+
+        /// <summary>
         ///     Asserts that the current <see cref="JToken" /> has a direct child element with the specified
         ///     <paramref name="expected" /> name.
         /// </summary>
@@ -240,6 +266,75 @@ namespace FluentAssertions.Json
                           ", but no such element was found.", Subject);
 
             return new AndWhichConstraint<JTokenAssertions, JToken>(this, jToken);
+        }
+
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> does not have a direct child element with the specified
+        ///     <paramref name="unexpected" /> name.
+        /// </summary>
+        /// <param name="unexpected">The name of the not expected child element</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndWhichConstraint<JTokenAssertions, JToken> NotHaveElement(string unexpected, string because = "",
+            params object[] becauseArgs)
+        {
+            JToken jToken = Subject[unexpected];
+            Execute.Assertion
+                .ForCondition(jToken == null)
+                .BecauseOf(because, becauseArgs)
+                .FailWith("Did not expect JSON document {0} to have element \"" + unexpected.Escape(true) + "\"{reason}.", Subject);
+
+            return new AndWhichConstraint<JTokenAssertions, JToken>(this, jToken);
+        }
+
+        /// <summary>
+        /// Expects the current <see cref="JToken" /> to contain only a single item.
+        /// </summary>
+        /// <param name="because">
+        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        /// Zero or more objects to format using the placeholders in <see cref="because" />.
+        /// </param>
+        public AndWhichConstraint<JTokenAssertions, JToken> ContainSingleItem(string because = "", params object[] becauseArgs)
+        {
+            var formatter = new JTokenFormatter();
+            string formattedDocument = formatter.ToString(Subject).Replace("{", "{{").Replace("}", "}}");
+
+            using (new AssertionScope("JSON document " + formattedDocument))
+            {
+                var constraint = EnumerableSubject.ContainSingle(because, becauseArgs);
+                return new AndWhichConstraint<JTokenAssertions, JToken>(this, constraint.Which);
+            }
+        }
+
+        /// <summary>
+        /// Asserts that the number of items in the current <see cref="JToken" /> matches the supplied <paramref name="expected" /> amount.
+        /// </summary>
+        /// <param name="expected">The expected number of items in the current <see cref="JToken" />.</param>
+        /// <param name="because">
+        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        /// Zero or more objects to format using the placeholders in <see cref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> HaveCount(int expected, string because = "", params object[] becauseArgs)
+        {
+            var formatter = new JTokenFormatter();
+            string formattedDocument = formatter.ToString(Subject).Replace("{", "{{").Replace("}", "}}");
+
+            using (new AssertionScope("JSON document " + formattedDocument))
+            {
+                EnumerableSubject.HaveCount(expected, because, becauseArgs);
+                return new AndConstraint<JTokenAssertions>(this);
+            }
         }
     }
 }
