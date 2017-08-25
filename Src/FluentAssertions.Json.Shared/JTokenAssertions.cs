@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using FluentAssertions.Collections;
 using FluentAssertions.Common;
 using FluentAssertions.Execution;
@@ -334,6 +335,62 @@ namespace FluentAssertions.Json
             {
                 EnumerableSubject.HaveCount(expected, because, becauseArgs);
                 return new AndConstraint<JTokenAssertions>(this);
+            }
+        }
+
+        /// <summary>
+        /// Recursively asserts that the current <see cref="JToken"/> contains at least the properties of the specified <see cref="JToken"/>.
+        /// </summary>
+        /// <param name="subtree"></param>
+        /// <param name="because"></param>
+        /// <param name="becauseArgs"></param>
+        /// <returns></returns>
+        public AndConstraint<JTokenAssertions> ContainSubtree(JToken subtree, string because = "", params object[] becauseArgs)
+        {
+            Execute.Assertion
+                .ForCondition(JTokenContainsSubtree(Subject, subtree))
+                .BecauseOf(because, becauseArgs)
+                .FailWith("Expected JSON document to contain subtree {0}{reason}, but found {1}.", subtree, Subject);
+
+            return new AndConstraint<JTokenAssertions>(this);
+        }
+
+        private bool JTokenContainsSubtree(JToken token, JToken subtree)
+        {
+            switch (subtree.Type)
+            {
+                case JTokenType.Object:
+                    {
+                        var sub = (JObject)subtree;
+                        var obj = token as JObject;
+                        if (obj == null)
+                            return false;
+                        foreach (var subProp in sub.Properties())
+                        {
+                            var prop = obj.Property(subProp.Name);
+                            if (prop == null)
+                                return false;
+                            if (!JTokenContainsSubtree(prop.Value, subProp.Value))
+                                return false;
+                        }
+                        return true;
+                    }
+                case JTokenType.Array:
+                    {
+                        var sub = (JArray)subtree;
+                        var arr = token as JArray;
+                        if (arr == null)
+                            return false;
+                        foreach (var subItem in sub)
+                        {
+                            if (!arr.Any(item => JTokenContainsSubtree(item, subItem)))
+                                return false;
+                        }
+                        return true;
+                    }
+                default:
+                    return JToken.DeepEquals(token, subtree);
+                    
             }
         }
     }
