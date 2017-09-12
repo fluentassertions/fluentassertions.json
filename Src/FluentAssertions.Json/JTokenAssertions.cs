@@ -34,9 +34,6 @@ namespace FluentAssertions.Json
         /// <summary>
         ///     Returns the type of the subject the assertion applies on.
         /// </summary>
-#if !PORTABLE && !CORE_CLR
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-#endif
         protected override string Context => nameof(JToken);
 
         /// <summary>
@@ -136,12 +133,14 @@ namespace FluentAssertions.Json
             JToken firstDifferingToken = diff.NewValues?.First ?? diff.OldValues?.First;
             JTokenFormatter formatter = new JTokenFormatter();
 
+            var message = $"Expected JSON document {formatter.ToString(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
+                          $" to be equivalent to {formatter.ToString(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
+                          $"{{reason}}, but differs at {firstDifferingToken?.ToString().Replace("{", "{{").Replace("}", "}}")}.";
+            
             Execute.Assertion
                 .ForCondition(diff.AreEqual)
                 .BecauseOf(because, becauseArgs)
-                .FailWith($"Expected JSON document {formatter.ToString(Subject, true)}" +
-                    $" to be equivalent to {formatter.ToString(expected, true)}" +
-                    $"{{reason}}, but differs at {firstDifferingToken}.");
+                .FailWith(message);
 
             return new AndConstraint<JTokenAssertions>(this);
         }

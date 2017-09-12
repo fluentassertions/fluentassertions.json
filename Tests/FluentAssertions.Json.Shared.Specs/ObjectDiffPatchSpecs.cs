@@ -1,13 +1,12 @@
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using Xunit;
 
 namespace FluentAssertions.Json
 {
-    [TestClass]
+    
     public class ObjectDiffPatchSpecs
     {
-        [TestMethod]
+        [Fact]
         public void Should_Generate_Diffs_for_POCOs_and_JObjects()
         {
             var sut = ObjectDiffPatch.GenerateDiff<Dummy>(null, null);
@@ -15,7 +14,7 @@ namespace FluentAssertions.Json
             sut.OldValues.Should().BeNull();
             sut.NewValues.Should().BeNull();
 
-            var a = new Dummy { Id = "foo" };
+            var a = new Dummy {Id = "foo"};
             var ja = JObject.FromObject(a);
 
             sut = ObjectDiffPatch.GenerateDiff(a, null);
@@ -28,7 +27,7 @@ namespace FluentAssertions.Json
             sut.OldValues.Should().BeNull();
             sut.NewValues.Should().Be(ja);
 
-            var b = new Dummy { Id = "bar" };
+            var b = new Dummy {Id = "bar"};
             var jb = JObject.FromObject(b);
             sut = ObjectDiffPatch.GenerateDiff(a, b);
             sut.AreEqual.Should().BeFalse();
@@ -42,8 +41,7 @@ namespace FluentAssertions.Json
             JToken.DeepEquals(sut.NewValues, jb).Should().BeTrue();
         }
 
-        [TestMethod]
-        [Description("coverage")]
+        [Fact]
         public void Test_DiffField_handling_nulls()
         {
             var token = JToken.Parse("{\"field\":\"value\"}");

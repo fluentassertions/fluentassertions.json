@@ -1,14 +1,13 @@
 using FluentAssertions.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using Xunit;
 
 namespace FluentAssertions.Json
 {
-    [TestClass]
     // ReSharper disable InconsistentNaming
     public class JTokenFormatterSpecs
     {
-        [TestMethod]
+        [Fact]
         public void Should_Handle_JToken()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -27,7 +26,7 @@ namespace FluentAssertions.Json
             actual.Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void Should_not_handle_anything_else()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -51,7 +50,7 @@ namespace FluentAssertions.Json
         }
 
 
-        [TestMethod]
+        [Fact]
         public void Should_preserve_indenting()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -71,7 +70,7 @@ namespace FluentAssertions.Json
             actual.Should().Be(json.ToString(Newtonsoft.Json.Formatting.Indented));
         }
 
-        [TestMethod]
+        [Fact]
         public void Should_Remove_line_breaks_and_indenting()
         {
             //-----------------------------------------------------------------------------------------------------------
