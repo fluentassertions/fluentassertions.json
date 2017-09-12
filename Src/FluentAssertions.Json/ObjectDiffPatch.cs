@@ -37,6 +37,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
+using System.Reflection;
+
 #if CORE_CLR
 using System.Reflection;
 #endif
@@ -44,7 +46,7 @@ using System.Reflection;
 namespace FluentAssertions.Json
 {
     [DebuggerNonUserCode]
-    internal static class ObjectDiffPatch
+    public static class ObjectDiffPatch
     {
         private const string PrefixArraySize = "@@ Count";
         private const string PrefixRemovedFields = "@@ Removed";
@@ -62,7 +64,7 @@ namespace FluentAssertions.Json
             var writer = GetJsonSerializer();
             // parse our objects
             JObject originalJson, updatedJson;
-            if (typeof(JObject).IsAssignableFrom(typeof(T)))
+            if (typeof(JObject).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
                 originalJson = original as JObject;
                 updatedJson = updated as JObject;
@@ -160,7 +162,7 @@ namespace FluentAssertions.Json
             return result;
         }
 
-        internal static void DiffField(string fieldName, JToken source, JToken target, ObjectDiffPatchResult result)
+        public static void DiffField(string fieldName, JToken source, JToken target, ObjectDiffPatchResult result)
         {
             if (source == null)
             {
