@@ -2,11 +2,11 @@
 /*
     SimpleHelpers - ObjectDiffPatch   
 
-    Copyright © 2014 Khalid Salomão
+    Copyright Â© 2014 Khalid SalomÃ£o
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
-    files (the “Software”), to deal in the Software without
+    files (the â€œSoftwareâ€), to deal in the Software without
     restriction, including without limitation the rights to use,
     copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the
@@ -16,7 +16,7 @@
     The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+    THE SOFTWARE IS PROVIDED â€œAS ISâ€, WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -35,12 +35,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Xunit;
+using Assert = Xunit.Assert;
 
 namespace FluentAssertions.Json
 {
-    [TestClass]
     public class ObjectDiffPatchTest
     {
         private TestClass GetSimpleTestObject()
@@ -86,7 +86,7 @@ namespace FluentAssertions.Json
             };
         }
 
-        [TestMethod]
+        [Fact]
         public void AbleToDiffAndPatchSimpleObject()
         {
             var testObj = GetSimpleTestObject();
@@ -102,12 +102,12 @@ namespace FluentAssertions.Json
 
             var revertedObj = ObjectDiffPatch.PatchObject(updatedTestObj, revertPatch);
 
-            Assert.AreEqual(testObj.StringProperty, revertedObj.StringProperty);
-            Assert.AreEqual(testObj.IntProperty, revertedObj.IntProperty);
-            Assert.AreEqual(testObj.DoubleProperty, revertedObj.DoubleProperty);
+            testObj.StringProperty.Should().Be(revertedObj.StringProperty);
+            testObj.IntProperty.Should().Be(revertedObj.IntProperty);
+            testObj.DoubleProperty.Should().Be(revertedObj.DoubleProperty);
         }
 
-        [TestMethod]
+        [Fact]
         public void AbleToDeleteStringListItemThenRevertViaPatch()
         {
             var testObj = GetSimpleTestObject();
@@ -118,7 +118,7 @@ namespace FluentAssertions.Json
 
             updatedTestObj.ListOfStringProperty.Remove("list");
 
-            CollectionAssert.AreNotEqual(testObj.ListOfStringProperty, updatedTestObj.ListOfStringProperty);
+            testObj.ListOfStringProperty.Should().NotBeEquivalentTo(updatedTestObj.ListOfStringProperty);
 
 
             var diff = ObjectDiffPatch.GenerateDiff(testObj, updatedTestObj);
@@ -127,10 +127,10 @@ namespace FluentAssertions.Json
 
             var revertedObj = ObjectDiffPatch.PatchObject(updatedTestObj, revertPatch);
 
-            CollectionAssert.AreEqual(testObj.ListOfStringProperty, revertedObj.ListOfStringProperty);
+            testObj.ListOfStringProperty.Should().BeEquivalentTo(revertedObj.ListOfStringProperty);
         }
 
-        [TestMethod]
+        [Fact]
         public void AbleToDeleteObjectListItemThenRevertViaPatch()
         {
             var testObj = GetSimpleTestObject();
@@ -141,7 +141,7 @@ namespace FluentAssertions.Json
 
             updatedTestObj.ListOfObjectProperty.RemoveAt(1);
 
-            Assert.AreNotEqual(testObj.ListOfObjectProperty.Count, updatedTestObj.ListOfObjectProperty.Count);
+            testObj.ListOfObjectProperty.Count.Should().NotBe(updatedTestObj.ListOfObjectProperty.Count);
 
             var diff = ObjectDiffPatch.GenerateDiff(testObj, updatedTestObj);
 
@@ -149,10 +149,10 @@ namespace FluentAssertions.Json
 
             var revertedObj = ObjectDiffPatch.PatchObject(updatedTestObj, revertPatch);
 
-            Assert.AreEqual(testObj.ListOfObjectProperty.Count, revertedObj.ListOfObjectProperty.Count);
+            testObj.ListOfObjectProperty.Count.Should().Be(revertedObj.ListOfObjectProperty.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void AbleToEditObjectInListThenRevertViaPatch()
         {
             var testObj = GetSimpleTestObject();
@@ -171,12 +171,12 @@ namespace FluentAssertions.Json
 
             var revertedObj = ObjectDiffPatch.PatchObject(updatedTestObj, revertPatch);
 
-            Assert.AreEqual(testObj.ListOfObjectProperty[2].IntProperty, revertedObj.ListOfObjectProperty[2].IntProperty);
-            Assert.AreEqual(testObj.ListOfObjectProperty[2].StringProperty, revertedObj.ListOfObjectProperty[2].StringProperty);
-            Assert.AreEqual(testObj.ListOfObjectProperty[2].DoubleProperty, revertedObj.ListOfObjectProperty[2].DoubleProperty);
+            testObj.ListOfObjectProperty[2].IntProperty.Should().Be(revertedObj.ListOfObjectProperty[2].IntProperty);
+            testObj.ListOfObjectProperty[2].StringProperty.Should().Be(revertedObj.ListOfObjectProperty[2].StringProperty);
+            testObj.ListOfObjectProperty[2].DoubleProperty.Should().Be(revertedObj.ListOfObjectProperty[2].DoubleProperty);
         }
 
-        [TestMethod]
+        [Fact]
         public void AbleToAddObjectListItemThenApplyViaPatch()
         {
             var testObj = GetSimpleTestObject();
@@ -196,11 +196,11 @@ namespace FluentAssertions.Json
 
             var updatedObj = ObjectDiffPatch.PatchObject(objToUpdate, updatePatch);
 
-            Assert.AreEqual(updatedTestObj.ListOfObjectProperty.Count, updatedObj.ListOfObjectProperty.Count);
+            updatedTestObj.ListOfObjectProperty.Count.Should().Be(updatedObj.ListOfObjectProperty.Count);
 
             var addedListItem = updatedObj.ListOfObjectProperty.SingleOrDefault(obj => obj != null && obj.StringProperty == "added");
 
-            Assert.IsNotNull(addedListItem);
+            addedListItem.Should().NotBeNull();
 
         }
     }

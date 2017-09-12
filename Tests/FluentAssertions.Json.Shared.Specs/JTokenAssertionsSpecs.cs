@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using Xunit;
+using Xunit.Sdk;
 
 namespace FluentAssertions.Json
 {
-    [TestClass]
     // ReSharper disable InconsistentNaming
     public class JTokenAssertionsSpecs
     {
@@ -14,7 +14,7 @@ namespace FluentAssertions.Json
 
         #region (Not)Be
 
-        [TestMethod]
+        [Fact]
         public void When_both_values_are_the_same_or_equal_Be_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ namespace FluentAssertions.Json
             a.Should().Be(b);
         }
 
-        [TestMethod]
+        [Fact]
         public void When_values_differ_Be_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -64,12 +64,12 @@ namespace FluentAssertions.Json
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
                 a.Should().Invoking(x => x.Be(b))
-                    .ShouldThrow<AssertFailedException>()
+                    .ShouldThrow<XunitException>()
                     .WithMessage(expectedMessage);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void When_values_differ_NotBe_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ namespace FluentAssertions.Json
             a.Should().NotBe(b);
         }
 
-        [TestMethod]
+        [Fact]
         public void When_values_are_equal_or_equivalent_NotBe_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             a.Invoking(x => x.Should().NotBe(b))
-                .ShouldThrow<AssertFailedException>()
+                .ShouldThrow<XunitException>()
                 .WithMessage($"Expected JSON document not to be {_formatter.ToString(b)}.");
         }
 
@@ -107,7 +107,7 @@ namespace FluentAssertions.Json
 
         #region (Not)BeEquivalentTo
 
-        [TestMethod]
+        [Fact]
         public void When_both_values_are_equal_BeEquivalentTo_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -139,7 +139,7 @@ namespace FluentAssertions.Json
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void When_values_differ_BeEquivalentTo_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -167,12 +167,12 @@ namespace FluentAssertions.Json
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
                 a.Should().Invoking(x => x.BeEquivalentTo(b))
-                    .ShouldThrow<AssertFailedException>()
+                    .ShouldThrow<XunitException>()
                     .WithMessage(expectedMessage);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void When_values_differ_NotBeEquivalentTo_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -201,7 +201,7 @@ namespace FluentAssertions.Json
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Fail_with_descriptive_message_when_child_element_differs()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -210,14 +210,12 @@ namespace FluentAssertions.Json
             var subject = JToken.Parse("{ child: { subject: 'foo' } }");
             var expected = JToken.Parse("{ child: { expected: 'bar' } }");
 
-            var expectedMessage = GetNotEquivalentMessage(subject, expected, "we want to test the failure {0}", "message");
-
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject.Should().Invoking(x => x.BeEquivalentTo(expected, "we want to test the failure {0}", "message"))
-                .ShouldThrow<AssertFailedException>()
-                .WithMessage(expectedMessage);
+                .ShouldThrow<XunitException>()
+                .WithMessage("Expected*foo*equivalent*because*failure message*but*bar*");
         }
 
         private static string GetNotEquivalentMessage(JToken actual, JToken expected,
@@ -243,7 +241,7 @@ namespace FluentAssertions.Json
 
         #region (Not)HaveValue
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_has_value_HaveValue_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -257,7 +255,7 @@ namespace FluentAssertions.Json
             subject["id"].Should().HaveValue("42");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_not_has_value_HaveValue_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -269,11 +267,11 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject["id"].Should().Invoking(x => x.HaveValue("43", "because foo"))
-                .ShouldThrow<AssertFailedException>()
+                .ShouldThrow<XunitException>()
                 .WithMessage("Expected JSON property \"id\" to have value \"43\" because foo, but found \"42\".");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_does_not_have_value_NotHaveValue_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -287,7 +285,7 @@ namespace FluentAssertions.Json
             subject["id"].Should().NotHaveValue("42");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_does_have_value_NotHaveValue_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -299,7 +297,7 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject["id"].Should().Invoking(x => x.NotHaveValue("42", "because foo"))
-                .ShouldThrow<AssertFailedException>()
+                .ShouldThrow<XunitException>()
                 .WithMessage("Did not expect JSON property \"id\" to have value \"42\" because foo.");
         }
 
@@ -307,7 +305,7 @@ namespace FluentAssertions.Json
 
         #region (Not)HaveElement
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_has_element_HaveElement_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -321,7 +319,7 @@ namespace FluentAssertions.Json
             subject.Should().HaveElement("id");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_not_has_element_HaveElement_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -333,11 +331,11 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject.Should().Invoking(x => x.HaveElement("name", "because foo"))
-                .ShouldThrow<AssertFailedException>()
+                .ShouldThrow<XunitException>()
                 .WithMessage($"Expected JSON document {_formatter.ToString(subject)} to have element \"name\" because foo, but no such element was found.");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_does_not_have_element_NotHaveElement_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -351,7 +349,7 @@ namespace FluentAssertions.Json
             subject.Should().NotHaveElement("name");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_does_have_element_NotHaveElement_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -363,7 +361,7 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject.Should().Invoking(x => x.NotHaveElement("id", "because foo"))
-                .ShouldThrow<AssertFailedException>()
+                .ShouldThrow<XunitException>()
                 .WithMessage($"Did not expect JSON document {_formatter.ToString(subject)} to have element \"id\" because foo.");
         }
 
@@ -371,7 +369,7 @@ namespace FluentAssertions.Json
 
         #region ContainSingleItem
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_has_a_single_element_ContainSingleItem_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -390,7 +388,7 @@ namespace FluentAssertions.Json
             act.ShouldNotThrow();
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_has_a_single_element_ContainSingleItem_should_return_which_element_it_is()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -409,7 +407,7 @@ namespace FluentAssertions.Json
             element.Should().Be(new JProperty("id", 42));
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_is_null_ContainSingleItem_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -425,11 +423,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<AssertFailedException>()
+            act.ShouldThrow<XunitException>()
                 .WithMessage($"Expected JSON document <null> to contain a single item because null is not allowed, but found <null>.");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_is_an_empty_object_ContainSingleItem_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -445,11 +443,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<AssertFailedException>()
+            act.ShouldThrow<XunitException>()
                 .WithMessage($"Expected JSON document * to contain a single item because less is not allowed, but the collection is empty.");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_has_multiple_elements_ContainSingleItem_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -467,11 +465,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             string formattedSubject = _formatter.ToString(subject);
 
-            act.ShouldThrow<AssertFailedException>()
-                .WithMessage($"Expected JSON document {formattedSubject} to contain a single item because more is not allowed, but found {formattedSubject}.");
+            act.ShouldThrow<XunitException>()
+                .WithMessage($"Expected JSON document*id*42*admin*true*to contain a single item because more is not allowed, but found*");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_is_array_with_a_single_item_ContainSingleItem_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -490,7 +488,7 @@ namespace FluentAssertions.Json
             act.ShouldNotThrow();
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_is_an_array_with_a_single_item_ContainSingleItem_should_return_which_element_it_is()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -509,7 +507,7 @@ namespace FluentAssertions.Json
             element.Should().Be(JToken.Parse("{ id: 42 }"));
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_is_an_empty_array_ContainSingleItem_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -525,11 +523,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<AssertFailedException>()
+            act.ShouldThrow<XunitException>()
                 .WithMessage($"Expected JSON document [] to contain a single item because less is not allowed, but the collection is empty.");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_is_an_array_with_multiple_items_ContainSingleItem_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -547,7 +545,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             string formattedSubject = _formatter.ToString(subject);
 
-            act.ShouldThrow<AssertFailedException>()
+            act.ShouldThrow<XunitException>()
                 .WithMessage($"Expected JSON document {formattedSubject} to contain a single item because more is not allowed, but found {formattedSubject}.");
         }
 
@@ -555,7 +553,7 @@ namespace FluentAssertions.Json
 
         #region HaveCount
 
-        [TestMethod]
+        [Fact]
         public void When_expecting_the_actual_number_of_elements_HaveCount_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -574,7 +572,7 @@ namespace FluentAssertions.Json
             act.ShouldNotThrow();
         }
 
-        [TestMethod]
+        [Fact]
         public void When_expecting_the_actual_number_of_elements_HaveCount_should_enable_consecutive_assertions()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -593,7 +591,7 @@ namespace FluentAssertions.Json
             and.Be(subject);
         }
 
-        [TestMethod]
+        [Fact]
         public void When_jtoken_is_null_HaveCount_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -609,11 +607,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<AssertFailedException>()
+            act.ShouldThrow<XunitException>()
                 .WithMessage($"Expected JSON document <null> to contain 1 item(s) because null is not allowed, but found <null>.");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_expecting_a_different_number_of_elements_than_the_actual_number_HaveCount_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -629,11 +627,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<AssertFailedException>()
+            act.ShouldThrow<XunitException>()
                 .WithMessage($"Expected JSON document * to contain 1 item(s) because numbers matter, but found 0.");
         }
 
-        [TestMethod]
+        [Fact]
         public void When_expecting_the_actual_number_of_array_items_HaveCount_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -652,7 +650,7 @@ namespace FluentAssertions.Json
             act.ShouldNotThrow();
         }
 
-        [TestMethod]
+        [Fact]
         public void When_expecting_a_different_number_of_array_items_than_the_actual_number_HaveCount_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -668,7 +666,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<AssertFailedException>()
+            act.ShouldThrow<XunitException>()
                 .WithMessage($"Expected JSON document * to contain 3 item(s) because the more the better, but found 2.");
         }
 
