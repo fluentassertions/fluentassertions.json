@@ -17,12 +17,12 @@
     <projectUrl>http://www.fluentassertions.com</projectUrl>
     <dependencies>
       <group targetFramework="net451">
-        <dependency id="FluentAssertions" version="[5.0.0,)" />
+        <dependency id="FluentAssertions" version="[4.99.0,)" />
         <dependency id="Newtonsoft.Json" version="[10.0.1,)" />
       </group>
       <group targetFramework="netstandard1.4">
         <dependency id="NETStandard.Library" version="1.6.1" />
-        <dependency id="FluentAssertions" version="[5.0.0,)" />
+        <dependency id="FluentAssertions" version="[4.99.0,)" />
         <dependency id="Newtonsoft.Json" version="[10.0.1,)" />
       </group>
     </dependencies>
