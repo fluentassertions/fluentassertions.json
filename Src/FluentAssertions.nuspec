@@ -28,7 +28,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src=".\FluentAssertions.Json\bin\Release\net451\FluentAssertions.Json.*"  target="lib\net451" />
-    <file src=".\FluentAssertions.Json\bin\Release\netstandard1.4\FluentAssertions.*" exclude="**\*.json" target="lib\netstandard1.4" />
+    <file src="FluentAssertions.Json\bin\Release\net451\FluentAssertions.Json.*"  target="lib\net451" />
+    <file src="FluentAssertions.Json\bin\Release\netstandard1.4\FluentAssertions.*" exclude="**\*.json" target="lib\netstandard1.4" />
   </files>
 </package>
