@@ -27,6 +27,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Artifacts\Json\lib\**.*.*" target="lib" exclude="**\Newtonsoft.*;**\FluentAssertions.???;**\FluentAssertions.Core.???" />
+    <file src="..\Artifacts\Json\lib\**.*.*" target="lib" exclude="**\Newtonsoft.*;**\FluentAssertions.???;**\FluentAssertions.Core.???;**\Microsoft.VisualStudio.QualityTools.UnitTestFramework.???" />
   </files>
 </package>
