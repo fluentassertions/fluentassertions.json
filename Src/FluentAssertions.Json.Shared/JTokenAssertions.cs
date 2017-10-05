@@ -374,6 +374,37 @@ namespace FluentAssertions.Json
             return new AndConstraint<JTokenAssertions>(this);
         }
 
+        /// <summary>
+        /// Recursively asserts that the current <see cref="JToken"/> contains at least the properties or elements of the specified <see cref="JToken"/>.
+        /// </summary>
+        /// <param name="subtree">The subtree to search for</param>
+        /// <param name="because">
+        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        /// Zero or more objects to format using the placeholders in <see cref="because" />.
+        /// </param>
+        /// <remarks>Use this method to match the current <see cref="JToken"/> against an arbitrary subtree, 
+        /// permitting it to contain any additional properties or elements. This way we can test multiple properties on a <see cref="JObject"/> at once,
+        /// or test if a <see cref="JArray"/> contains any items that match a set of properties, assert that a JSON document has a given shape, etc. </remarks>
+        /// <example>
+        /// This example asserts the values of multiple properties of a child object within a JSON document.
+        /// <code>
+        /// var json = JToken.Parse("{ success: true, data: { id: 123, type: 'my-type', name: 'Noone' } }");
+        /// json.Should().ContainSubtree(JToken.Parse("{ success: true, data: { type: 'my-type', name: 'Noone' } }"));
+        /// </code>
+        /// </example>
+        /// <example>This example asserts that a <see cref="JArray"/> within a <see cref="JObject"/> has at least one element with at least the given properties</example>
+        /// <code>
+        /// var json = JToken.Parse("{ id: 1, items: [ { id: 2, type: 'my-type', name: 'Alpha' }, { id: 3, type: 'other-type', name: 'Bravo' } ] }");
+        /// json.Should().ContainSubtree(JToken.Parse("{ items: [ { type: 'my-type', name: 'Alpha' } ] }"));
+        /// </code>
+        public AndConstraint<JTokenAssertions> ContainSubtree(string subtree, string because = "", params object[] becauseArgs)
+        {
+            return ContainSubtree(JToken.Parse(subtree), because, becauseArgs);
+        }
+
         private bool JTokenContainsSubtree(JToken token, JToken subtree)
         {
             switch (subtree.Type)
