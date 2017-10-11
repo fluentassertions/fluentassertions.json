@@ -61,7 +61,6 @@ namespace FluentAssertions.Json
         public static ObjectDiffPatchResult GenerateDiff<T>(T original, T updated) where T : class
         {
             // ensure the serializer will not ignore null values
-            var writer = GetJsonSerializer();
             // parse our objects
             JObject originalJson, updatedJson;
             if (typeof(JObject).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
@@ -71,6 +70,8 @@ namespace FluentAssertions.Json
             }
             else
             {
+                var writer = GetJsonSerializer();
+
                 originalJson = original != null ? JObject.FromObject(original, writer) : null;
                 updatedJson = updated != null ? JObject.FromObject(updated, writer) : null;
             }
