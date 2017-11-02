@@ -37,16 +37,8 @@ namespace FluentAssertions.Json
         protected override string Identifier => nameof(JToken);
 
         /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> equals the <paramref name="expected" /> element.
-        /// </summary>
-        /// <param name="expected">The expected element</param>
-        public AndConstraint<JTokenAssertions> Be(JToken expected)
-        {
-            return Be(expected, string.Empty);
-        }
-
-        /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> equals the <paramref name="expected" /> element.
+        ///     Asserts that the current <see cref="JToken" /> equals the <paramref name="expected" /> element,
+        ///     using an equivalent of <see cref="JToken.DeepEquals(JToken, JToken)" />.
         /// </summary>
         /// <param name="expected">The expected element</param>
         /// <param name="because">
@@ -56,12 +48,20 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
-        public AndConstraint<JTokenAssertions> Be(JToken expected, string because, params object[] becauseArgs)
+        public AndConstraint<JTokenAssertions> Be(JToken expected, string because = "",
+            params object[] becauseArgs)
         {
+            Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected);
+            JTokenFormatter formatter = new JTokenFormatter();
+
+            var message = $"Expected JSON document {formatter.ToString(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
+                          $" to be {formatter.ToString(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
+                          $"{{reason}}, but {difference}.";
+            
             Execute.Assertion
-                .ForCondition(JToken.DeepEquals(Subject, expected))
+                .ForCondition(difference == null)
                 .BecauseOf(because, becauseArgs)
-                .FailWith("Expected JSON document to be {0}{reason}, but found {1}.", expected, Subject);
+                .FailWith(message);
 
             return new AndConstraint<JTokenAssertions>(this);
         }
@@ -95,86 +95,6 @@ namespace FluentAssertions.Json
                               !JToken.DeepEquals(Subject, unexpected))
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected JSON document not to be {0}{reason}.", unexpected);
-
-            return new AndConstraint<JTokenAssertions>(this);
-        }
-
-        /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> is equivalent to the <paramref name="expected" /> element,
-        ///     using its <see cref="JToken.DeepEquals(JToken, JToken)" /> implementation.
-        /// </summary>
-        /// <param name="expected">The expected element</param>
-        /// <remarks>
-        /// Json tokens are compared by inspecting all properties. They are considered equal
-        /// when all property names and values match (independent of their order).
-        /// When not equal, the first mismatching property or value is included in the assertion failure message.
-        /// </remarks>
-        public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected)
-        {
-            return BeEquivalentTo(expected, string.Empty);
-        }
-
-        /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> is equivalent to the <paramref name="expected" /> element,
-        ///     using its <see cref="JToken.DeepEquals(JToken, JToken)" /> implementation.
-        /// </summary>
-        /// <param name="expected">The expected element</param>
-        /// <param name="because">
-        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
-        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
-        /// </param>
-        /// <param name="becauseArgs">
-        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
-        /// </param>
-        public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, string because,
-            params object[] becauseArgs)
-        {
-            ObjectDiffPatchResult diff = ObjectDiffPatch.GenerateDiff(Subject, expected);
-            JToken firstDifferingToken = diff.NewValues?.First ?? diff.OldValues?.First;
-          
-                
-            var message = $"Expected JSON document {Format(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
-                          $" to be equivalent to {Format(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
-                          $"{{reason}}, but differs at {firstDifferingToken?.ToString().Replace("{", "{{").Replace("}", "}}")}.";
-            
-            Execute.Assertion
-                .ForCondition(diff.AreEqual)
-                .BecauseOf(because, becauseArgs)
-                .FailWith(message);
-
-            return new AndConstraint<JTokenAssertions>(this);
-        }
-
-        /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> is not equivalent to the <paramref name="unexpected" /> element,
-        ///     using its <see cref="JToken.DeepEquals(JToken, JToken)" /> implementation.
-        /// </summary>
-        /// <param name="unexpected">The unexpected element</param>
-        public AndConstraint<JTokenAssertions> NotBeEquivalentTo(JToken unexpected)
-        {
-            return NotBeEquivalentTo(unexpected, string.Empty);
-        }
-
-        /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> is not equivalent to the <paramref name="unexpected" /> element,
-        ///     using its <see cref="JToken.DeepEquals(JToken, JToken)" /> implementation.
-        /// </summary>
-        /// <param name="unexpected">The unexpected element</param>
-        /// <param name="because">
-        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
-        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
-        /// </param>
-        /// <param name="becauseArgs">
-        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
-        /// </param>
-        public AndConstraint<JTokenAssertions> NotBeEquivalentTo(JToken unexpected, string because,
-            params object[] becauseArgs)
-        {
-            Execute.Assertion
-                .ForCondition(!JToken.DeepEquals(Subject, unexpected))
-                .BecauseOf(because, becauseArgs)
-                .FailWith("Did not expect JSON element {0} to be equivalent to {1}{reason}.",
-                    Subject, unexpected);
 
             return new AndConstraint<JTokenAssertions>(this);
         }
