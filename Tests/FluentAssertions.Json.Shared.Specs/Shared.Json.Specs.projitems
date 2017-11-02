@@ -12,7 +12,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)JsonAssertionExtensionsSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JTokenAssertionsSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JTokenFormatterSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ObjectDiffPatchSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ObjectDiffPatchTest.cs" />
   </ItemGroup>
 </Project>
