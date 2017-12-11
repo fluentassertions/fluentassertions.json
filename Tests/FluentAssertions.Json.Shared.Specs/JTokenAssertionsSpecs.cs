@@ -150,15 +150,15 @@ namespace FluentAssertions.Json
                 var expected = (expectedJson != null) ? JToken.Parse(expectedJson) : null;
 
                 var expectedMessage =
-                    $"Expected JSON document {_formatter.ToString(actual, true)} " +
-                    $"to be equivalent to {_formatter.ToString(expected, true)}, " +
+                    $"Expected JSON document {Format(actual, true)} " +
+                    $"to be equivalent to {Format(expected, true)}, " +
                     "but " + expectedDifference + ".";
 
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
                 actual.Should().Invoking(x => x.BeEquivalentTo(expected))
-                    .ShouldThrow<XunitException>()
+                    .Should().Throw<XunitException>()
                     .WithMessage(expectedMessage);
             }
         }
@@ -189,15 +189,15 @@ namespace FluentAssertions.Json
                 var b = testCase.Item2;
                 
                 var expectedMessage =
-                    $"Expected JSON document {_formatter.ToString(a, true)} " +
-                    $"to be equivalent to {_formatter.ToString(b, true)}, " +
+                    $"Expected JSON document {Format(a, true)} " +
+                    $"to be equivalent to {Format(b, true)}, " +
                     "but " + testCase.Item3 + ".";
 
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
                 a.Should().Invoking(x => x.BeEquivalentTo(b))
-                    .ShouldThrow<XunitException>()
+                    .Should().Throw<XunitException>()
                     .WithMessage(expectedMessage);
             }
         }
@@ -283,6 +283,39 @@ namespace FluentAssertions.Json
         }
 
         [Fact]
+        public void When_checking_whether_a_JToken_is_equivalent_to_the_string_representation_of_that_token_it_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            string jsonString = @"
+                {
+                    friends:
+                    [{
+                            id: 123,
+                            name: ""John Doe""
+                        }, {
+                            id: 456,
+                            name: ""Jane Doe"",
+                            kids:
+                            [
+                                ""Jimmy"",
+                                ""James""
+                            ]
+                        }
+                    ]
+                }
+                ";
+            
+            var actualJSON = JToken.Parse(jsonString);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            actualJSON.Should().BeEquivalentTo(jsonString);
+        }
+        
+        [Fact]
         public void When_specifying_a_reason_why_object_should_be_equivalent_it_should_use_that_in_the_error_message()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -292,8 +325,8 @@ namespace FluentAssertions.Json
             var expected = JToken.Parse("{ child: { expected: 'bar' } }");
 
             var expectedMessage =
-                $"Expected JSON document {_formatter.ToString(subject, true)} " +
-                $"to be equivalent to {_formatter.ToString(expected, true)} " +
+                $"Expected JSON document {Format(subject, true)} " +
+                $"to be equivalent to {Format(expected, true)} " +
                 "because we want to test the failure message, " +
                 "but it misses property $.child.expected.";
 
@@ -301,7 +334,7 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject.Should().Invoking(x => x.BeEquivalentTo(expected, "we want to test the failure {0}", "message"))
-                .ShouldThrow<XunitException>()
+                .Should().Throw<XunitException>()
                 .WithMessage(expectedMessage);
         }
 
@@ -333,10 +366,31 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             a.Invoking(x => x.Should().NotBeEquivalentTo(b))
-                .ShouldThrow<XunitException>()
-                .WithMessage($"Expected JSON document not to be equivalent to {_formatter.ToString(b)}.");
+                .Should().Throw<XunitException>()
+                .WithMessage($"Expected JSON document not to be equivalent to {Format(b)}.");
         }
 
+        [Fact]
+        public void When_checking_whether_a_JToken_is_not_equivalent_to_the_string_representation_of_that_token_it_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            string jsonString = "{ \"id\": 1 }";
+            var actualJson = JToken.Parse(jsonString);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () => actualJson.Should().NotBeEquivalentTo(jsonString);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.Should().Throw<XunitException>()
+                .WithMessage("Expected JSON document not to be equivalent*");
+        }
+        
         #endregion (Not)BeEquivalentTo
 
         #region (Not)HaveValue

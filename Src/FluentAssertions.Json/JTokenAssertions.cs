@@ -37,6 +37,25 @@ namespace FluentAssertions.Json
         protected override string Identifier => nameof(JToken);
 
         /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> is equivalent to the parsed <paramref name="expected" /> JSON,
+        ///     using an equivalent of <see cref="JToken.DeepEquals(JToken, JToken)" />.
+        /// </summary>
+        /// <param name="expected">The string representation of the expected element</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> BeEquivalentTo(string expected, string because = "",
+            params object[] becauseArgs)
+        {
+            JToken parsedExpected = JToken.Parse(expected);
+            return BeEquivalentTo(parsedExpected, because, becauseArgs);
+        }
+
+        /// <summary>
         ///     Asserts that the current <see cref="JToken" /> is equivalent to the <paramref name="expected" /> element,
         ///     using an equivalent of <see cref="JToken.DeepEquals(JToken, JToken)" />.
         /// </summary>
@@ -54,8 +73,8 @@ namespace FluentAssertions.Json
             Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected);
             JTokenFormatter formatter = new JTokenFormatter();
 
-            var message = $"Expected JSON document {formatter.ToString(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
-                          $" to be equivalent to {formatter.ToString(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
+            var message = $"Expected JSON document {Format(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
+                          $" to be equivalent to {Format(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
                           $"{{reason}}, but {difference}.";
             
             Execute.Assertion
@@ -64,6 +83,24 @@ namespace FluentAssertions.Json
                 .FailWith(message);
 
             return new AndConstraint<JTokenAssertions>(this);
+        }
+
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> is not equivalent to the parsed <paramref name="unexpected" /> JSON,
+        ///     using an equivalent of <see cref="JToken.DeepEquals(JToken, JToken)" />.
+        /// </summary>
+        /// <param name="unexpected">The string representation of the unexpected element</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> NotBeEquivalentTo(string unexpected, string because = "", params object[] becauseArgs)
+        {
+            JToken parsedExpected = JToken.Parse(unexpected);
+            return NotBeEquivalentTo(parsedExpected, because, becauseArgs);
         }
 
         /// <summary>
