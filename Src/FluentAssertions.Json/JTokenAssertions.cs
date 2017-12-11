@@ -37,7 +37,7 @@ namespace FluentAssertions.Json
         protected override string Context => nameof(JToken);
 
         /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> equals the <paramref name="expected" /> element,
+        ///     Asserts that the current <see cref="JToken" /> is equivalent to the <paramref name="expected" /> element,
         ///     using an equivalent of <see cref="JToken.DeepEquals(JToken, JToken)" />.
         /// </summary>
         /// <param name="expected">The expected element</param>
@@ -48,14 +48,14 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
-        public AndConstraint<JTokenAssertions> Be(JToken expected, string because = "",
+        public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, string because = "",
             params object[] becauseArgs)
         {
             Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected);
             JTokenFormatter formatter = new JTokenFormatter();
 
             var message = $"Expected JSON document {formatter.ToString(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
-                          $" to be {formatter.ToString(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
+                          $" to be equivalent to {formatter.ToString(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
                           $"{{reason}}, but {difference}.";
             
             Execute.Assertion
@@ -67,18 +67,8 @@ namespace FluentAssertions.Json
         }
 
         /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> does not equal the <paramref name="unexpected" /> element,
-        ///     using its <see cref="object.Equals(object)" /> implementation.
-        /// </summary>
-        /// <param name="unexpected">The unexpected element</param>
-        public AndConstraint<JTokenAssertions> NotBe(JToken unexpected)
-        {
-            return NotBe(unexpected, string.Empty);
-        }
-
-        /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> does not equal the <paramref name="unexpected" /> element,
-        ///     using its <see cref="object.Equals(object)" /> implementation.
+        ///     Asserts that the current <see cref="JToken" /> is not equivalent to the <paramref name="unexpected" /> element,
+        ///     using an equivalent of <see cref="JToken.DeepEquals(JToken, JToken)" />.
         /// </summary>
         /// <param name="unexpected">The unexpected element</param>
         /// <param name="because">
@@ -88,13 +78,13 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
-        public AndConstraint<JTokenAssertions> NotBe(JToken unexpected, string because, params object[] becauseArgs)
+        public AndConstraint<JTokenAssertions> NotBeEquivalentTo(JToken unexpected, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion
                 .ForCondition((ReferenceEquals(Subject, null) && !ReferenceEquals(unexpected, null)) ||
                               !JToken.DeepEquals(Subject, unexpected))
                 .BecauseOf(because, becauseArgs)
-                .FailWith("Expected JSON document not to be {0}{reason}.", unexpected);
+                .FailWith("Expected JSON document not to be equivalent to {0}{reason}.", unexpected);
 
             return new AndConstraint<JTokenAssertions>(this);
         }

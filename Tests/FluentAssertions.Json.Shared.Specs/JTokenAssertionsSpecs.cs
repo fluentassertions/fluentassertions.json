@@ -12,10 +12,10 @@ namespace FluentAssertions.Json
 
         private static readonly JTokenFormatter _formatter = new JTokenFormatter();
 
-        #region (Not)Be
+        #region (Not)BeEquivalentTo
 
         [Fact]
-        public void When_both_objects_are_null_Be_should_succeed()
+        public void When_both_objects_are_null_BeEquivalentTo_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -26,11 +26,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            actual.Should().Be(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public void When_both_objects_are_the_same_or_equal_Be_should_succeed()
+        public void When_both_objects_are_the_same_or_equal_BeEquivalentTo_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -60,13 +60,13 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            a.Should().Be(a);
-            b.Should().Be(b);
-            a.Should().Be(b);
+            a.Should().BeEquivalentTo(a);
+            b.Should().BeEquivalentTo(b);
+            a.Should().BeEquivalentTo(b);
         }
 
         [Fact]
-        public void When_objects_differ_Be_should_fail()
+        public void When_objects_differ_BeEquivalentTo_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -149,20 +149,21 @@ namespace FluentAssertions.Json
                 var expected = (expectedJson != null) ? JToken.Parse(expectedJson) : null;
 
                 var expectedMessage =
-                    $"Expected JSON document {_formatter.ToString(actual, true)} to be {_formatter.ToString(expected, true)}, " +
+                    $"Expected JSON document {_formatter.ToString(actual, true)} " +
+                    $"to be equivalent to {_formatter.ToString(expected, true)}, " +
                     "but " + expectedDifference + ".";
 
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
-                actual.Should().Invoking(x => x.Be(expected))
+                actual.Should().Invoking(x => x.BeEquivalentTo(expected))
                     .ShouldThrow<XunitException>()
                     .WithMessage(expectedMessage);
             }
         }
 
         [Fact]
-        public void When_properties_differ_Be_should_fail()
+        public void When_properties_differ_BeEquivalentTo_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -187,20 +188,21 @@ namespace FluentAssertions.Json
                 var b = testCase.Item2;
                 
                 var expectedMessage =
-                    $"Expected JSON document {_formatter.ToString(a, true)} to be {_formatter.ToString(b, true)}, " +
+                    $"Expected JSON document {_formatter.ToString(a, true)} " +
+                    $"to be equivalent to {_formatter.ToString(b, true)}, " +
                     "but " + testCase.Item3 + ".";
 
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
-                a.Should().Invoking(x => x.Be(b))
+                a.Should().Invoking(x => x.BeEquivalentTo(b))
                     .ShouldThrow<XunitException>()
                     .WithMessage(expectedMessage);
             }
         }
 
         [Fact]
-        public void When_both_properties_are_null_Be_should_succeed()
+        public void When_both_properties_are_null_BeEquivalentTo_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -211,11 +213,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            actual.Should().Be(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public void When_arrays_are_equal_Be_should_succeed()
+        public void When_arrays_are_equal_BeEquivalentTo_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -243,12 +245,12 @@ namespace FluentAssertions.Json
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
-                actual.Should().Be(expected);
+                actual.Should().BeEquivalentTo(expected);
             }
         }
 
         [Fact]
-        public void When_only_the_order_of_properties_differ_Be_should_succeed()
+        public void When_only_the_order_of_properties_differ_BeEquivalentTo_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -275,12 +277,12 @@ namespace FluentAssertions.Json
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
-                a.Should().Be(b);
+                a.Should().BeEquivalentTo(b);
             }
         }
 
         [Fact]
-        public void When_specifying_a_reason_why_object_should_be_equal_it_should_use_that_in_the_error_message()
+        public void When_specifying_a_reason_why_object_should_be_equivalent_it_should_use_that_in_the_error_message()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -289,20 +291,21 @@ namespace FluentAssertions.Json
             var expected = JToken.Parse("{ child: { expected: 'bar' } }");
 
             var expectedMessage =
-                $"Expected JSON document {_formatter.ToString(subject, true)} to be {_formatter.ToString(expected, true)} " +
+                $"Expected JSON document {_formatter.ToString(subject, true)} " +
+                $"to be equivalent to {_formatter.ToString(expected, true)} " +
                 "because we want to test the failure message, " +
                 "but it misses property $.child.expected.";
 
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            subject.Should().Invoking(x => x.Be(expected, "we want to test the failure {0}", "message"))
+            subject.Should().Invoking(x => x.BeEquivalentTo(expected, "we want to test the failure {0}", "message"))
                 .ShouldThrow<XunitException>()
                 .WithMessage(expectedMessage);
         }
 
         [Fact]
-        public void When_objects_differ_NotBe_should_succeed()
+        public void When_objects_differ_NotBeEquivalentTo_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -313,11 +316,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            actual.Should().NotBe(expected);
+            actual.Should().NotBeEquivalentTo(expected);
         }
 
         [Fact]
-        public void When_objects_are_equal_NotBe_should_fail()
+        public void When_objects_are_equal_NotBeEquivalentTo_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -328,12 +331,12 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            a.Invoking(x => x.Should().NotBe(b))
+            a.Invoking(x => x.Should().NotBeEquivalentTo(b))
                 .ShouldThrow<XunitException>()
-                .WithMessage($"Expected JSON document not to be {_formatter.ToString(b)}.");
+                .WithMessage($"Expected JSON document not to be equivalent to {_formatter.ToString(b)}.");
         }
 
-        #endregion (Not)Be
+        #endregion (Not)BeEquivalentTo
 
         #region (Not)HaveValue
 
@@ -500,7 +503,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            element.Should().Be(new JProperty("id", 42));
+            element.Should().BeEquivalentTo(new JProperty("id", 42));
         }
 
         [Fact]
@@ -600,7 +603,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            element.Should().Be(JToken.Parse("{ id: 42 }"));
+            element.Should().BeEquivalentTo(JToken.Parse("{ id: 42 }"));
         }
 
         [Fact]
@@ -684,7 +687,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            and.Be(subject);
+            and.BeEquivalentTo(subject);
         }
 
         [Fact]
