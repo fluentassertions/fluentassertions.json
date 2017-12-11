@@ -282,6 +282,39 @@ namespace FluentAssertions.Json
         }
 
         [Fact]
+        public void When_checking_whether_a_JToken_is_equivalent_to_the_string_representation_of_that_token_it_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            string jsonString = @"
+                {
+                    friends:
+                    [{
+                            id: 123,
+                            name: ""John Doe""
+                        }, {
+                            id: 456,
+                            name: ""Jane Doe"",
+                            kids:
+                            [
+                                ""Jimmy"",
+                                ""James""
+                            ]
+                        }
+                    ]
+                }
+                ";
+            
+            var actualJSON = JToken.Parse(jsonString);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            actualJSON.Should().BeEquivalentTo(jsonString);
+        }
+        
+        [Fact]
         public void When_specifying_a_reason_why_object_should_be_equivalent_it_should_use_that_in_the_error_message()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -336,6 +369,27 @@ namespace FluentAssertions.Json
                 .WithMessage($"Expected JSON document not to be equivalent to {_formatter.ToString(b)}.");
         }
 
+        [Fact]
+        public void When_checking_whether_a_JToken_is_not_equivalent_to_the_string_representation_of_that_token_it_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            string jsonString = "{ \"id\": 1 }";
+            var actualJson = JToken.Parse(jsonString);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action action = () => actualJson.Should().NotBeEquivalentTo(jsonString);
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            action.ShouldThrow<XunitException>()
+                .WithMessage("Expected JSON document not to be equivalent*");
+        }
+        
         #endregion (Not)BeEquivalentTo
 
         #region (Not)HaveValue
