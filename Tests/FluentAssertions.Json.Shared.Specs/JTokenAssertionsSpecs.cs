@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FluentAssertions.Formatting;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Sdk;
@@ -9,9 +10,6 @@ namespace FluentAssertions.Json
     // ReSharper disable InconsistentNaming
     public class JTokenAssertionsSpecs
     {
-
-        private static readonly JTokenFormatter _formatter = new JTokenFormatter();
-
         #region (Not)Be
 
         [Fact]
@@ -58,13 +56,13 @@ namespace FluentAssertions.Json
                 var b = JToken.Parse(expectedJson);
 
                 var expectedMessage =
-                    $"Expected JSON document to be {_formatter.ToString(b)}, but found {_formatter.ToString(a)}.";
+                    $"Expected JSON document to be {Format(b)}, but found {Format(a)}.";
 
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
                 a.Should().Invoking(x => x.Be(b))
-                    .ShouldThrow<XunitException>()
+                    .Should().Throw<XunitException>()
                     .WithMessage(expectedMessage);
             }
         }
@@ -99,8 +97,8 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             a.Invoking(x => x.Should().NotBe(b))
-                .ShouldThrow<XunitException>()
-                .WithMessage($"Expected JSON document not to be {_formatter.ToString(b)}.");
+                .Should().Throw<XunitException>()
+                .WithMessage($"Expected JSON document not to be {Format(b)}.");
         }
 
         #endregion (Not)Be
@@ -167,7 +165,7 @@ namespace FluentAssertions.Json
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
                 a.Should().Invoking(x => x.BeEquivalentTo(b))
-                    .ShouldThrow<XunitException>()
+                    .Should().Throw<XunitException>()
                     .WithMessage(expectedMessage);
             }
         }
@@ -214,7 +212,7 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject.Should().Invoking(x => x.BeEquivalentTo(expected, "we want to test the failure {0}", "message"))
-                .ShouldThrow<XunitException>()
+                .Should().Throw<XunitException>()
                 .WithMessage("Expected*foo*equivalent*because*failure message*but*bar*");
         }
 
@@ -230,8 +228,8 @@ namespace FluentAssertions.Json
                 because = " because " + string.Format(reason, reasonArgs);
             }
 
-            var expectedMessage = $"Expected JSON document {_formatter.ToString(actual, true)}" +
-                                  $" to be equivalent to {_formatter.ToString(expected, true)}" +
+            var expectedMessage = $"Expected JSON document {Format(actual, true)}" +
+                                  $" to be equivalent to {Format(expected, true)}" +
                                   $"{because}, but differs at {key}.";
 
             return expectedMessage;
@@ -267,7 +265,7 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject["id"].Should().Invoking(x => x.HaveValue("43", "because foo"))
-                .ShouldThrow<XunitException>()
+                .Should().Throw<XunitException>()
                 .WithMessage("Expected JSON property \"id\" to have value \"43\" because foo, but found \"42\".");
         }
 
@@ -297,7 +295,7 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject["id"].Should().Invoking(x => x.NotHaveValue("42", "because foo"))
-                .ShouldThrow<XunitException>()
+                .Should().Throw<XunitException>()
                 .WithMessage("Did not expect JSON property \"id\" to have value \"42\" because foo.");
         }
 
@@ -331,8 +329,8 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject.Should().Invoking(x => x.HaveElement("name", "because foo"))
-                .ShouldThrow<XunitException>()
-                .WithMessage($"Expected JSON document {_formatter.ToString(subject)} to have element \"name\" because foo, but no such element was found.");
+                .Should().Throw<XunitException>()
+                .WithMessage($"Expected JSON document {Format(subject)} to have element \"name\" because foo, but no such element was found.");
         }
 
         [Fact]
@@ -361,8 +359,8 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             subject.Should().Invoking(x => x.NotHaveElement("id", "because foo"))
-                .ShouldThrow<XunitException>()
-                .WithMessage($"Did not expect JSON document {_formatter.ToString(subject)} to have element \"id\" because foo.");
+                .Should().Throw<XunitException>()
+                .WithMessage($"Did not expect JSON document {Format(subject)} to have element \"id\" because foo.");
         }
 
         #endregion (Not)HaveElement
@@ -385,7 +383,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldNotThrow();
+            act.Should().NotThrow();
         }
 
         [Fact]
@@ -423,7 +421,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<XunitException>()
+            act.Should().Throw<XunitException>()
                 .WithMessage($"Expected JSON document <null> to contain a single item because null is not allowed, but found <null>.");
         }
 
@@ -443,7 +441,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<XunitException>()
+            act.Should().Throw<XunitException>()
                 .WithMessage($"Expected JSON document * to contain a single item because less is not allowed, but the collection is empty.");
         }
 
@@ -463,9 +461,9 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            string formattedSubject = _formatter.ToString(subject);
+            string formattedSubject = Format(subject);
 
-            act.ShouldThrow<XunitException>()
+            act.Should().Throw<XunitException>()
                 .WithMessage($"Expected JSON document*id*42*admin*true*to contain a single item because more is not allowed, but found*");
         }
 
@@ -485,7 +483,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldNotThrow();
+            act.Should().NotThrow();
         }
 
         [Fact]
@@ -523,7 +521,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<XunitException>()
+            act.Should().Throw<XunitException>()
                 .WithMessage($"Expected JSON document [] to contain a single item because less is not allowed, but the collection is empty.");
         }
 
@@ -543,9 +541,9 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            string formattedSubject = _formatter.ToString(subject);
+            string formattedSubject = Format(subject);
 
-            act.ShouldThrow<XunitException>()
+            act.Should().Throw<XunitException>()
                 .WithMessage($"Expected JSON document {formattedSubject} to contain a single item because more is not allowed, but found {formattedSubject}.");
         }
 
@@ -569,7 +567,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldNotThrow();
+            act.Should().NotThrow();
         }
 
         [Fact]
@@ -607,7 +605,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<XunitException>()
+            act.Should().Throw<XunitException>()
                 .WithMessage($"Expected JSON document <null> to contain 1 item(s) because null is not allowed, but found <null>.");
         }
 
@@ -627,7 +625,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<XunitException>()
+            act.Should().Throw<XunitException>()
                 .WithMessage($"Expected JSON document * to contain 1 item(s) because numbers matter, but found 0.");
         }
 
@@ -647,7 +645,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldNotThrow();
+            act.Should().NotThrow();
         }
 
         [Fact]
@@ -666,10 +664,19 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.ShouldThrow<XunitException>()
+            act.Should().Throw<XunitException>()
                 .WithMessage($"Expected JSON document * to contain 3 item(s) because the more the better, but found 2.");
         }
 
         #endregion HaveCount
+        
+        public static string Format(JToken value, bool useLineBreaks = false)
+        {
+            return new JTokenFormatter().Format(value, new FormattingContext
+            {
+                UseLineBreaks = useLineBreaks
+            }, null);
+        }
+
     }
 }

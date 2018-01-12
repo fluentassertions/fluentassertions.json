@@ -7,10 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Tests\Default.testsettings = Tests\Default.testsettings
 		Src\FluentAssertions.nuspec = Src\FluentAssertions.nuspec
-		.nuget\nuget.config = .nuget\nuget.config
 		README.md = README.md
-		Settings.StyleCop = Settings.StyleCop
-		Src\SolutionInfo.cs = Src\SolutionInfo.cs
 	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Json.Shared.Specs", "Tests\FluentAssertions.Json.Shared.Specs\Json.Shared.Specs.shproj", "{845ED06B-1F6D-4442-BCCC-52483561F447}"
