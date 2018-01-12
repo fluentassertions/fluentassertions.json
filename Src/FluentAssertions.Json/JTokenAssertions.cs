@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using FluentAssertions.Collections;
-using FluentAssertions.Common;
+using FluentAssertions.Json.Common;
 using FluentAssertions.Execution;
 using FluentAssertions.Formatting;
 using FluentAssertions.Primitives;
@@ -34,7 +34,7 @@ namespace FluentAssertions.Json
         /// <summary>
         ///     Returns the type of the subject the assertion applies on.
         /// </summary>
-        protected override string Context => nameof(JToken);
+        protected override string Identifier => nameof(JToken);
 
         /// <summary>
         ///     Asserts that the current <see cref="JToken" /> equals the <paramref name="expected" /> element.
@@ -131,10 +131,10 @@ namespace FluentAssertions.Json
         {
             ObjectDiffPatchResult diff = ObjectDiffPatch.GenerateDiff(Subject, expected);
             JToken firstDifferingToken = diff.NewValues?.First ?? diff.OldValues?.First;
-            JTokenFormatter formatter = new JTokenFormatter();
-
-            var message = $"Expected JSON document {formatter.ToString(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
-                          $" to be equivalent to {formatter.ToString(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
+          
+                
+            var message = $"Expected JSON document {Format(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
+                          $" to be equivalent to {Format(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
                           $"{{reason}}, but differs at {firstDifferingToken?.ToString().Replace("{", "{{").Replace("}", "}}")}.";
             
             Execute.Assertion
@@ -304,7 +304,7 @@ namespace FluentAssertions.Json
         public AndWhichConstraint<JTokenAssertions, JToken> ContainSingleItem(string because = "", params object[] becauseArgs)
         {
             var formatter = new JTokenFormatter();
-            string formattedDocument = formatter.ToString(Subject).Replace("{", "{{").Replace("}", "}}");
+            string formattedDocument = Format(Subject).Replace("{", "{{").Replace("}", "}}");
 
             using (new AssertionScope("JSON document " + formattedDocument))
             {
@@ -327,7 +327,7 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> HaveCount(int expected, string because = "", params object[] becauseArgs)
         {
             var formatter = new JTokenFormatter();
-            string formattedDocument = formatter.ToString(Subject).Replace("{", "{{").Replace("}", "}}");
+            string formattedDocument = Format(Subject).Replace("{", "{{").Replace("}", "}}");
 
             using (new AssertionScope("JSON document " + formattedDocument))
             {
@@ -335,5 +335,14 @@ namespace FluentAssertions.Json
                 return new AndConstraint<JTokenAssertions>(this);
             }
         }
+        
+        public string Format(JToken value, bool useLineBreaks = false)
+        {
+            return new JTokenFormatter().Format(value, new FormattingContext
+            {
+                UseLineBreaks = useLineBreaks
+            }, null);
+        }
+
     }
 }

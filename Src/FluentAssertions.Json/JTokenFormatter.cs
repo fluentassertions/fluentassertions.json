@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using FluentAssertions.Common;
 using FluentAssertions.Formatting;
+using FluentAssertions.Json.Common;
 using Newtonsoft.Json.Linq;
 
 namespace FluentAssertions.Json
@@ -37,11 +37,10 @@ namespace FluentAssertions.Json
         /// <returns>
         /// A <see cref="string" /> that represents this instance.
         /// </returns>
-        public string ToString(object value, bool useLineBreaks = false, IList<object> processedObjects = null,
-            int nestedPropertyLevel = 0)
+        public string Format(object value, FormattingContext context, FormatChild formatChild)
         {
             var jToken = (JToken)value;
-            string result = useLineBreaks ? jToken?.ToString(Newtonsoft.Json.Formatting.Indented) : jToken?.ToString().RemoveNewLines();
+            string result = context.UseLineBreaks ? jToken?.ToString(Newtonsoft.Json.Formatting.Indented) : jToken?.ToString().RemoveNewLines();
             return result ?? "<null>";
         }
     }

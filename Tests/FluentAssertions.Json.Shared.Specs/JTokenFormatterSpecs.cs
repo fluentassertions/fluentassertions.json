@@ -1,4 +1,4 @@
-using FluentAssertions.Common;
+using FluentAssertions.Formatting;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -62,7 +62,7 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            var actual = sut.ToString(json, true);
+            var actual = sut.Format(json, new FormattingContext{UseLineBreaks = true}, (path, value) => "");
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
@@ -83,7 +83,7 @@ namespace FluentAssertions.Json
             // Act
             //-----------------------------------------------------------------------------------------------------------
             // ReSharper disable once RedundantArgumentDefaultValue
-            var actual = sut.ToString(json, false);
+            var actual = sut.Format(json, new FormattingContext{UseLineBreaks = false}, (path, value) => "");
             
             //-----------------------------------------------------------------------------------------------------------
             // Assert

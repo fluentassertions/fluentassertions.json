@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Fluent Assertions extensions for Newtonsoft.Json</description>
     <summary>Fluent Assertions extensions for Newtonsoft.Json</summary>
-    <copyright>Copyright Dennis Doomen 2010-2017</copyright>
+    <copyright>Copyright Dennis Doomen 2010-2018</copyright>
     <releaseNotes>
       See https://github.com/fluentassertions/fluentassertions/releases/
     </releaseNotes>
