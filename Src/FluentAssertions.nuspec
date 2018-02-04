@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>FluentAssertions.Json</id>
-    <version>4.20.1-pre02</version>
+    <version>4.19.0</version>
     <title>FluentAssertions.Json</title>
     <authors>Marcel Körtgen</authors>
     <owners>Dennis Doomen</owners>
