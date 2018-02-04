@@ -2,31 +2,33 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>FluentAssertions.Json</id>
-    <version>4.19.0</version>
+    <version>5.0.0</version>
     <title>FluentAssertions.Json</title>
     <authors>Marcel Körtgen</authors>
     <owners>Dennis Doomen</owners>
-    <licenseUrl>https://github.com/dennisdoomen/FluentAssertions/blob/master/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/fluentassertions/FluentAssertions/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Fluent Assertions extensions for Newtonsoft.Json</description>
     <summary>Fluent Assertions extensions for Newtonsoft.Json</summary>
-    <copyright>Copyright Dennis Doomen 2010-2016</copyright>
+    <copyright>Copyright Dennis Doomen 2010-2018</copyright>
     <releaseNotes>
-      See https://github.com/dennisdoomen/fluentassertions/releases/
+      See https://github.com/fluentassertions/fluentassertions/releases/
     </releaseNotes>
     <projectUrl>http://www.fluentassertions.com</projectUrl>
     <dependencies>
-      <group>
-        <dependency id="FluentAssertions" version="[4.0.0,)" />
-        <dependency id="Newtonsoft.Json" version="[6.0.7,)" />
+      <group targetFramework="net451">
+        <dependency id="FluentAssertions" version="[5.0.0,)" />
+        <dependency id="Newtonsoft.Json" version="[10.0.1,)" />
       </group>
-      <group targetFramework="netstandard1.3">
-        <dependency id="FluentAssertions" version="[4.0.0,)" />
-        <dependency id="Newtonsoft.Json" version="[9.0.1,)" />
+      <group targetFramework="netstandard1.4">
+        <dependency id="NETStandard.Library" version="1.6.1" />
+        <dependency id="FluentAssertions" version="[5.0.0,)" />
+        <dependency id="Newtonsoft.Json" version="[10.0.1,)" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Artifacts\Json\lib\**.*.*" target="lib" exclude="**\Newtonsoft.*;**\FluentAssertions.???;**\FluentAssertions.Core.???;**\Microsoft.VisualStudio.QualityTools.UnitTestFramework.???" />
+    <file src="FluentAssertions.Json\bin\Release\net451\FluentAssertions.Json.*"  target="lib\net451" />
+    <file src="FluentAssertions.Json\bin\Release\netstandard1.4\FluentAssertions.*" exclude="**\*.json" target="lib\netstandard1.4" />
   </files>
 </package>
