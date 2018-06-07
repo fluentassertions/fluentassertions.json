@@ -4,6 +4,20 @@
 * The build status is [![Build status](https://ci.appveyor.com/api/projects/status/ub0dfcmad2cf26tf/branch/master?svg=true)](https://ci.appveyor.com/project/dennisdoomen/fluentassertions-json/branch/master)
 * Join the chat at [![Join the chat at https://gitter.im/dennisdoomen/fluentassertions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dennisdoomen/fluentassertions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+### Available extension methods
+
+- `BeEquivalentTo()`
+- `ContainSingleElement()`
+- `ContainSubtree()`
+- `HaveCount()`
+- `HaveElement()`
+- `HaveValue()`
+- `NotBeEquivalentTo()`
+- `NotHaveElement()`
+- `NotHaveValue()`
+
+See "in-code" description for more information.
+
 ### Usage
 
 Be sure to include `using FluentAssertions.Json;` otherwise false positives may occur.
