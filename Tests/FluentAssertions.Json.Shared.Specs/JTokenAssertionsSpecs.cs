@@ -457,6 +457,70 @@ namespace FluentAssertions.Json
 
         #endregion (Not)HaveValue
 
+        #region (Not)MatchRegex
+
+        [Fact]
+        public void When_jtoken_matches_regex_pattern_MatchRegex_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject["id"].Should().MatchRegex("\\d{2}");
+        }
+
+        [Fact]
+        public void When_jtoken_not_matches_regex_pattern_MatchRegex_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 'not two digits' }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject["id"].Should().Invoking(x => x.MatchRegex("\\d{2}", "because foo"))
+                 .Should().Throw<XunitException>()
+                 .WithMessage("Expected JSON property \"id\" to have regex pattern \"\\d{2}\" because foo, but found \"not two digits\".");
+        }
+
+        [Fact]
+        public void When_jtoken_does_not_match_regex_pattern_NotHaveRegexValue_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 'not two digits' }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject["id"].Should().NotMatchRegex("\\d{2}");
+        }
+
+        [Fact]
+        public void When_jtoken_does_match_regex_pattern_NotHaveRegexValue_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject["id"].Should().Invoking(x => x.NotMatchRegex("\\d{2}", "because foo"))
+                 .Should().Throw<XunitException>()
+                 .WithMessage("Did not expect JSON property \"id\" to have regex pattern \"\\d{2}\" because foo.");
+        }
+
+        #endregion (Not)HaveValue
+
         #region (Not)HaveElement
 
         [Fact]
