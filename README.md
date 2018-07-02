@@ -12,9 +12,11 @@
 - `HaveCount()`
 - `HaveElement()`
 - `HaveValue()`
+- `MatchRegex()`
 - `NotBeEquivalentTo()`
 - `NotHaveElement()`
 - `NotHaveValue()`
+- `NotMatchRegex()`
 
 See "in-code" description for more information.
 
