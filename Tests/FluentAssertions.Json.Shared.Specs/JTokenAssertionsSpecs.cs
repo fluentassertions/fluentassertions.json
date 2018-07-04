@@ -460,7 +460,7 @@ namespace FluentAssertions.Json
         #region (Not)MatchRegex
 
         [Fact]
-        public void When_jtoken_matches_regex_pattern_MatchRegex_should_succeed()
+        public void When_json_matches_regex_pattern_MatchRegex_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -474,7 +474,7 @@ namespace FluentAssertions.Json
         }
 
         [Fact]
-        public void When_jtoken_not_matches_regex_pattern_MatchRegex_should_fail()
+        public void When_json_does_not_match_regex_pattern_MatchRegex_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -486,11 +486,11 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             subject["id"].Should().Invoking(x => x.MatchRegex("\\d{2}", "because foo"))
                  .Should().Throw<XunitException>()
-                 .WithMessage("Expected JSON property \"id\" to have regex pattern \"\\d{2}\" because foo, but found \"not two digits\".");
+                 .WithMessage("Expected JSON property \"id\" to match regex pattern \"\\d{2}\" because foo, but found \"not two digits\".");
         }
 
         [Fact]
-        public void When_jtoken_does_not_match_regex_pattern_NotHaveRegexValue_should_succeed()
+        public void When_json_does_not_match_regex_pattern_NotHaveRegexValue_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -504,7 +504,7 @@ namespace FluentAssertions.Json
         }
 
         [Fact]
-        public void When_jtoken_does_match_regex_pattern_NotHaveRegexValue_should_fail()
+        public void When_json_matches_regex_pattern_NotHaveRegexValue_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -516,10 +516,10 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             subject["id"].Should().Invoking(x => x.NotMatchRegex("\\d{2}", "because foo"))
                  .Should().Throw<XunitException>()
-                 .WithMessage("Did not expect JSON property \"id\" to have regex pattern \"\\d{2}\" because foo.");
+                 .WithMessage("Did not expect JSON property \"id\" to match regex pattern \"\\d{2}\" because foo.");
         }
 
-        #endregion (Not)HaveValue
+        #endregion (Not)MatchRegex
 
         #region (Not)HaveElement
 

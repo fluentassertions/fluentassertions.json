@@ -7,6 +7,7 @@ using FluentAssertions.Formatting;
 using FluentAssertions.Primitives;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using System;
 
 namespace FluentAssertions.Json
 {
@@ -182,7 +183,7 @@ namespace FluentAssertions.Json
         }
 
         /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> match the specified <paramref name="regularExpression" /> regular expression pattern.
+        ///     Asserts that the current <see cref="JToken" /> matches the specified <paramref name="regularExpression" /> regular expression pattern.
         /// </summary>
         /// <param name="regularExpression">The expected regular expression pattern</param>
         public AndConstraint<JTokenAssertions> MatchRegex(string regularExpression)
@@ -191,7 +192,7 @@ namespace FluentAssertions.Json
         }
 
         /// <summary>
-        ///     Asserts that the current <see cref="JToken" /> match the specified <paramref name="regularExpression" /> regular expression pattern.
+        ///     Asserts that the current <see cref="JToken" /> matches the specified <paramref name="regularExpression" /> regular expression pattern.
         /// </summary>
         /// <param name="regularExpression">The expected regular expression pattern</param>
         /// <param name="because">
@@ -203,10 +204,13 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> MatchRegex(string regularExpression, string because, params object[] becauseArgs)
         {
+            if (regularExpression == null)
+                throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
+
             Execute.Assertion
-                .ForCondition(Regex.IsMatch(Subject.Value<string>(), regularExpression))
+                .ForCondition(Regex.IsMatch(Subject.Value<string>(), regularExpression ?? ""))
                 .BecauseOf(because, becauseArgs)
-                .FailWith("Expected JSON property {0} to have regex pattern {1}{reason}, but found {2}.",
+                .FailWith("Expected {context:JSON property} {0} to match regex pattern {1}{reason}, but found {2}.",
                     Subject.Path, regularExpression, Subject.Value<string>());
 
             return new AndConstraint<JTokenAssertions>(this);
@@ -225,10 +229,13 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> NotMatchRegex(string regularExpression, string because = "", params object[] becauseArgs)
         {
+            if (regularExpression == null)
+                throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
+
             Execute.Assertion
                 .ForCondition(!Regex.IsMatch(Subject.Value<string>(), regularExpression))
                  .BecauseOf(because, becauseArgs)
-                 .FailWith("Did not expect JSON property {0} to have regex pattern {1}{reason}.",
+                 .FailWith("Did not expect {context:JSON property} {0} to match regex pattern {1}{reason}.",
                       Subject.Path, regularExpression, Subject.Value<string>());
 
             return new AndConstraint<JTokenAssertions>(this);
