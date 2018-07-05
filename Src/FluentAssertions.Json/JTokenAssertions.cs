@@ -6,6 +6,8 @@ using FluentAssertions.Execution;
 using FluentAssertions.Formatting;
 using FluentAssertions.Primitives;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
+using System;
 
 namespace FluentAssertions.Json
 {
@@ -176,6 +178,67 @@ namespace FluentAssertions.Json
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Did not expect JSON property {0} to have value {1}{reason}.",
                     Subject.Path, unexpected, Subject.Value<string>());
+
+            return new AndConstraint<JTokenAssertions>(this);
+        }
+
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> matches the specified <paramref name="regularExpression" /> regular expression pattern.
+        /// </summary>
+        /// <param name="regularExpression">The expected regular expression pattern</param>
+        public AndConstraint<JTokenAssertions> MatchRegex(string regularExpression)
+        {
+            return MatchRegex(regularExpression, string.Empty);
+        }
+
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> matches the specified <paramref name="regularExpression" /> regular expression pattern.
+        /// </summary>
+        /// <param name="regularExpression">The expected regular expression pattern</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> MatchRegex(string regularExpression, string because, params object[] becauseArgs)
+        {
+            if (regularExpression == null) {
+                throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
+            }
+
+            Execute.Assertion
+                .ForCondition(Regex.IsMatch(Subject.Value<string>(), regularExpression ?? ""))
+                .BecauseOf(because, becauseArgs)
+                .FailWith("Expected {context:JSON property} {0} to match regex pattern {1}{reason}, but found {2}.",
+                    Subject.Path, regularExpression, Subject.Value<string>());
+
+            return new AndConstraint<JTokenAssertions>(this);
+        }
+
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> does not match the specified <paramref name="regularExpression" /> regular expression pattern.
+        /// </summary>
+        /// <param name="regularExpression">The expected regular expression pattern</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> NotMatchRegex(string regularExpression, string because = "", params object[] becauseArgs)
+        {
+            if (regularExpression == null) {
+                throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
+            }
+
+            Execute.Assertion
+                .ForCondition(!Regex.IsMatch(Subject.Value<string>(), regularExpression))
+                 .BecauseOf(because, becauseArgs)
+                 .FailWith("Did not expect {context:JSON property} {0} to match regex pattern {1}{reason}.",
+                      Subject.Path, regularExpression, Subject.Value<string>());
 
             return new AndConstraint<JTokenAssertions>(this);
         }
@@ -397,6 +460,5 @@ namespace FluentAssertions.Json
                 UseLineBreaks = useLineBreaks
             }, null);
         }
-
     }
 }
