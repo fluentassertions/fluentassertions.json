@@ -204,8 +204,9 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> MatchRegex(string regularExpression, string because, params object[] becauseArgs)
         {
-            if (regularExpression == null)
+            if (regularExpression == null) {
                 throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
+            }
 
             Execute.Assertion
                 .ForCondition(Regex.IsMatch(Subject.Value<string>(), regularExpression ?? ""))
@@ -229,8 +230,9 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> NotMatchRegex(string regularExpression, string because = "", params object[] becauseArgs)
         {
-            if (regularExpression == null)
+            if (regularExpression == null) {
                 throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
+            }
 
             Execute.Assertion
                 .ForCondition(!Regex.IsMatch(Subject.Value<string>(), regularExpression))
