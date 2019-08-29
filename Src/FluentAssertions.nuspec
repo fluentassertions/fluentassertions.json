@@ -6,15 +6,15 @@
     <title>FluentAssertions.Json</title>
     <authors>Marcel Körtgen</authors>
     <owners>Dennis Doomen</owners>
-    <licenseUrl>https://github.com/fluentassertions/FluentAssertions/blob/master/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/fluentassertions/fluentassertions.json/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Fluent Assertions extensions for Newtonsoft.Json</description>
     <summary>Fluent Assertions extensions for Newtonsoft.Json</summary>
-    <copyright>Copyright Dennis Doomen 2010-2018</copyright>
+    <copyright>Copyright Dennis Doomen 2010-2019</copyright>
     <releaseNotes>
-      See https://github.com/fluentassertions/fluentassertions/releases/
+      See https://github.com/fluentassertions/fluentassertions.json/releases/
     </releaseNotes>
-    <projectUrl>http://www.fluentassertions.com</projectUrl>
+    <projectUrl>https://www.fluentassertions.com</projectUrl>
     <dependencies>
       <group targetFramework="net451">
         <dependency id="FluentAssertions" version="[5.0.0,)" />
