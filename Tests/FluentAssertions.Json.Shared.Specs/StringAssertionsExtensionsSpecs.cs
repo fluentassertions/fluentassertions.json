@@ -55,17 +55,27 @@ namespace FluentAssertions.Json.Net45.Specs
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             string subject = null;
+            Exception caughtException = null;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action act = () => subject.Should().BeValidJson("null is not allowed");
+            try
+            {
+                subject.Should().BeValidJson("null is not allowed");
+            }
+            catch (Exception ex)
+            {
+                caughtException = ex;
+            }
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.Should().Throw<XunitException>()
-                .WithMessage("Expected subject to be valid JSON because null is not allowed, but parsing failed with \"*\".");
+            caughtException.Should()
+                .BeOfType<XunitException>()
+                .Which.Message.Should()
+                .Match("Expected subject to be valid JSON because null is not allowed, but parsing failed with \"*\".");
         }
 
         [Fact]
@@ -74,18 +84,28 @@ namespace FluentAssertions.Json.Net45.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var subject = "invalid json";
+            string subject = "invalid json";
+            Exception caughtException = null;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action act = () => subject.Should().BeValidJson("we like {0}", "JSON");
+            try
+            {
+                subject.Should().BeValidJson("we like {0}", "JSON");
+            }
+            catch (Exception ex)
+            {
+                caughtException = ex;
+            }
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.Should().Throw<XunitException>()
-                .WithMessage("Expected subject to be valid JSON because we like JSON, but parsing failed with \"*\".");
+            caughtException.Should()
+                .BeOfType<XunitException>()
+                .Which.Message.Should()
+                .Match("Expected subject to be valid JSON because we like JSON, but parsing failed with \"*\".");
         }
 
         #endregion
