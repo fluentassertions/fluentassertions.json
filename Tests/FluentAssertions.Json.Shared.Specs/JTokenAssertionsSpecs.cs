@@ -8,11 +8,9 @@ using Xunit.Sdk;
 namespace FluentAssertions.Json
 {
     // ReSharper disable InconsistentNaming
+    // ReSharper disable ExpressionIsAlwaysNull
     public class JTokenAssertionsSpecs
     {
-
-        private static readonly JTokenFormatter _formatter = new JTokenFormatter();
-
         #region (Not)BeEquivalentTo
 
         [Fact]
@@ -642,7 +640,7 @@ namespace FluentAssertions.Json
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().Throw<XunitException>()
-                .WithMessage($"Expected JSON document <null> to contain a single item because null is not allowed, but found <null>.");
+                .WithMessage("Expected JSON document <null> to contain a single item because null is not allowed, but found <null>.");
         }
 
         [Fact]
@@ -662,7 +660,7 @@ namespace FluentAssertions.Json
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().Throw<XunitException>()
-                .WithMessage($"Expected JSON document * to contain a single item because less is not allowed, but the collection is empty.");
+                .WithMessage("Expected JSON document * to contain a single item because less is not allowed, but the collection is empty.");
         }
 
         [Fact]
@@ -681,10 +679,8 @@ namespace FluentAssertions.Json
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            string formattedSubject = Format(subject);
-
             act.Should().Throw<XunitException>()
-                .WithMessage($"Expected JSON document*id*42*admin*true*to contain a single item because more is not allowed, but found*");
+                .WithMessage("Expected JSON document*id*42*admin*true*to contain a single item because more is not allowed, but found*");
         }
 
         [Fact]
@@ -742,7 +738,7 @@ namespace FluentAssertions.Json
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().Throw<XunitException>()
-                .WithMessage($"Expected JSON document [] to contain a single item because less is not allowed, but the collection is empty.");
+                .WithMessage("Expected JSON document [] to contain a single item because less is not allowed, but the collection is empty.");
         }
 
         [Fact]
@@ -826,7 +822,7 @@ namespace FluentAssertions.Json
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().Throw<XunitException>()
-                .WithMessage($"Expected JSON document <null> to contain 1 item(s) because null is not allowed, but found <null>.");
+                .WithMessage("Expected JSON document <null> to contain 1 item(s) because null is not allowed, but found <null>.");
         }
 
         [Fact]
@@ -846,7 +842,7 @@ namespace FluentAssertions.Json
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().Throw<XunitException>()
-                .WithMessage($"Expected JSON document * to contain 1 item(s) because numbers matter, but found 0.");
+                .WithMessage("Expected JSON document * to contain 1 item(s) because numbers matter, but found 0.");
         }
 
         [Fact]
@@ -885,7 +881,7 @@ namespace FluentAssertions.Json
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().Throw<XunitException>()
-                .WithMessage($"Expected JSON document * to contain 3 item(s) because the more the better, but found 2.");
+                .WithMessage("Expected JSON document * to contain 3 item(s) because the more the better, but found 2.");
         }
 
         #endregion HaveCount
@@ -1026,13 +1022,13 @@ namespace FluentAssertions.Json
         }
 
         #endregion
-        public static string Format(JToken value, bool useLineBreaks = false)
+
+        private static string Format(JToken value, bool useLineBreaks = false)
         {
             return new JTokenFormatter().Format(value, new FormattingContext
             {
                 UseLineBreaks = useLineBreaks
             }, null);
         }
-
     }
 }

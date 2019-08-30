@@ -74,7 +74,6 @@ namespace FluentAssertions.Json
             params object[] becauseArgs)
         {
             Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected);
-            JTokenFormatter formatter = new JTokenFormatter();
 
             var message = $"Expected JSON document {Format(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
                           $" to be equivalent to {Format(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
@@ -209,7 +208,7 @@ namespace FluentAssertions.Json
             }
 
             Execute.Assertion
-                .ForCondition(Regex.IsMatch(Subject.Value<string>(), regularExpression ?? ""))
+                .ForCondition(Regex.IsMatch(Subject.Value<string>(), regularExpression))
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected {context:JSON property} {0} to match regex pattern {1}{reason}, but found {2}.",
                     Subject.Path, regularExpression, Subject.Value<string>());
@@ -314,7 +313,6 @@ namespace FluentAssertions.Json
         /// </param>
         public AndWhichConstraint<JTokenAssertions, JToken> ContainSingleItem(string because = "", params object[] becauseArgs)
         {
-            var formatter = new JTokenFormatter();
             string formattedDocument = Format(Subject).Replace("{", "{{").Replace("}", "}}");
 
             using (new AssertionScope("JSON document " + formattedDocument))
@@ -337,7 +335,6 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> HaveCount(int expected, string because = "", params object[] becauseArgs)
         {
-            var formatter = new JTokenFormatter();
             string formattedDocument = Format(Subject).Replace("{", "{{").Replace("}", "}}");
 
             using (new AssertionScope("JSON document " + formattedDocument))
@@ -452,7 +449,7 @@ namespace FluentAssertions.Json
 
             }
         }
-        
+
         public string Format(JToken value, bool useLineBreaks = false)
         {
             return new JTokenFormatter().Format(value, new FormattingContext
