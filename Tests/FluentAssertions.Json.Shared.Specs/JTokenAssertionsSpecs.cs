@@ -76,67 +76,67 @@ namespace FluentAssertions.Json
                 Tuple.Create(
                     (string)null,
                     "{ id: 2 }",
-                    "it is null")
+                    "is null")
                 ,
                 Tuple.Create(
                     "{ id: 1 }",
                     (string)null,
-                    "it is not null")
+                    "is not null")
                 ,
                 Tuple.Create(
                     "{ items: [] }",
                     "{ items: 2 }",
-                    "the type is different at $.items")
+                    "has a different type at $.items")
                 ,
                 Tuple.Create(
                     "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
                     "{ items: [ \"fork\", \"knife\" ]}",
-                    "the length is different at $.items")
+                    "has a different length at $.items")
                 ,
                 Tuple.Create(
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
                     "{ items: [ \"fork\", \"knife\" ]}",
-                    "the length is different at $.items")
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
+                    "has a different length at $.items")
                 ,
                 Tuple.Create(
                     "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
                     "{ items: [ \"fork\", \"spoon\", \"knife\" ]}",
-                    "the value is different at $.items[1]")
+                    "has a different value at $.items[1]")
                 ,
                 Tuple.Create(
                     "{ tree: { } }",
                     "{ tree: \"oak\" }",
-                    "the type is different at $.tree")
+                    "has a different type at $.tree")
                 ,
                 Tuple.Create(
                     "{ tree: { leaves: 10} }",
                     "{ tree: { branches: 5, leaves: 10 } }",
-                    "it misses property $.tree.branches")
+                    "misses property $.tree.branches")
                 ,
                 Tuple.Create(
                     "{ tree: { branches: 5, leaves: 10 } }",
                     "{ tree: { leaves: 10} }",
-                    "it has extra property $.tree.branches")
+                    "has extra property $.tree.branches")
                 ,
                 Tuple.Create(
                     "{ tree: { leaves: 5 } }",
                     "{ tree: { leaves: 10} }",
-                    "the value is different at $.tree.leaves")
+                    "has a different value at $.tree.leaves")
                 ,
                 Tuple.Create(
                     "{ eyes: \"blue\" }",
                     "{ eyes: [] }",
-                    "the type is different at $.eyes")
+                    "has a different type at $.eyes")
                 ,
                 Tuple.Create(
                     "{ eyes: \"blue\" }",
                     "{ eyes: 2 }",
-                    "the type is different at $.eyes")
+                    "has a different type at $.eyes")
                 ,
                 Tuple.Create(
                     "{ id: 1 }",
                     "{ id: 2 }",
-                    "the value is different at $.id")
+                    "has a different value at $.id")
             };
 
             foreach (var testCase in testCases)
@@ -149,9 +149,11 @@ namespace FluentAssertions.Json
                 var expected = (expectedJson != null) ? JToken.Parse(expectedJson) : null;
 
                 var expectedMessage =
-                    $"Expected JSON document {Format(actual, true)} " +
-                    $"to be equivalent to {Format(expected, true)}, " +
-                    "but " + expectedDifference + ".";
+                    $"JSON document {expectedDifference}." +
+                    $"Expected" +
+                    $"{Format(actual, true)}" +
+                    $"to be equivalent to" +
+                    $"{Format(expected, true)}.";
 
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
@@ -173,29 +175,32 @@ namespace FluentAssertions.Json
                 Tuple.Create<JToken, JToken, string>(
                     new JProperty("eyes", "blue"),
                     new JArray(),
-                    "the type is different at $")
+                    "has a different type at $")
                 ,
                 Tuple.Create<JToken, JToken, string>(
                     new JProperty("eyes", "blue"),
                     new JProperty("hair", "black"),
-                    "the name is different at $")
+                    "has a different name at $")
                 ,
             };
 
             foreach (var testCase in testCases)
             {
-                var a = testCase.Item1;
-                var b = testCase.Item2;
-                
+                var actual = testCase.Item1;
+                var expected = testCase.Item2;
+                var expectedDifference = testCase.Item3;
+
                 var expectedMessage =
-                    $"Expected JSON document {Format(a, true)} " +
-                    $"to be equivalent to {Format(b, true)}, " +
-                    "but " + testCase.Item3 + ".";
+                    $"JSON document {expectedDifference}." +
+                    $"Expected" +
+                    $"{Format(actual, true)}" +
+                    $"to be equivalent to" +
+                    $"{Format(expected, true)}.";
 
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
-                a.Should().Invoking(x => x.BeEquivalentTo(b))
+                actual.Should().Invoking(x => x.BeEquivalentTo(expected))
                     .Should().Throw<XunitException>()
                     .WithMessage(expectedMessage);
             }
@@ -360,10 +365,12 @@ namespace FluentAssertions.Json
             var expected = JToken.Parse("{ child: { expected: 'bar' } }");
 
             var expectedMessage =
-                $"Expected JSON document {Format(subject, true)} " +
-                $"to be equivalent to {Format(expected, true)} " +
-                "because we want to test the failure message, " +
-                "but it misses property $.child.expected.";
+                $"JSON document misses property $.child.expected." +
+                $"Expected" +
+                $"{Format(subject, true)}" +
+                $"to be equivalent to" +
+                $"{Format(expected, true)} " +
+                "because we want to test the failure message.";
 
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert

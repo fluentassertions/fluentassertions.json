@@ -88,9 +88,12 @@ namespace FluentAssertions.Json
         {
             Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected);
 
-            var message = $"Expected JSON document {Format(Subject, true).Replace("{", "{{").Replace("}", "}}")}" +
-                          $" to be equivalent to {Format(expected, true).Replace("{", "{{").Replace("}", "}}")}" +
-                          $"{{reason}}, but {difference}.";
+            var message = $"JSON document {difference}.{Environment.NewLine}" +
+                          $"Expected{Environment.NewLine}" +
+                          $"{Format(Subject, true).Replace("{", "{{").Replace("}", "}}")}{Environment.NewLine}" +
+                          $"to be equivalent to{Environment.NewLine}" +
+                          $"{Format(expected, true).Replace("{", "{{").Replace("}", "}}")}{Environment.NewLine}" +
+                          "{reason}.";
             
             Execute.Assertion
                 .ForCondition(difference == null)

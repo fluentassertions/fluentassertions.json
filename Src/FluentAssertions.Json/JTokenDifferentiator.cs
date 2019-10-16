@@ -185,21 +185,21 @@ namespace FluentAssertions.Json
             switch (Kind)
             {
                 case DifferenceKind.ActualIsNull:
-                    return "it is null";
+                    return "is null";
                 case DifferenceKind.ExpectedIsNull:
-                    return "it is not null";
+                    return "is not null";
                 case DifferenceKind.OtherType:
-                    return $"the type is different at {Path}";
+                    return $"has a different type at {Path}";
                 case DifferenceKind.OtherName:
-                    return $"the name is different at {Path}";
+                    return $"has a different name at {Path}";
                 case DifferenceKind.OtherValue:
-                    return $"the value is different at {Path}";
+                    return $"has a different value at {Path}";
                 case DifferenceKind.DifferentLength:
-                    return $"the length is different at {Path}";
+                    return $"has a different length at {Path}";
                 case DifferenceKind.ActualMissesProperty:
-                    return $"it misses property {Path}";
+                    return $"misses property {Path}";
                 case DifferenceKind.ExpectedMissesProperty:
-                    return $"it has extra property {Path}";
+                    return $"has extra property {Path}";
                 default:
                     throw new ArgumentOutOfRangeException();
             }
