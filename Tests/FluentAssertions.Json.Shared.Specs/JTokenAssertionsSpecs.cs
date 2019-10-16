@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions.Formatting;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Sdk;
@@ -311,6 +312,42 @@ namespace FluentAssertions.Json
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             actualJSON.Should().BeEquivalentTo(jsonString);
+        }
+
+        [Fact]
+        public void When_checking_equivalency_with_an_invalid_expected_string_it_should_provide_a_clear_error_message()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var actualJson = JToken.Parse("{ \"id\": null }");
+            var expectedString = "{ invalid JSON }";
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            actualJson.Should().Invoking(x => x.BeEquivalentTo(expectedString))
+                .Should().Throw<ArgumentException>()
+                .WithMessage($"Unable to parse expected JSON string:{expectedString}*")
+                .WithInnerException<JsonReaderException>();
+        }
+
+        [Fact]
+        public void When_checking_non_equivalency_with_an_invalid_unexpected_string_it_should_provide_a_clear_error_message()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var actualJson = JToken.Parse("{ \"id\": null }");
+            var unexpectedString = "{ invalid JSON }";
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            actualJson.Should().Invoking(x => x.NotBeEquivalentTo(unexpectedString))
+                .Should().Throw<ArgumentException>()
+                .WithMessage($"Unable to parse unexpected JSON string:{unexpectedString}*")
+                .WithInnerException<JsonReaderException>();
         }
         
         [Fact]
@@ -1019,6 +1056,24 @@ namespace FluentAssertions.Json
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().Throw<XunitException>();
+        }
+
+        [Fact]
+        public void When_checking_subtree_with_an_invalid_expected_string_it_should_provide_a_clear_error_message()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var actualJson = JToken.Parse("{ \"id\": null }");
+            var invalidSubtree = "{ invalid JSON }";
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            actualJson.Should().Invoking(x => x.ContainSubtree(invalidSubtree))
+                .Should().Throw<ArgumentException>()
+                .WithMessage($"Unable to parse expected JSON string:{invalidSubtree}*")
+                .WithInnerException<JsonReaderException>();
         }
 
         #endregion

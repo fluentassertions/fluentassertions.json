@@ -54,7 +54,20 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> BeEquivalentTo(string expected, string because = "",
             params object[] becauseArgs)
         {
-            JToken parsedExpected = JToken.Parse(expected);
+            JToken parsedExpected;
+            try
+            {
+                parsedExpected = JToken.Parse(expected);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(
+                    $"Unable to parse expected JSON string:{Environment.NewLine}" +
+                    $"{expected}{Environment.NewLine}" +
+                    "Check inner exception for more details.",
+                    nameof(expected), ex);
+            }
+
             return BeEquivalentTo(parsedExpected, because, becauseArgs);
         }
 
@@ -99,10 +112,24 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
-        public AndConstraint<JTokenAssertions> NotBeEquivalentTo(string unexpected, string because = "", params object[] becauseArgs)
+        public AndConstraint<JTokenAssertions> NotBeEquivalentTo(string unexpected, string because = "",
+            params object[] becauseArgs)
         {
-            JToken parsedExpected = JToken.Parse(unexpected);
-            return NotBeEquivalentTo(parsedExpected, because, becauseArgs);
+            JToken parsedUnexpected;
+            try
+            {
+                parsedUnexpected = JToken.Parse(unexpected);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(
+                    $"Unable to parse unexpected JSON string:{Environment.NewLine}" +
+                    $"{unexpected}{Environment.NewLine}" +
+                    "Check inner exception for more details.",
+                    nameof(unexpected), ex);
+            }
+
+            return NotBeEquivalentTo(parsedUnexpected, because, becauseArgs);
         }
 
         /// <summary>
@@ -408,7 +435,21 @@ namespace FluentAssertions.Json
         /// </code>
         public AndConstraint<JTokenAssertions> ContainSubtree(string subtree, string because = "", params object[] becauseArgs)
         {
-            return ContainSubtree(JToken.Parse(subtree), because, becauseArgs);
+            JToken subtreeToken;
+            try
+            {
+                subtreeToken = JToken.Parse(subtree);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(
+                    $"Unable to parse expected JSON string:{Environment.NewLine}" +
+                    $"{subtree}{Environment.NewLine}" +
+                    "Check inner exception for more details.",
+                    nameof(subtree), ex);
+            }
+
+            return ContainSubtree(subtreeToken, because, becauseArgs);
         }
 
         private bool JTokenContainsSubtree(JToken token, JToken subtree)
