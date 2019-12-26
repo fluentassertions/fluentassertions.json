@@ -432,7 +432,23 @@ namespace FluentAssertions.Json
             action.Should().Throw<XunitException>()
                 .WithMessage("Expected JSON document not to be equivalent*");
         }
-        
+
+        [Fact]
+        public void When_properties_contains_curly_braces_BeEquivalentTo_should_not_fail_with_FormatException()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var actual = JToken.Parse(@"{ ""{a1}"": {b: 1 }}");
+            var expected = JToken.Parse(@"{ ""{a1}"": {b: 2 }}");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            actual.Should().Invoking(x => x.BeEquivalentTo(expected))
+                .Should().Throw<XunitException>();
+        }
+
         #endregion (Not)BeEquivalentTo
 
         #region (Not)HaveValue
