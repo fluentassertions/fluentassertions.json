@@ -88,13 +88,13 @@ namespace FluentAssertions.Json
         {
             Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected);
 
-            var message = $"JSON document {difference}.{Environment.NewLine}" +
+            var message = $"JSON document {difference?.ToString().Escape(true)}.{Environment.NewLine}" +
                           $"Expected{Environment.NewLine}" +
-                          $"{Format(Subject, true).Replace("{", "{{").Replace("}", "}}")}{Environment.NewLine}" +
+                          $"{Format(Subject, true).Escape(true)}{Environment.NewLine}" +
                           $"to be equivalent to{Environment.NewLine}" +
-                          $"{Format(expected, true).Replace("{", "{{").Replace("}", "}}")}{Environment.NewLine}" +
+                          $"{Format(expected, true).Escape(true)}{Environment.NewLine}" +
                           "{reason}.";
-            
+             
             Execute.Assertion
                 .ForCondition(difference == null)
                 .BecauseOf(because, becauseArgs)
