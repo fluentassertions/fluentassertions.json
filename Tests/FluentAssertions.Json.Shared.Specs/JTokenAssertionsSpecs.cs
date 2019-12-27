@@ -442,11 +442,19 @@ namespace FluentAssertions.Json
             var actual = JToken.Parse(@"{ ""{a1}"": {b: 1 }}");
             var expected = JToken.Parse(@"{ ""{a1}"": {b: 2 }}");
 
+            var expectedMessage =
+                "JSON document has a different value at $.{a1}.b." +
+                "Expected" +
+                $"{Format(actual, true)}" +
+                "to be equivalent to" +
+                $"{Format(expected, true)}.";
+
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
             actual.Should().Invoking(x => x.BeEquivalentTo(expected))
-                .Should().Throw<XunitException>();
+                .Should().Throw<XunitException>()
+                .WithMessage(expectedMessage);
         }
 
         #endregion (Not)BeEquivalentTo
