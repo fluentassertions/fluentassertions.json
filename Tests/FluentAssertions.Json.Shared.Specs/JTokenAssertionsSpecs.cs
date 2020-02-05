@@ -150,9 +150,9 @@ namespace FluentAssertions.Json
 
                 var expectedMessage =
                     $"JSON document {expectedDifference}." +
-                    $"Expected" +
+                    $"Actual document" +
                     $"{Format(actual, true)}" +
-                    $"to be equivalent to" +
+                    $"was expected to be equivalent to" +
                     $"{Format(expected, true)}.";
 
                 //-----------------------------------------------------------------------------------------------------------
@@ -192,9 +192,9 @@ namespace FluentAssertions.Json
 
                 var expectedMessage =
                     $"JSON document {expectedDifference}." +
-                    $"Expected" +
+                    $"Actual document" +
                     $"{Format(actual, true)}" +
-                    $"to be equivalent to" +
+                    $"was expected to be equivalent to" +
                     $"{Format(expected, true)}.";
 
                 //-----------------------------------------------------------------------------------------------------------
@@ -366,9 +366,9 @@ namespace FluentAssertions.Json
 
             var expectedMessage =
                 $"JSON document misses property $.child.expected." +
-                $"Expected" +
+                $"Actual document" +
                 $"{Format(subject, true)}" +
-                $"to be equivalent to" +
+                $"was expected to be equivalent to" +
                 $"{Format(expected, true)} " +
                 "because we want to test the failure message.";
 
@@ -444,9 +444,9 @@ namespace FluentAssertions.Json
 
             var expectedMessage =
                 "JSON document has a different value at $.{a1}.b." +
-                "Expected" +
+                "Actual document" +
                 $"{Format(actual, true)}" +
-                "to be equivalent to" +
+                "was expected to be equivalent to" +
                 $"{Format(expected, true)}.";
 
             //-----------------------------------------------------------------------------------------------------------
