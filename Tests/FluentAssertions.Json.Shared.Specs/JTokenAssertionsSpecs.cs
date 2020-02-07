@@ -65,103 +65,114 @@ namespace FluentAssertions.Json
             a.Should().BeEquivalentTo(b);
         }
 
-        [Fact]
-        public void When_objects_differ_BeEquivalentTo_should_fail()
+        public static IEnumerable<object[]> FailingBeEquivalentCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    null,
+                    "{ id: 2 }",
+                    "is null"
+                };
+                yield return new object[]
+                {
+                    "{ id: 1 }",
+                    null,
+                    "is not null"
+                };
+                yield return new object[]
+                {
+                    "{ items: [] }",
+                    "{ items: 2 }",
+                    "has an array instead of an integer at $.items"
+                };
+                yield return new object[]
+                {
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
+                    "{ items: [ \"fork\", \"knife\" ]}",
+                    "has 3 elements instead of 2 at $.items"
+                };
+                yield return new object[]
+                {
+                    "{ items: [ \"fork\", \"knife\" ]}",
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
+                    "has 2 elements instead of 3 at $.items"
+                };
+                yield return new object[]
+                {
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
+                    "{ items: [ \"fork\", \"spoon\", \"knife\" ]}",
+                    "has a different value at $.items[1]"
+                };
+                yield return new object[]
+                {
+                    "{ tree: { } }",
+                    "{ tree: \"oak\" }",
+                    "has an object instead of a string at $.tree"
+                };
+                yield return new object[]
+                {
+                    "{ tree: { leaves: 10} }",
+                    "{ tree: { branches: 5, leaves: 10 } }",
+                    "misses property $.tree.branches"
+                };
+                yield return new object[]
+                {
+                    "{ tree: { branches: 5, leaves: 10 } }",
+                    "{ tree: { leaves: 10} }",
+                    "has extra property $.tree.branches"
+                };
+                yield return new object[]
+                {
+                    "{ tree: { leaves: 5 } }",
+                    "{ tree: { leaves: 10} }",
+                    "has a different value at $.tree.leaves"
+                };
+                yield return new object[]
+                {
+                    "{ eyes: \"blue\" }",
+                    "{ eyes: [] }",
+                    "has a string instead of an array at $.eyes"
+                };
+                yield return new object[]
+                {
+                    "{ eyes: \"blue\" }",
+                    "{ eyes: 2 }",
+                    "has a string instead of an integer at $.eyes"
+                };
+                yield return new object[]
+                {
+                    "{ id: 1 }",
+                    "{ id: 2 }",
+                    "has a different value at $.id"
+                };
+            }
+        }
+
+        [Theory, MemberData(nameof(FailingBeEquivalentCases))]
+        public void When_objects_are_not_equivalent_it_should_throw(string actualJson, string expectedJson,
+            string expectedDifference)
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var testCases = new []
-            {
-                Tuple.Create(
-                    (string)null,
-                    "{ id: 2 }",
-                    "is null")
-                ,
-                Tuple.Create(
-                    "{ id: 1 }",
-                    (string)null,
-                    "is not null")
-                ,
-                Tuple.Create(
-                    "{ items: [] }",
-                    "{ items: 2 }",
-                    "has a different type at $.items")
-                ,
-                Tuple.Create(
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
-                    "{ items: [ \"fork\", \"knife\" ]}",
-                    "has a different length at $.items")
-                ,
-                Tuple.Create(
-                    "{ items: [ \"fork\", \"knife\" ]}",
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
-                    "has a different length at $.items")
-                ,
-                Tuple.Create(
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
-                    "{ items: [ \"fork\", \"spoon\", \"knife\" ]}",
-                    "has a different value at $.items[1]")
-                ,
-                Tuple.Create(
-                    "{ tree: { } }",
-                    "{ tree: \"oak\" }",
-                    "has a different type at $.tree")
-                ,
-                Tuple.Create(
-                    "{ tree: { leaves: 10} }",
-                    "{ tree: { branches: 5, leaves: 10 } }",
-                    "misses property $.tree.branches")
-                ,
-                Tuple.Create(
-                    "{ tree: { branches: 5, leaves: 10 } }",
-                    "{ tree: { leaves: 10} }",
-                    "has extra property $.tree.branches")
-                ,
-                Tuple.Create(
-                    "{ tree: { leaves: 5 } }",
-                    "{ tree: { leaves: 10} }",
-                    "has a different value at $.tree.leaves")
-                ,
-                Tuple.Create(
-                    "{ eyes: \"blue\" }",
-                    "{ eyes: [] }",
-                    "has a different type at $.eyes")
-                ,
-                Tuple.Create(
-                    "{ eyes: \"blue\" }",
-                    "{ eyes: 2 }",
-                    "has a different type at $.eyes")
-                ,
-                Tuple.Create(
-                    "{ id: 1 }",
-                    "{ id: 2 }",
-                    "has a different value at $.id")
-            };
+            var actual = (actualJson != null) ? JToken.Parse(actualJson) : null;
+            var expected = (expectedJson != null) ? JToken.Parse(expectedJson) : null;
 
-            foreach (var testCase in testCases)
-            {
-                string actualJson = testCase.Item1;
-                string expectedJson = testCase.Item2;
-                string expectedDifference = testCase.Item3;
+            var expectedMessage =
+                $"JSON document {expectedDifference}." +
+                $"Actual document" +
+                $"{Format(actual, true)}" +
+                $"was expected to be equivalent to" +
+                $"{Format(expected, true)}.";
 
-                var actual = (actualJson != null) ? JToken.Parse(actualJson) : null;
-                var expected = (expectedJson != null) ? JToken.Parse(expectedJson) : null;
-
-                var expectedMessage =
-                    $"JSON document {expectedDifference}." +
-                    $"Actual document" +
-                    $"{Format(actual, true)}" +
-                    $"was expected to be equivalent to" +
-                    $"{Format(expected, true)}.";
-
-                //-----------------------------------------------------------------------------------------------------------
-                // Act & Assert
-                //-----------------------------------------------------------------------------------------------------------
-                actual.Should().Invoking(x => x.BeEquivalentTo(expected))
-                    .Should().Throw<XunitException>()
-                    .WithMessage(expectedMessage);
-            }
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            actual.Should().Invoking(x => x.BeEquivalentTo(expected))
+                .Should().Throw<XunitException>()
+                .WithMessage(expectedMessage);
         }
 
         [Fact]
@@ -175,7 +186,7 @@ namespace FluentAssertions.Json
                 Tuple.Create<JToken, JToken, string>(
                     new JProperty("eyes", "blue"),
                     new JArray(),
-                    "has a different type at $")
+                    "has a property instead of an array at $")
                 ,
                 Tuple.Create<JToken, JToken, string>(
                     new JProperty("eyes", "blue"),
