@@ -90,9 +90,9 @@ namespace FluentAssertions.Json
 
             var message = $"JSON document {difference?.ToString().Escape(true)}.{Environment.NewLine}" +
                           $"Actual document{Environment.NewLine}" +
-                          $"{Format(Subject, true).Escape(true)}{Environment.NewLine}" +
+                          $"{Format(Subject, true).Replace("{", "{{").Replace("}", "}}")}{Environment.NewLine}" +
                           $"was expected to be equivalent to{Environment.NewLine}" +
-                          $"{Format(expected, true).Escape(true)}{Environment.NewLine}" +
+                          $"{Format(expected, true).Replace("{", "{{").Replace("}", "}}")}{Environment.NewLine}" +
                           "{reason}.";
              
             Execute.Assertion
