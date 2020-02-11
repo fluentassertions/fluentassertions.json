@@ -7,7 +7,7 @@ namespace FluentAssertions.Json
 {
     internal static class JTokenDifferentiator
     {
-        public static Difference FindFirstDifference(JToken actual, JToken expected)
+        public static Difference FindFirstDifference(JToken actual, JToken expected, bool ignoreExtraProperties)
         {
             var path = new JPath();
             
@@ -26,19 +26,19 @@ namespace FluentAssertions.Json
                 return new Difference(DifferenceKind.ExpectedIsNull, path);
             }
             
-            return FindFirstDifference(actual, expected, path);
+            return FindFirstDifference(actual, expected, path, ignoreExtraProperties);
         }
 
-        private static Difference FindFirstDifference(JToken actual, JToken expected, JPath path)
+        private static Difference FindFirstDifference(JToken actual, JToken expected, JPath path, bool ignoreExtraProperties)
         {
             switch (actual)
             {
                 case JArray actualArray:
-                    return FindJArrayDifference(actualArray, expected, path);
-                case JObject actualObbject:
-                    return FindJObjectDifference(actualObbject, expected, path);
+                    return FindJArrayDifference(actualArray, expected, path, ignoreExtraProperties);
+                case JObject actualObject:
+                    return FindJObjectDifference(actualObject, expected, path, ignoreExtraProperties);
                 case JProperty actualProperty:
-                    return FindJPropertyDifference(actualProperty, expected, path);
+                    return FindJPropertyDifference(actualProperty, expected, path, ignoreExtraProperties);
                 case JValue actualValue:
                     return FindValueDifference(actualValue, expected, path);
                 default: 
@@ -46,14 +46,64 @@ namespace FluentAssertions.Json
             }
         }
 
-        private static Difference FindJArrayDifference(JArray actualArray, JToken expected, JPath path)
+        private static Difference FindJArrayDifference(JArray actualArray, JToken expected, JPath path,
+            bool ignoreExtraProperties)
         {
             if (!(expected is JArray expectedArray))
             {
                 return new Difference(DifferenceKind.OtherType, path, Describe(actualArray.Type), Describe(expected.Type));
             }
-            
-            return CompareItems(actualArray, expectedArray, path);
+
+            if (ignoreExtraProperties)
+            {
+                return CompareExpectedItems(actualArray, expectedArray, path);
+            }
+            else
+            {
+                return CompareItems(actualArray, expectedArray, path);
+            }
+        }
+
+        private static Difference CompareExpectedItems(JArray actual, JArray expected, JPath path)
+        {
+            JEnumerable<JToken> actualChildren = actual.Children();
+            JEnumerable<JToken> expectedChildren = expected.Children();
+
+            int matchingIndex = 0;
+            for (int expectedIndex = 0; expectedIndex < expectedChildren.Count(); expectedIndex++)
+            {
+                var expectedChild = expectedChildren.ElementAt(expectedIndex);
+                bool match = false;
+                for (int actualIndex = matchingIndex; actualIndex < actualChildren.Count(); actualIndex++)
+                {
+                    var difference = FindFirstDifference(actualChildren.ElementAt(actualIndex), expectedChild, true);
+
+                    if (difference == null)
+                    {
+                        match = true;
+                        matchingIndex = actualIndex + 1;
+                        break;
+                    }
+                }
+
+                if (!match)
+                {
+                    if (matchingIndex >= actualChildren.Count())
+                    {
+                        if (actual.Children().Any(actualChild => FindFirstDifference(actualChild, expectedChild, true) == null))
+                        {
+                            return new Difference(DifferenceKind.WrongOrder, path.AddIndex(expectedIndex));
+                        }
+
+                        return new Difference(DifferenceKind.ActualMissesElement, path.AddIndex(expectedIndex));
+                    }
+
+                    return FindFirstDifference(actualChildren.ElementAt(matchingIndex), expectedChild,
+                        path.AddIndex(expectedIndex), true);
+                }
+            }
+
+            return null;
         }
 
         private static Difference CompareItems(JArray actual, JArray expected, JPath path)
@@ -69,7 +119,7 @@ namespace FluentAssertions.Json
             for (int i = 0; i < actualChildren.Count(); i++)
             {
                 Difference firstDifference = FindFirstDifference(actualChildren.ElementAt(i), expectedChildren.ElementAt(i), 
-                    path.AddIndex(i));
+                    path.AddIndex(i), false);
 
                 if (firstDifference != null)
                 {
@@ -80,17 +130,18 @@ namespace FluentAssertions.Json
             return null;
         }
 
-        private static Difference FindJObjectDifference(JObject actual, JToken expected, JPath path)
+        private static Difference FindJObjectDifference(JObject actual, JToken expected, JPath path, bool ignoreExtraProperties)
         {
             if (!(expected is JObject expectedObject))
             {
                 return new Difference(DifferenceKind.OtherType, path, Describe(actual.Type), Describe(expected.Type));
             }
 
-            return CompareProperties(actual?.Properties(), expectedObject.Properties(), path);
+            return CompareProperties(actual?.Properties(), expectedObject.Properties(), path, ignoreExtraProperties);
         }
 
-        private static Difference CompareProperties(IEnumerable<JProperty> actual, IEnumerable<JProperty> expected, JPath path)
+        private static Difference CompareProperties(IEnumerable<JProperty> actual, IEnumerable<JProperty> expected, JPath path,
+            bool ignoreExtraProperties)
         {
             var actualDictionary = actual?.ToDictionary(p => p.Name, p => p.Value) ?? new Dictionary<string, JToken>();
             var expectedDictionary = expected?.ToDictionary(p => p.Name, p => p.Value) ?? new Dictionary<string, JToken>();
@@ -105,7 +156,7 @@ namespace FluentAssertions.Json
 
             foreach (KeyValuePair<string, JToken> actualPair in actualDictionary)
             {
-                if (!expectedDictionary.ContainsKey(actualPair.Key))
+                if (!ignoreExtraProperties && !expectedDictionary.ContainsKey(actualPair.Key))
                 {
                     return new Difference(DifferenceKind.ExpectedMissesProperty, path.AddProperty(actualPair.Key));
                 }
@@ -116,7 +167,7 @@ namespace FluentAssertions.Json
                 JToken actualValue = actualDictionary[expectedPair.Key];
 
                 Difference firstDifference = FindFirstDifference(actualValue, expectedPair.Value, 
-                    path.AddProperty(expectedPair.Key));
+                    path.AddProperty(expectedPair.Key), ignoreExtraProperties);
                 
                 if (firstDifference != null)
                 {
@@ -127,7 +178,8 @@ namespace FluentAssertions.Json
             return null;
         }
 
-        private static Difference FindJPropertyDifference(JProperty actualProperty, JToken expected, JPath path)
+        private static Difference FindJPropertyDifference(JProperty actualProperty, JToken expected, JPath path,
+            bool ignoreExtraProperties)
         {
             if (!(expected is JProperty expectedProperty))
             {
@@ -139,7 +191,7 @@ namespace FluentAssertions.Json
                 return new Difference(DifferenceKind.OtherName, path);
             }
             
-            return FindFirstDifference(actualProperty.Value, expectedProperty.Value, path);
+            return FindFirstDifference(actualProperty.Value, expectedProperty.Value, path, ignoreExtraProperties);
         }
 
         private static Difference FindValueDifference(JValue actualValue, JToken expected, JPath path)
@@ -252,6 +304,10 @@ namespace FluentAssertions.Json
                     return $"misses property {Path}";
                 case DifferenceKind.ExpectedMissesProperty:
                     return $"has extra property {Path}";
+                case DifferenceKind.ActualMissesElement:
+                    return $"misses expected element {Path}";
+                case DifferenceKind.WrongOrder:
+                    return $"has expected element {Path} in the wrong order";
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -298,6 +354,8 @@ namespace FluentAssertions.Json
         OtherValue,
         DifferentLength,
         ActualMissesProperty,
-        ExpectedMissesProperty
+        ExpectedMissesProperty,
+        ActualMissesElement,
+        WrongOrder
     }
 }

@@ -89,20 +89,20 @@ namespace FluentAssertions.Json
                 };
                 yield return new object[]
                 {
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
-                    "{ items: [ \"fork\", \"knife\" ]}",
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                    "{ items: [ \"fork\", \"knife\" ] }",
                     "has 3 elements instead of 2 at $.items"
                 };
                 yield return new object[]
                 {
-                    "{ items: [ \"fork\", \"knife\" ]}",
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
+                    "{ items: [ \"fork\", \"knife\" ] }",
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
                     "has 2 elements instead of 3 at $.items"
                 };
                 yield return new object[]
                 {
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ]}",
-                    "{ items: [ \"fork\", \"spoon\", \"knife\" ]}",
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                    "{ items: [ \"fork\", \"spoon\", \"knife\" ] }",
                     "has a different value at $.items[1]"
                 };
                 yield return new object[]
@@ -987,25 +987,6 @@ namespace FluentAssertions.Json
         }
 
         [Fact]
-        public void When_subtree_properties_are_missing_ContainSubtree_should_fail()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            var subject = JToken.Parse("{ foo: 'foo', bar: 'bar' } ");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            Action act = () => subject.Should().ContainSubtree(" { baz: 'baz' } ");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            act.Should().Throw<XunitException>();
-        }
-
-        [Fact]
         public void When_deep_subtree_matches_ContainSubtree_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
@@ -1022,25 +1003,6 @@ namespace FluentAssertions.Json
             // Assert
             //-----------------------------------------------------------------------------------------------------------
             act.Should().NotThrow();
-        }
-
-        [Fact]
-        public void When_deep_subtree_does_not_match_ContainSubtree_should_fail()
-        {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            var subject = JToken.Parse("{ foo: 'foo', bar: 'bar', child: { x: 1, y: 2, grandchild: { tag: 'abrakadabra' }  }} ");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            Action act = () => subject.Should().ContainSubtree(" { child: { grandchild: { tag: 'ooops' } } } ");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            act.Should().Throw<XunitException>();
         }
 
         [Fact]
@@ -1062,42 +1024,134 @@ namespace FluentAssertions.Json
             act.Should().NotThrow();
         }
 
-        [Fact]
-        public void When_array_elements_are_missing_ContainSubtree_should_fail()
+        public static IEnumerable<object[]> FailingContainSubtreeCases
         {
-            //-----------------------------------------------------------------------------------------------------------
-            // Arrange
-            //-----------------------------------------------------------------------------------------------------------
-            var subject = JToken.Parse("{ foo: 'foo', bar: 'bar', items: [ { id: 1 }, { id: 3 }, { id: 5 } ] } ");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Act
-            //-----------------------------------------------------------------------------------------------------------
-            Action act = () => subject.Should().ContainSubtree(" { items: [ { id: 1 }, { id: 2 } ] } ");
-
-            //-----------------------------------------------------------------------------------------------------------
-            // Assert
-            //-----------------------------------------------------------------------------------------------------------
-            act.Should().Throw<XunitException>();
+            get
+            {
+                yield return new object[]
+                {
+                    null,
+                    "{ id: 2 }",
+                    "is null"
+                };
+                yield return new object[]
+                {
+                    "{ id: 1 }",
+                    null,
+                    "is not null"
+                };
+                yield return new object[]
+                {
+                    "{ foo: 'foo', bar: 'bar' }",
+                    "{ baz: 'baz' }",
+                    "misses property $.baz"
+                };
+                yield return new object[]
+                {
+                    "{ items: [] }",
+                    "{ items: 2 }",
+                    "has an array instead of an integer at $.items"
+                };
+                yield return new object[]
+                {
+                    "{ items: [ \"fork\", \"knife\" ] }",
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                    "misses expected element $.items[2]"
+                };
+                yield return new object[]
+                {
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                    "{ items: [ \"fork\", \"spoon\", \"knife\" ] }",
+                    "has expected element $.items[2] in the wrong order"
+                };
+                yield return new object[]
+                {
+                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                    "{ items: [ \"fork\", \"fork\" ] }",
+                    "has a different value at $.items[1]"
+                };
+                yield return new object[]
+                {
+                    "{ tree: { } }",
+                    "{ tree: \"oak\" }",
+                    "has an object instead of a string at $.tree"
+                };
+                yield return new object[]
+                {
+                    "{ tree: { leaves: 10} }",
+                    "{ tree: { branches: 5, leaves: 10 } }",
+                    "misses property $.tree.branches"
+                };
+                yield return new object[]
+                {
+                    "{ tree: { leaves: 5 } }",
+                    "{ tree: { leaves: 10} }",
+                    "has a different value at $.tree.leaves"
+                };
+                yield return new object[]
+                {
+                    "{ eyes: \"blue\" }",
+                    "{ eyes: [] }",
+                    "has a string instead of an array at $.eyes"
+                };
+                yield return new object[]
+                {
+                    "{ eyes: \"blue\" }",
+                    "{ eyes: 2 }",
+                    "has a string instead of an integer at $.eyes"
+                };
+                yield return new object[]
+                {
+                    "{ id: 1 }",
+                    "{ id: 2 }",
+                    "has a different value at $.id"
+                };
+                yield return new object[]
+                {
+                    "{ items: [ { id: 1 }, { id: 3 }, { id: 5 } ] }",
+                    "{ items: [ { id: 1 }, { id: 2 } ] }",
+                    "has a different value at $.items[1].id"
+                };
+                yield return new object[]
+                {
+                    "{ foo: '1' }",
+                    "{ foo: 1 }",
+                    "has a string instead of an integer at $.foo"
+                };
+                yield return new object[]
+                {
+                    "{ foo: 'foo', bar: 'bar', child: { x: 1, y: 2, grandchild: { tag: 'abrakadabra' } } }",
+                    "{ child: { grandchild: { tag: 'ooops' } } }",
+                    "has a different value at $.child.grandchild.tag"
+                };
+            }
         }
 
-        [Fact]
-        public void When_property_types_dont_match_ContainSubtree_should_fail()
+        [Theory, MemberData(nameof(FailingContainSubtreeCases))]
+        public void When_some_JSON_does_not_contain_all_elements_from_a_subtree_it_should_throw(
+            string actualJson, string expectedJson, string expectedDifference)
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var subject = JToken.Parse("{ foo: '1' } ");
+            var actual = (actualJson != null) ? JToken.Parse(actualJson) : null;
+            var expected = (expectedJson != null) ? JToken.Parse(expectedJson) : null;
 
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
-            Action act = () => subject.Should().ContainSubtree(" { foo: 1 } ");
+            Action action = () => actual.Should().ContainSubtree(expected);
 
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
-            act.Should().Throw<XunitException>();
+            action.Should().Throw<XunitException>()
+                .WithMessage(
+                    $"JSON document {expectedDifference}.{Environment.NewLine}" +
+                    $"Actual document{Environment.NewLine}" +
+                    $"{Format(actual, true)}{Environment.NewLine}" +
+                    $"was expected to contain{Environment.NewLine}" +
+                    $"{Format(expected, true)}.{Environment.NewLine}");
         }
 
         [Fact]
