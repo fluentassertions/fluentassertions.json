@@ -50,7 +50,7 @@ namespace FluentAssertions.Json
         {
             if (!(expected is JArray expectedArray))
             {
-                return new Difference(DifferenceKind.OtherType, path);
+                return new Difference(DifferenceKind.OtherType, path, Describe(actualArray.Type), Describe(expected.Type));
             }
             
             return CompareItems(actualArray, expectedArray, path);
@@ -63,7 +63,7 @@ namespace FluentAssertions.Json
 
             if (actualChildren.Count() != expectedChildren.Count())
             {
-                return new Difference(DifferenceKind.DifferentLength, path);
+                return new Difference(DifferenceKind.DifferentLength, path, actualChildren.Count(), expectedChildren.Count());
             }
 
             for (int i = 0; i < actualChildren.Count(); i++)
@@ -84,7 +84,7 @@ namespace FluentAssertions.Json
         {
             if (!(expected is JObject expectedObject))
             {
-                return new Difference(DifferenceKind.OtherType, path);
+                return new Difference(DifferenceKind.OtherType, path, Describe(actual.Type), Describe(expected.Type));
             }
 
             return CompareProperties(actual?.Properties(), expectedObject.Properties(), path);
@@ -131,7 +131,7 @@ namespace FluentAssertions.Json
         {
             if (!(expected is JProperty expectedProperty))
             {
-                return new Difference(DifferenceKind.OtherType, path);
+                return new Difference(DifferenceKind.OtherType, path, Describe(actualProperty.Type), Describe(expected.Type));
             }
 
             if (actualProperty.Name != expectedProperty.Name)
@@ -146,7 +146,7 @@ namespace FluentAssertions.Json
         {
             if (!(expected is JValue expectedValue))
             {
-                return new Difference(DifferenceKind.OtherType, path);
+                return new Difference(DifferenceKind.OtherType, path, Describe(actualValue.Type), Describe(expected.Type));
             }
             
             return CompareValues(actualValue, expectedValue, path);
@@ -156,7 +156,7 @@ namespace FluentAssertions.Json
         {
             if (actual.Type != expected.Type)
             {
-                return new Difference(DifferenceKind.OtherType, path);
+                return new Difference(DifferenceKind.OtherType, path, Describe(actual.Type), Describe(expected.Type));
             }
             
             if (!actual.Equals(expected))
@@ -166,10 +166,61 @@ namespace FluentAssertions.Json
             
             return null;
         }
+
+        private static string Describe(JTokenType jTokenType)
+        {
+            switch (jTokenType)
+            {
+                case JTokenType.None:
+                    return "type none";
+                case JTokenType.Object:
+                    return "an object";
+                case JTokenType.Array:
+                    return "an array";
+                case JTokenType.Constructor:
+                    return "a constructor";
+                case JTokenType.Property:
+                    return "a property";
+                case JTokenType.Comment:
+                    return "a comment";
+                case JTokenType.Integer:
+                    return "an integer";
+                case JTokenType.Float:
+                    return "a float";
+                case JTokenType.String:
+                    return "a string";
+                case JTokenType.Boolean:
+                    return "a boolean";
+                case JTokenType.Null:
+                    return "type null";
+                case JTokenType.Undefined:
+                    return "type undefined";
+                case JTokenType.Date:
+                    return "a date";
+                case JTokenType.Raw:
+                    return "type raw";
+                case JTokenType.Bytes:
+                    return "type bytes";
+                case JTokenType.Guid:
+                    return "a GUID";
+                case JTokenType.Uri:
+                    return "a URI";
+                case JTokenType.TimeSpan:
+                    return "a timespan";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(jTokenType), jTokenType, null);
+            }
+        }
     }
 
     internal class Difference
     {
+        public Difference(DifferenceKind kind, JPath path, object actual, object expected) : this(kind, path)
+        {
+            Actual = actual;
+            Expected = expected;
+        }
+
         public Difference(DifferenceKind kind, JPath path)
         {
             Kind = kind;
@@ -177,8 +228,9 @@ namespace FluentAssertions.Json
         }
 
         private DifferenceKind Kind { get; }
-
         private JPath Path { get; }
+        private object Actual { get; }
+        private object Expected { get; }
 
         public override string ToString()
         {
@@ -189,13 +241,13 @@ namespace FluentAssertions.Json
                 case DifferenceKind.ExpectedIsNull:
                     return "is not null";
                 case DifferenceKind.OtherType:
-                    return $"has a different type at {Path}";
+                    return $"has {Actual} instead of {Expected} at {Path}";
                 case DifferenceKind.OtherName:
                     return $"has a different name at {Path}";
                 case DifferenceKind.OtherValue:
                     return $"has a different value at {Path}";
                 case DifferenceKind.DifferentLength:
-                    return $"has a different length at {Path}";
+                    return $"has {Actual} elements instead of {Expected} at {Path}";
                 case DifferenceKind.ActualMissesProperty:
                     return $"misses property {Path}";
                 case DifferenceKind.ExpectedMissesProperty:

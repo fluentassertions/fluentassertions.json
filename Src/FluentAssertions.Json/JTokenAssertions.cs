@@ -89,9 +89,9 @@ namespace FluentAssertions.Json
             Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected);
 
             var message = $"JSON document {difference?.ToString().Escape(true)}.{Environment.NewLine}" +
-                          $"Expected{Environment.NewLine}" +
+                          $"Actual document{Environment.NewLine}" +
                           $"{Format(Subject, true).Escape(true)}{Environment.NewLine}" +
-                          $"to be equivalent to{Environment.NewLine}" +
+                          $"was expected to be equivalent to{Environment.NewLine}" +
                           $"{Format(expected, true).Escape(true)}{Environment.NewLine}" +
                           "{reason}.";
              
