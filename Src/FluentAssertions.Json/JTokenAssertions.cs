@@ -88,11 +88,11 @@ namespace FluentAssertions.Json
         {
             Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected);
 
-            var message = $"JSON document {difference?.ToString().Escape(true)}.{Environment.NewLine}" +
+            var message = $"JSON document {difference?.ToString().EscapePlaceholders()}.{Environment.NewLine}" +
                           $"Actual document{Environment.NewLine}" +
-                          $"{Format(Subject, true).Replace("{", "{{").Replace("}", "}}")}{Environment.NewLine}" +
+                          $"{Format(Subject, true).EscapePlaceholders()}{Environment.NewLine}" +
                           $"was expected to be equivalent to{Environment.NewLine}" +
-                          $"{Format(expected, true).Replace("{", "{{").Replace("}", "}}")}{Environment.NewLine}" +
+                          $"{Format(expected, true).EscapePlaceholders()}{Environment.NewLine}" +
                           "{reason}.";
              
             Execute.Assertion
@@ -301,7 +301,7 @@ namespace FluentAssertions.Json
             Execute.Assertion
                 .ForCondition(jToken != null)
                 .BecauseOf(because, becauseArgs)
-                .FailWith("Expected JSON document {0} to have element \"" + expected.Escape(true) + "\"{reason}" +
+                .FailWith("Expected JSON document {0} to have element \"" + expected.EscapePlaceholders() + "\"{reason}" +
                           ", but no such element was found.", Subject);
 
             return new AndWhichConstraint<JTokenAssertions, JToken>(this, jToken);
@@ -326,7 +326,7 @@ namespace FluentAssertions.Json
             Execute.Assertion
                 .ForCondition(jToken == null)
                 .BecauseOf(because, becauseArgs)
-                .FailWith("Did not expect JSON document {0} to have element \"" + unexpected.Escape(true) + "\"{reason}.", Subject);
+                .FailWith("Did not expect JSON document {0} to have element \"" + unexpected.EscapePlaceholders() + "\"{reason}.", Subject);
 
             return new AndWhichConstraint<JTokenAssertions, JToken>(this, jToken);
         }
