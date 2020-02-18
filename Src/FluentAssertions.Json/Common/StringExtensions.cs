@@ -43,18 +43,10 @@ namespace FluentAssertions.Json.Common
         }
 
         /// <summary>
-        /// Replaces all characters that might conflict with formatting placeholders and newlines with their escaped counterparts.
+        /// Replaces all characters that might conflict with formatting placeholders with their escaped counterparts.
         /// </summary>
-        public static string Escape(this string value, bool escapePlaceholders = false)
-        {
-            value = value.Replace("\"", "\\\"").Replace("\n", @"\n").Replace("\r", @"\r");
-            if (escapePlaceholders)
-            {
-                value = value.Replace("{", "{{").Replace("}", "}}");
-            }
-
-            return value;
-        }
+        public static string EscapePlaceholders(this string value) =>
+            value.Replace("{", "{{").Replace("}", "}}");
 
         /// <summary>
         /// Joins a string with one or more other strings using a specified separator.
