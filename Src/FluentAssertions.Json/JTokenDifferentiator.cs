@@ -66,17 +66,17 @@ namespace FluentAssertions.Json
 
         private static Difference CompareExpectedItems(JArray actual, JArray expected, JPath path)
         {
-            JEnumerable<JToken> actualChildren = actual.Children();
-            JEnumerable<JToken> expectedChildren = expected.Children();
+            JToken[] actualChildren = actual.Children().ToArray();
+            JToken[] expectedChildren = expected.Children().ToArray();
 
             int matchingIndex = 0;
-            for (int expectedIndex = 0; expectedIndex < expectedChildren.Count(); expectedIndex++)
+            for (int expectedIndex = 0; expectedIndex < expectedChildren.Length; expectedIndex++)
             {
-                var expectedChild = expectedChildren.ElementAt(expectedIndex);
+                var expectedChild = expectedChildren[expectedIndex];
                 bool match = false;
-                for (int actualIndex = matchingIndex; actualIndex < actualChildren.Count(); actualIndex++)
+                for (int actualIndex = matchingIndex; actualIndex < actualChildren.Length; actualIndex++)
                 {
-                    var difference = FindFirstDifference(actualChildren.ElementAt(actualIndex), expectedChild, true);
+                    var difference = FindFirstDifference(actualChildren[actualIndex], expectedChild, true);
 
                     if (difference == null)
                     {
@@ -88,9 +88,9 @@ namespace FluentAssertions.Json
 
                 if (!match)
                 {
-                    if (matchingIndex >= actualChildren.Count())
+                    if (matchingIndex >= actualChildren.Length)
                     {
-                        if (actual.Children().Any(actualChild => FindFirstDifference(actualChild, expectedChild, true) == null))
+                        if (actualChildren.Any(actualChild => FindFirstDifference(actualChild, expectedChild, true) == null))
                         {
                             return new Difference(DifferenceKind.WrongOrder, path.AddIndex(expectedIndex));
                         }
@@ -98,7 +98,7 @@ namespace FluentAssertions.Json
                         return new Difference(DifferenceKind.ActualMissesElement, path.AddIndex(expectedIndex));
                     }
 
-                    return FindFirstDifference(actualChildren.ElementAt(matchingIndex), expectedChild,
+                    return FindFirstDifference(actualChildren[matchingIndex], expectedChild,
                         path.AddIndex(expectedIndex), true);
                 }
             }
@@ -108,17 +108,17 @@ namespace FluentAssertions.Json
 
         private static Difference CompareItems(JArray actual, JArray expected, JPath path)
         {
-            JEnumerable<JToken> actualChildren = actual.Children();
-            JEnumerable<JToken> expectedChildren = expected.Children();
+            JToken[] actualChildren = actual.Children().ToArray();
+            JToken[] expectedChildren = expected.Children().ToArray();
 
-            if (actualChildren.Count() != expectedChildren.Count())
+            if (actualChildren.Length != expectedChildren.Length)
             {
-                return new Difference(DifferenceKind.DifferentLength, path, actualChildren.Count(), expectedChildren.Count());
+                return new Difference(DifferenceKind.DifferentLength, path, actualChildren.Length, expectedChildren.Length);
             }
 
-            for (int i = 0; i < actualChildren.Count(); i++)
+            for (int i = 0; i < actualChildren.Length; i++)
             {
-                Difference firstDifference = FindFirstDifference(actualChildren.ElementAt(i), expectedChildren.ElementAt(i), 
+                Difference firstDifference = FindFirstDifference(actualChildren[i], expectedChildren[i], 
                     path.AddIndex(i), false);
 
                 if (firstDifference != null)
