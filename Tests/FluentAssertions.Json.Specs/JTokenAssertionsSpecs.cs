@@ -53,7 +53,7 @@ namespace FluentAssertions.Json.Specs
                     ]
                 }
                 ";
-            
+
             var a = JToken.Parse(json);
             var b = JToken.Parse(json);
 
@@ -181,7 +181,7 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var testCases = new []
+            var testCases = new[]
             {
                 Tuple.Create<JToken, JToken, string>(
                     new JProperty("eyes", "blue"),
@@ -238,7 +238,7 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var testCases = new []
+            var testCases = new[]
             {
                 Tuple.Create(
                     new JArray(1, 2, 3),
@@ -257,7 +257,7 @@ namespace FluentAssertions.Json.Specs
             {
                 var actual = testCase.Item1;
                 var expected = testCase.Item2;
-                
+
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
@@ -321,7 +321,7 @@ namespace FluentAssertions.Json.Specs
                     ]
                 }
                 ";
-            
+
             var actualJSON = JToken.Parse(jsonString);
 
             //-----------------------------------------------------------------------------------------------------------
@@ -365,7 +365,7 @@ namespace FluentAssertions.Json.Specs
                 .WithMessage($"Unable to parse unexpected JSON string:{unexpectedString}*")
                 .WithInnerException<JsonReaderException>();
         }
-        
+
         [Fact]
         public void When_specifying_a_reason_why_object_should_be_equivalent_it_should_use_that_in_the_error_message()
         {
@@ -661,6 +661,56 @@ namespace FluentAssertions.Json.Specs
         }
 
         #endregion (Not)HaveElement
+
+        #region HaveElementAndValue
+
+        [Fact]
+        public void When_json_has_the_expected_element_and_value_it_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().HaveElementAndValue("id", "42");
+        }
+
+        [Fact]
+        public void When_json_does_not_have_the_expected_element_it_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().Invoking(x => x.HaveElementAndValue("name", "42", "because foo"))
+                .Should().Throw<XunitException>()
+                .WithMessage($@"Expected JSON document {Format(subject)} to have element ""name"" and value ""42"" because foo, but no such element was found.");
+        }
+
+        [Fact]
+        public void When_json_does_not_have_the_expected_value_it_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().Invoking(x => x.HaveElementAndValue("id", "43", "because foo"))
+                .Should().Throw<XunitException>()
+                .WithMessage($@"Expected JSON document {Format(subject)} to have element ""name"" and value ""43"" because foo, but no such element was found.");
+        }
+
+        #endregion HaveElementAndValue
 
         #region ContainSingleItem
 
@@ -964,7 +1014,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         #endregion HaveCount
-        
+
         #region ContainSubtree
 
         [Fact]

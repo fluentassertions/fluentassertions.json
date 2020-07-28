@@ -12,6 +12,7 @@
 - `HaveCount()`
 - `HaveElement()`
 - `HaveValue()`
+- `HaveElementAndValue()`
 - `MatchRegex()`
 - `NotBeEquivalentTo()`
 - `NotHaveElement()`
@@ -33,5 +34,6 @@ using Newtonsoft.Json.Linq;
 var actual = JToken.Parse(@"{ ""key1"" : ""value"" }");
 var expected = JToken.Parse(@"{ ""key2"" : ""value"" }");
 actual.Should().BeEquivalentTo(expected);
+actual.Should().HaveElementAndValue("key1", "value");
 ```
 

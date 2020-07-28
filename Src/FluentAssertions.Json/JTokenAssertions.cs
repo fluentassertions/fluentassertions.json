@@ -101,7 +101,7 @@ namespace FluentAssertions.Json
                           $"{expectation}{Environment.NewLine}" +
                           $"{Format(expected, true).EscapePlaceholders()}{Environment.NewLine}" +
                           "{reason}.";
-             
+
             Execute.Assertion
                 .ForCondition(difference == null)
                 .BecauseOf(because, becauseArgs)
@@ -240,7 +240,8 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> MatchRegex(string regularExpression, string because, params object[] becauseArgs)
         {
-            if (regularExpression == null) {
+            if (regularExpression == null)
+            {
                 throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
             }
 
@@ -266,7 +267,8 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> NotMatchRegex(string regularExpression, string because = "", params object[] becauseArgs)
         {
-            if (regularExpression == null) {
+            if (regularExpression == null)
+            {
                 throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
             }
 
@@ -334,6 +336,32 @@ namespace FluentAssertions.Json
                 .ForCondition(jToken == null)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Did not expect JSON document {0} to have element \"" + unexpected.EscapePlaceholders() + "\"{reason}.", Subject);
+
+            return new AndWhichConstraint<JTokenAssertions, JToken>(this, jToken);
+        }
+
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> has a direct child element with the specified
+        ///     <paramref name="expectedElement" /> name, and the specified <paramref name="expectedValue"/>.
+        /// </summary>
+        /// <param name="expectedElement">The name of the expected child element.</param>
+        /// <param name="expectedValue">The value of the expected child element.</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndWhichConstraint<JTokenAssertions, JToken> HaveElementAndValue(string expectedElement, string expectedValue, string because = "",
+            params object[] becauseArgs)
+        {
+            JToken jToken = Subject[expectedElement];
+            Execute.Assertion
+                .ForCondition(jToken != null && Subject.Value<string>() == expectedValue)
+                .BecauseOf(because, becauseArgs)
+                .FailWith($@"Expected JSON document {{0}} to have element ""{expectedElement.EscapePlaceholders()}"" and value ""{expectedValue.EscapePlaceholders()}""{{reason}}" +
+                          ", but no such element was found.", Subject);
 
             return new AndWhichConstraint<JTokenAssertions, JToken>(this, jToken);
         }
