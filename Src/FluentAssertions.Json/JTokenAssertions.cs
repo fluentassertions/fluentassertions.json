@@ -7,6 +7,7 @@ using FluentAssertions.Primitives;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using System;
+using System.Linq;
 
 namespace FluentAssertions.Json
 {
@@ -353,9 +354,14 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
-        public AndWhichConstraint<JTokenAssertions, JToken> HaveElementAndValue(string expectedElement, string expectedValue, string because = "",
+        public AndWhichConstraint<JTokenAssertions, JToken> HaveElementWithValue(string expectedElement, string expectedValue, string because = "",
             params object[] becauseArgs)
         {
+            if (expectedElement == null)
+                throw new ArgumentNullException(nameof(expectedElement));
+            else if (!expectedElement.Trim().Any())
+                throw new ArgumentException("Invalid expected element name.", nameof(expectedElement));
+
             JToken jToken = Subject[expectedElement];
             Execute.Assertion
                 .ForCondition(jToken != null && Subject.Value<string>() == expectedValue)
