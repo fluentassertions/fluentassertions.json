@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Sdk;
 
-namespace FluentAssertions.Json.Net45.Specs
+namespace FluentAssertions.Json.Specs
 {
     // ReSharper disable ExpressionIsAlwaysNull
     public class StringAssertionsExtensionsSpecs

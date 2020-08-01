@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Fluent Assertions extensions for Newtonsoft.Json</description>
     <summary>Fluent Assertions extensions for Newtonsoft.Json</summary>
-    <copyright>Copyright Dennis Doomen 2010-2019</copyright>
+    <copyright>Copyright Dennis Doomen 2010-2020</copyright>
     <releaseNotes>
       See https://github.com/fluentassertions/fluentassertions.json/releases/
     </releaseNotes>
@@ -28,7 +28,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="FluentAssertions.Json\bin\Release\net451\FluentAssertions.Json.*"  target="lib\net451" />
-    <file src="FluentAssertions.Json\bin\Release\netstandard1.4\FluentAssertions.*" exclude="**\*.json" target="lib\netstandard1.4" />
+    <file src="..\Artifacts\bin\net451\FluentAssertions.Json.*"  target="lib\net451" />
+    <file src="..\Artifacts\bin\netstandard1.4\FluentAssertions.*" exclude="**\*.json" target="lib\netstandard1.4" />
   </files>
 </package>

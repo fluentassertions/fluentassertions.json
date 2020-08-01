@@ -1,4 +1,4 @@
-﻿namespace FluentAssertions.Json
+﻿namespace FluentAssertions.Json.Specs
 {
     internal static class StringExtensions
     {
