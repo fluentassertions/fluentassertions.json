@@ -2,7 +2,7 @@ using FluentAssertions.Formatting;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace FluentAssertions.Json
+namespace FluentAssertions.Json.Specs
 {
     // ReSharper disable InconsistentNaming
     public class JTokenFormatterSpecs

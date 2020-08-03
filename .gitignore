@@ -165,8 +165,6 @@ Package/Lib
 *.zip
 
 # Cake related
-Build/**
-!Build/packages.config
 Tools/**
 
 # Rider

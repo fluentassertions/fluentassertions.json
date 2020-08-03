@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Sdk;
 
-namespace FluentAssertions.Json
+namespace FluentAssertions.Json.Specs
 {
     // ReSharper disable InconsistentNaming
     // ReSharper disable ExpressionIsAlwaysNull

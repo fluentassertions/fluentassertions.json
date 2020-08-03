@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -10,11 +10,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("FluentAssertions.Json")]
 
 [assembly: AssemblyCompany("www.continuousimprover.com")]
-[assembly: AssemblyCopyright("Copyright Dennis Doomen 2010-2017")]
+[assembly: AssemblyCopyright("Copyright Dennis Doomen 2010-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: AssemblyVersion("4.20.0.0")]
-[assembly: AssemblyInformationalVersion("4.20.0+Branch.release-5.0.Sha.0619a4b0d933d605ba1f6f5c2a883f516ba9985e")]
-[assembly: AssemblyFileVersion("4.20.0.0")]
 
+[assembly: AssemblyVersion("5.5.1.0")]
+[assembly: AssemblyFileVersion("5.5.1.0")]
+[assembly: AssemblyInformationalVersion("5.5.1-AddNuke.1+1.Branch.AddNuke.Sha.81d2ca281ec40c47ecc08a2406e72e19677b35a7")]
