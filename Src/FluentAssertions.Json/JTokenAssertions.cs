@@ -382,7 +382,7 @@ namespace FluentAssertions.Json
         }
 
         /// <summary>
-        /// Recursively asserts that the current <see cref="JToken"/> contains at least the properties or elements of the specified <paramref name="substree"/>.
+        /// Recursively asserts that the current <see cref="JToken"/> contains at least the properties or elements of the specified <paramref name="subtree"/>.
         /// </summary>
         /// <param name="subtree">The subtree to search for</param>
         /// <param name="because">
@@ -427,7 +427,7 @@ namespace FluentAssertions.Json
         }
 
         /// <summary>
-        /// Recursively asserts that the current <see cref="JToken"/> contains at least the properties or elements of the specified <paramref name="substree"/>.
+        /// Recursively asserts that the current <see cref="JToken"/> contains at least the properties or elements of the specified <paramref name="subtree"/>.
         /// </summary>
         /// <param name="subtree">The subtree to search for</param>
         /// <param name="because">
