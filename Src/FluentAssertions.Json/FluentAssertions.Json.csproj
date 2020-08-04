@@ -15,6 +15,7 @@
     <RepositoryUrl>https://github.com/fluentassertions/fluentassertions.json.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageIcon>FluentAssertions.png</PackageIcon>
     <PackageReleaseNotes>See https://github.com/fluentassertions/fluentassertions.json/releases/</PackageReleaseNotes>
     <Copyright>Copyright Dennis Doomen 2010-2020</Copyright>
     <LangVersion>8.0</LangVersion>
@@ -31,5 +32,6 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.2" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <None Include="..\FluentAssertions.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 </Project>
