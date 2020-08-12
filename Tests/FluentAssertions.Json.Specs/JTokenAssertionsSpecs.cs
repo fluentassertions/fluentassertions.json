@@ -15,7 +15,7 @@ namespace FluentAssertions.Json.Specs
         #region (Not)BeEquivalentTo
 
         [Fact]
-        public void When_both_objects_are_null_BeEquivalentTo_should_succeed()
+        public void When_both_tokens_are_null_they_should_be_treated_as_equivalent()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -30,7 +30,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_both_objects_are_the_same_or_equal_BeEquivalentTo_should_succeed()
+        public void When_both_tokens_represent_the_same_json_content_they_should_be_treated_as_equivalent()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -150,9 +150,10 @@ namespace FluentAssertions.Json.Specs
             }
         }
 
+        
         [Theory, MemberData(nameof(FailingBeEquivalentCases))]
-        public void When_objects_are_not_equivalent_it_should_throw(string actualJson, string expectedJson,
-            string expectedDifference)
+        public void When_both_tokens_are_not_equivalent_it_should_throw_and_mention_the_difference(
+            string actualJson, string expectedJson, string expectedDifference)
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -176,7 +177,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_properties_differ_BeEquivalentTo_should_fail()
+        public void When_properties_differ_between_two_tokens_it_should_not_treat_them_as_equivalent()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -218,7 +219,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_both_properties_are_null_BeEquivalentTo_should_succeed()
+        public void When_both_property_values_are_null_it_should_treat_them_as_equivalent()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -233,7 +234,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_arrays_are_equal_BeEquivalentTo_should_succeed()
+        public void When_two_json_arrays_have_the_same_properties_in_the_same_order_they_should_be_treated_as_equivalent()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -266,7 +267,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_only_the_order_of_properties_differ_BeEquivalentTo_should_succeed()
+        public void When_only_the_order_of_properties_differ_they_should_be_treated_as_equivalent()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -298,7 +299,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_checking_whether_a_JToken_is_equivalent_to_the_string_representation_of_that_token_it_should_succeed()
+        public void When_a_token_is_compared_to_its_string_representation_they_should_be_treated_as_equivalent()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -331,7 +332,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_checking_equivalency_with_an_invalid_expected_string_it_should_provide_a_clear_error_message()
+        public void When_checking_non_equivalency_with_an_invalid_expected_string_it_should_provide_a_clear_error_message()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -349,7 +350,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_checking_non_equivalency_with_an_invalid_unexpected_string_it_should_provide_a_clear_error_message()
+        public void When_checking_for_non_equivalency_with_an_unparseable_string_it_should_provide_a_clear_error_message()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -367,7 +368,7 @@ namespace FluentAssertions.Json.Specs
         }
         
         [Fact]
-        public void When_specifying_a_reason_why_object_should_be_equivalent_it_should_use_that_in_the_error_message()
+        public void When_specifying_a_reason_why_a_token_should_be_equivalent_it_should_use_that_in_the_error_message()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -392,7 +393,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_objects_differ_NotBeEquivalentTo_should_succeed()
+        public void When_property_values_differ_a_non_equivalency_check_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -407,7 +408,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_objects_are_equal_NotBeEquivalentTo_should_fail()
+        public void When_two_tokens_are_the_same_the_non_equivalency_check_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -424,7 +425,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_checking_whether_a_JToken_is_not_equivalent_to_the_string_representation_of_that_token_it_should_fail()
+        public void When_a_token_is_equal_to_its_string_representation_the_non_equivalency_check_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -445,7 +446,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_properties_contains_curly_braces_BeEquivalentTo_should_not_fail_with_FormatException()
+        public void When_the_value_of_a_property_contains_curly_braces_the_equivalency_check_should_not_choke_on_them()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -453,6 +454,9 @@ namespace FluentAssertions.Json.Specs
             var actual = JToken.Parse(@"{ ""{a1}"": {b: 1 }}");
             var expected = JToken.Parse(@"{ ""{a1}"": {b: 2 }}");
 
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
             var expectedMessage =
                 "JSON document has a different value at $.{a1}.b." +
                 "Actual document" +
@@ -460,9 +464,6 @@ namespace FluentAssertions.Json.Specs
                 "was expected to be equivalent to" +
                 $"{Format(expected, true)}.";
 
-            //-----------------------------------------------------------------------------------------------------------
-            // Act & Assert
-            //-----------------------------------------------------------------------------------------------------------
             actual.Should().Invoking(x => x.BeEquivalentTo(expected))
                 .Should().Throw<XunitException>()
                 .WithMessage(expectedMessage);
@@ -473,7 +474,7 @@ namespace FluentAssertions.Json.Specs
         #region (Not)HaveValue
 
         [Fact]
-        public void When_jtoken_has_value_HaveValue_should_succeed()
+        public void When_the_token_has_the_expected_value_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -485,9 +486,28 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             subject["id"].Should().HaveValue("42");
         }
+        
+        [Fact]
+        public void When_the_token_is_null_then_asserting_on_a_value_expectation_should_throw()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            JToken subject = null;
+            
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action act = () => subject.Should().HaveValue("foo");
+            
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            act.Should().Throw<XunitException>().WithMessage("Expected*foo*was*null*");
+        }
 
         [Fact]
-        public void When_jtoken_not_has_value_HaveValue_should_fail()
+        public void When_the_token_has_another_value_than_expected_it_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -503,7 +523,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_does_not_have_value_NotHaveValue_should_succeed()
+        public void When_the_token_does_not_have_the_unexpected_value_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -517,7 +537,26 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_does_have_value_NotHaveValue_should_fail()
+        public void When_the_token_is_null_assertions_on_not_having_a_value_should_throw()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            JToken subject = null;
+            
+            //-----------------------------------------------------------------------------------------------------------
+            // Act
+            //-----------------------------------------------------------------------------------------------------------
+            Action act = () => subject.Should().NotHaveValue("foo");
+            
+            //-----------------------------------------------------------------------------------------------------------
+            // Assert
+            //-----------------------------------------------------------------------------------------------------------
+            act.Should().Throw<XunitException>().WithMessage("Did not expect*foo*was*null*");
+        }
+
+        [Fact]
+        public void When_the_token_has_a_value_that_it_was_not_supposed_to_have_it_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -537,7 +576,7 @@ namespace FluentAssertions.Json.Specs
         #region (Not)MatchRegex
 
         [Fact]
-        public void When_json_matches_regex_pattern_MatchRegex_should_succeed()
+        public void When_a_tokens_value_matches_the_regex_pattern_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -551,7 +590,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_json_does_not_match_regex_pattern_MatchRegex_should_fail()
+        public void When_a_tokens_value_does_not_match_the_regex_pattern_it_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -567,7 +606,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_json_does_not_match_regex_pattern_NotHaveRegexValue_should_succeed()
+        public void When_a_tokens_value_does_not_match_the_regex_pattern_and_that_is_expected_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -581,7 +620,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_json_matches_regex_pattern_NotHaveRegexValue_should_fail()
+        public void When_a_tokens_value_matches_the_regex_pattern_unexpectedly_it_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -601,7 +640,7 @@ namespace FluentAssertions.Json.Specs
         #region (Not)HaveElement
 
         [Fact]
-        public void When_jtoken_has_element_HaveElement_should_succeed()
+        public void When_the_token_has_a_property_with_the_specified_key_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -615,7 +654,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_not_has_element_HaveElement_should_fail()
+        public void When_the_token_does_not_have_the_specified_property_it_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -631,7 +670,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_does_not_have_element_NotHaveElement_should_succeed()
+        public void When_the_token_does_not_have_the_specified_element_and_that_was_expected_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -645,7 +684,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_does_have_element_NotHaveElement_should_fail()
+        public void When_the_token_has_an_unexpected_element_it_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -665,7 +704,7 @@ namespace FluentAssertions.Json.Specs
         #region ContainSingleItem
 
         [Fact]
-        public void When_jtoken_has_a_single_element_ContainSingleItem_should_succeed()
+        public void When_the_token_has_a_single_child_and_that_was_expected_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -684,7 +723,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_has_a_single_element_ContainSingleItem_should_return_which_element_it_is()
+        public void When_the_token_has_a_single_child_it_should_return_that_child_for_chaining()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -703,7 +742,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_is_null_ContainSingleItem_should_fail()
+        public void When_the_token_is_null_then_asserting_a_single_child_should_throw_with_a_clear_failure()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -723,7 +762,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_is_an_empty_object_ContainSingleItem_should_fail()
+        public void When_the_token_is_an_empty_object_then_the_assertion_on_a_single_item_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -743,7 +782,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_has_multiple_elements_ContainSingleItem_should_fail()
+        public void When_the_token_contains_multiple_properties_then_the_single_item_assertion_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -763,7 +802,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_is_array_with_a_single_item_ContainSingleItem_should_succeed()
+        public void When_the_token_is_an_array_with_a_single_property_then_that_should_satisfy_the_single_item_assertion()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -782,7 +821,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_is_an_array_with_a_single_item_ContainSingleItem_should_return_which_element_it_is()
+        public void When_the_token_is_an_array_with_a_single_property_the_single_item_assertion_should_return_that_item_for_chaining()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -801,7 +840,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_is_an_empty_array_ContainSingleItem_should_fail()
+        public void When_the_token_is_an_empty_array_then_an_assertion_for_a_single_item_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -821,7 +860,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_is_an_array_with_multiple_items_ContainSingleItem_should_fail()
+        public void When_the_token_is_an_array_with_multiple_items_asserting_for_a_single_item_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -847,7 +886,7 @@ namespace FluentAssertions.Json.Specs
         #region HaveCount
 
         [Fact]
-        public void When_expecting_the_actual_number_of_elements_HaveCount_should_succeed()
+        public void When_the_number_of_items_match_the_expectation_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -866,7 +905,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_expecting_the_actual_number_of_elements_HaveCount_should_enable_consecutive_assertions()
+        public void When_the_number_of_items_match_the_expectation_it_should_allow_chaining_more_assertions()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -885,7 +924,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_jtoken_is_null_HaveCount_should_fail()
+        public void When_the_token_is_null_then_an_assertion_on_the_count_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -905,7 +944,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_expecting_a_different_number_of_elements_than_the_actual_number_HaveCount_should_fail()
+        public void When_expecting_a_different_number_of_elements_than_the_actual_number_it_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -925,7 +964,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_expecting_the_actual_number_of_array_items_HaveCount_should_succeed()
+        public void When_expecting_the_actual_number_of_array_items_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -944,7 +983,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_expecting_a_different_number_of_array_items_than_the_actual_number_HaveCount_should_fail()
+        public void When_expecting_a_different_number_of_array_items_than_the_actual_number_it_should_fail()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -968,7 +1007,7 @@ namespace FluentAssertions.Json.Specs
         #region ContainSubtree
 
         [Fact]
-        public void When_all_expected_subtree_properties_match_ContainSubtree_should_succeed()
+        public void When_all_expected_subtree_properties_match_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -987,7 +1026,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_deep_subtree_matches_ContainSubtree_should_succeed()
+        public void When_deep_subtree_matches_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
@@ -1006,7 +1045,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_array_elements_are_matching_ContainSubtree_should_succeed()
+        public void When_array_elements_are_matching_within_a_nested_structure_it_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
