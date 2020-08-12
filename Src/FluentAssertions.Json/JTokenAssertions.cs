@@ -188,6 +188,11 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> HaveValue(string expected, string because, params object[] becauseArgs)
         {
             Execute.Assertion
+                .ForCondition(Subject is object)
+                .BecauseOf(because, becauseArgs)
+                .FailWith("Expected JSON token to have value {0}, but the element was <null>.", expected); 
+            
+            Execute.Assertion
                 .ForCondition(Subject.Value<string>() == expected)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected JSON property {0} to have value {1}{reason}, but found {2}.",
@@ -209,6 +214,11 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> NotHaveValue(string unexpected, string because = "", params object[] becauseArgs)
         {
+            Execute.Assertion
+                .ForCondition(Subject is object)
+                .BecauseOf(because, becauseArgs)
+                .FailWith("Did not expect the JSON property to have value {0}, but the token was <null>.", unexpected); 
+            
             Execute.Assertion
                 .ForCondition(Subject.Value<string>() != unexpected)
                 .BecauseOf(because, becauseArgs)
