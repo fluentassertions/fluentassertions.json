@@ -20,7 +20,7 @@ namespace SomeOtherNamespace
         }
 
         [Fact]
-        public void Class_is_simple_poco_should_be_serializable()
+        public void Simple_poco_should_be_serializable()
         {
             // arrange
             var target = _fixture.Create<SimplePocoWithPrimitiveTypes>();
@@ -33,7 +33,7 @@ namespace SomeOtherNamespace
         }
 
         [Fact]
-        public void Class_is_complex_poco_should_be_serializable()
+        public void Complex_poco_should_be_serializable()
         {
             // arrange
             var target = _fixture.Create<PocoWithStructure>();
@@ -46,7 +46,7 @@ namespace SomeOtherNamespace
         }
 
         [Fact]
-        public void Class_does_not_have_default_constructor()
+        public void Class_that_does_not_have_default_constructor_should_not_be_serializable()
         {
             // arrange
             const string reasonText = "this is the reason";
@@ -65,7 +65,7 @@ namespace SomeOtherNamespace
         }
 
         [Fact]
-        public void Class_has_ignored_property()
+        public void Class_that_has_ignored_property_should_not_be_serializable_if_equivalency_options_are_not_configured()
         {
             // arrange
             const string reasonText = "this is the reason";
@@ -84,7 +84,7 @@ namespace SomeOtherNamespace
         }
 
         [Fact]
-        public void Class_has_ignored_property_equivalency_options_are_configured()
+        public void Class_that_has_ignored_property_should_be_serializable_when_equivalency_options_are_configured()
         {
             // arrange
             var target = _fixture.Create<PocoWithIgnoredProperty>();
