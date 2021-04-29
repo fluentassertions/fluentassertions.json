@@ -4,10 +4,7 @@ using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
 using Newtonsoft.Json;
 
-// added to the root namespace to aid discovery
-// ReSharper disable CheckNamespace
-namespace FluentAssertions
-// ReSharper restore CheckNamespace
+namespace FluentAssertions.Json
 {
     /// <summary>
     ///     Contains extension methods for JSON serialization assertion methods
@@ -89,7 +86,7 @@ namespace FluentAssertions
         {
             var serializedObject = JsonConvert.SerializeObject(subject);
             var cloneUsingJsonSerializer = JsonConvert.DeserializeObject(serializedObject, subject.GetType());
-            return cloneUsingJsonSerializer; ;
+            return cloneUsingJsonSerializer;
         }
     }
 }

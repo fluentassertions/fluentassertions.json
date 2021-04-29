@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoFixture;
 using FluentAssertions;
+using FluentAssertions.Json;
 using FluentAssertions.Json.Specs.Models;
 using Xunit;
 
