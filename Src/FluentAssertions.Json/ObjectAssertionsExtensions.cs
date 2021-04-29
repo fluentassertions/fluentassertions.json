@@ -79,9 +79,7 @@ namespace FluentAssertions
             {
                 Execute.Assertion
                     .BecauseOf(because, becauseArgs)
-                    .FailWith("Expected {0} to be JSON serializable{reason}, but serialization failed with:\r\n\r\n{1}",
-                        assertions.Subject,
-                        exc.Message);
+                    .FailWith("Expected {object:context} to be JSON serializable{reason}, but serializing {0} failed with {1}", assertions.Subject, exc);
             }
 
             return new AndConstraint<ObjectAssertions>(assertions);
