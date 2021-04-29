@@ -23,6 +23,7 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         /// Zero or more objects to format using the placeholders in <see cref="because" />.
         /// </param>
+        [CustomAssertion]
         public static AndConstraint<ObjectAssertions> BeJsonSerializable(this ObjectAssertions assertions, string because = "", params object[] becauseArgs)
         {
             return BeJsonSerializable<object>(assertions, options => options, because, becauseArgs);
@@ -40,6 +41,7 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         /// Zero or more objects to format using the placeholders in <see cref="because" />.
         /// </param>
+        [CustomAssertion]
         public static AndConstraint<ObjectAssertions> BeJsonSerializable<T>(this ObjectAssertions assertions, string because = "", params object[] becauseArgs)
         {
             return BeJsonSerializable<T>(assertions, options => options, because, becauseArgs);
@@ -58,6 +60,7 @@ namespace FluentAssertions.Json
         /// Zero or more objects to format using the placeholders in <see cref="because" />.
         /// </param>
         /// <param name="assertions"></param>
+        [CustomAssertion]
         public static AndConstraint<ObjectAssertions> BeJsonSerializable<T>(this ObjectAssertions assertions, Func<EquivalencyAssertionOptions<T>, EquivalencyAssertionOptions<T>> options, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion.ForCondition(assertions.Subject != null)
