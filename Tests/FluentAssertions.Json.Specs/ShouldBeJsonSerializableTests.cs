@@ -108,9 +108,7 @@ namespace SomeOtherNamespace
             // assert
             act.Should()
                 .Throw<Xunit.Sdk.XunitException>(because:"This is consistent with BeBinarySerializable() and BeDataContractSerializable()")
-                .Which.Message
-                    .Should().Contain("value is null")
-                        .And.Contain("Please provide a value for the assertion");
+                .WithMessage("*value is null*Please provide a value for the assertion*");
         }
 
         [Fact]
@@ -127,9 +125,20 @@ namespace SomeOtherNamespace
                 .Which.Message
                     .Should().Contain("is not assignable to")
                         .And.Contain(nameof(SimplePocoWithPrimitiveTypes));
-                ;
         }
 
+        [Fact]
+        public void Should_fail_when_derived_type_is_not_serializable_when_presented_as_base_class()
+        {
+            // arrange
+            AddressDto target = _fixture.Create<DerivedFromAddressDto>();
+
+            // act
+            Action act = () => target.Should().BeJsonSerializable();
+
+            // assert
+            act.Should().Throw<Xunit.Sdk.XunitException>("The derived class is not serializable due to a JsonIgnore attribute");
+        }
     }
 
 }

@@ -12,7 +12,7 @@ namespace FluentAssertions.Json
     public static class ObjectAssertionsExtensions
     {
         /// <summary>
-        /// Asserts that an object can be serialized and deserialized using the JSON serializer and that it stills retains
+        /// Asserts that an object can be serialized and deserialized using the JSON serializer and that it still retains
         /// the values of all members.
         /// </summary>
         /// <param name="assertions"></param>
