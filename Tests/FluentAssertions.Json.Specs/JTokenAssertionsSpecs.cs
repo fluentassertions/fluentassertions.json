@@ -53,7 +53,7 @@ namespace FluentAssertions.Json.Specs
                     ]
                 }
                 ";
-            
+
             var a = JToken.Parse(json);
             var b = JToken.Parse(json);
 
@@ -182,7 +182,7 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var testCases = new []
+            var testCases = new[]
             {
                 Tuple.Create<JToken, JToken, string>(
                     new JProperty("eyes", "blue"),
@@ -239,7 +239,7 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var testCases = new []
+            var testCases = new[]
             {
                 Tuple.Create(
                     new JArray(1, 2, 3),
@@ -258,7 +258,7 @@ namespace FluentAssertions.Json.Specs
             {
                 var actual = testCase.Item1;
                 var expected = testCase.Item2;
-                
+
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
@@ -322,7 +322,7 @@ namespace FluentAssertions.Json.Specs
                     ]
                 }
                 ";
-            
+
             var actualJSON = JToken.Parse(jsonString);
 
             //-----------------------------------------------------------------------------------------------------------
@@ -366,7 +366,7 @@ namespace FluentAssertions.Json.Specs
                 .WithMessage($"Unable to parse unexpected JSON string:{unexpectedString}*")
                 .WithInnerException<JsonReaderException>();
         }
-        
+
         [Fact]
         public void When_specifying_a_reason_why_a_token_should_be_equivalent_it_should_use_that_in_the_error_message()
         {
@@ -701,6 +701,106 @@ namespace FluentAssertions.Json.Specs
 
         #endregion (Not)HaveElement
 
+        #region HaveElementWithValue
+
+        [Fact]
+        public void When_json_has_the_expected_element_and_value_it_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().HaveElementWithValue("id", "42");
+        }
+
+        [Fact]
+        public void When_json_does_not_have_the_expected_element_it_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().Invoking(x => x.HaveElementWithValue("name", "42", "because foo"))
+                .Should().Throw<XunitException>()
+                .WithMessage($@"Expected JSON document {Format(subject)} to have element ""name"" and value ""42"" because foo, but no such element was found.");
+        }
+
+        [Fact]
+        public void When_json_does_not_have_the_expected_value_it_should_fail()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().Invoking(x => x.HaveElementWithValue("id", "43", "because foo"))
+                .Should().Throw<XunitException>()
+                .WithMessage($@"Expected JSON document {Format(subject)} to have element ""name"" and value ""43"" because foo, but no such element was found.");
+        }
+
+        [Fact]
+        public void When_element_parameter_null_it_should_throw()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().Invoking(x => x.HaveElementWithValue(null, "43", "because foo"))
+                .Should().Throw<ArgumentNullException>()
+                .Which.ParamName.Should().Be("expectedElement");
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("     ")]
+        public void When_element_parameter_empty_or_whitespapce_it_should_throw(string expectedElement)
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': 42 }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().Invoking(x => x.HaveElementWithValue(expectedElement, "43", "because foo"))
+                .Should().Throw<ArgumentException>()
+                .WithMessage("Invalid expected element name.\nParameter name: expectedElement")
+                .Which.ParamName.Should().Be("expectedElement");
+        }
+
+        [Fact]
+        public void When_json_has_the_expected_element_and_null_value_it_should_succeed()
+        {
+            //-----------------------------------------------------------------------------------------------------------
+            // Arrange
+            //-----------------------------------------------------------------------------------------------------------
+            var subject = JToken.Parse("{ 'id': null }");
+
+            //-----------------------------------------------------------------------------------------------------------
+            // Act & Assert
+            //-----------------------------------------------------------------------------------------------------------
+            subject.Should().HaveElementWithValue("id", null);
+        }
+
+        #endregion HaveElementWithValue
+
         #region ContainSingleItem
 
         [Fact]
@@ -1003,7 +1103,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         #endregion HaveCount
-        
+
         #region ContainSubtree
 
         [Fact]
