@@ -1215,10 +1215,14 @@ namespace FluentAssertions.Json.Specs
 
         private static string Format(JToken value, bool useLineBreaks = false)
         {
-            return new JTokenFormatter().Format(value, new FormattingContext
+            var output = new FormattedObjectGraph(100);
+            
+            new JTokenFormatter().Format(value, output, new FormattingContext
             {
                 UseLineBreaks = useLineBreaks
             }, null);
+            
+            return output.ToString();
         }
     }
 }

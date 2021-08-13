@@ -1,12 +1,12 @@
-﻿using System.Diagnostics;
-using FluentAssertions.Collections;
+﻿using FluentAssertions.Collections;
 using FluentAssertions.Json.Common;
 using FluentAssertions.Execution;
 using FluentAssertions.Formatting;
 using FluentAssertions.Primitives;
 using Newtonsoft.Json.Linq;
-using System.Text.RegularExpressions;
 using System;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace FluentAssertions.Json
 {
@@ -27,9 +27,8 @@ namespace FluentAssertions.Json
         ///     Initializes a new instance of the <see cref="JTokenAssertions" /> class.
         /// </summary>
         /// <param name="subject">The subject</param>
-        public JTokenAssertions(JToken subject)
+        public JTokenAssertions(JToken subject) : base(subject)
         {
-            Subject = subject;
             EnumerableSubject = new GenericCollectionAssertions<JToken>(subject);
         }
 
@@ -469,10 +468,16 @@ namespace FluentAssertions.Json
 
         public string Format(JToken value, bool useLineBreaks = false)
         {
-            return new JTokenFormatter().Format(value, new FormattingContext
+            // SMELL: Why is this method necessary at all?
+            // SMELL: Why aren't we using the Formatter class directly?
+            var output = new FormattedObjectGraph(maxLines: 100);
+            
+            new JTokenFormatter().Format(value,  output, new FormattingContext
             {
                 UseLineBreaks = useLineBreaks
             }, null);
+            
+            return output.ToString();
         }
     }
 }
