@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net451;netstandard1.4</TargetFrameworks>
+    <TargetFrameworks>net47;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1701;1702;1705;1591;1574;1572;1573;419</NoWarn>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
@@ -17,10 +17,10 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageIcon>FluentAssertions.png</PackageIcon>
     <PackageReleaseNotes>See https://github.com/fluentassertions/fluentassertions.json/releases/</PackageReleaseNotes>
-    <Copyright>Copyright Dennis Doomen 2010-2020</Copyright>
-    <LangVersion>8.0</LangVersion>
+    <Copyright>Copyright Dennis Doomen 2010-2021</Copyright>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net451|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -30,7 +30,7 @@
     <OutputPath>..\..\Artifacts\bin\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="5.10.2" />
+    <PackageReference Include="FluentAssertions" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <None Include="..\FluentAssertions.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
