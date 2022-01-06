@@ -85,7 +85,7 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, string because = "",
             params object[] becauseArgs)
         {
-            return BeEquivalentTo(expected, false,null, because, becauseArgs);
+            return BeEquivalentTo(expected, false, config => config, because, becauseArgs);
         }
 
         /// <summary>
@@ -487,7 +487,7 @@ namespace FluentAssertions.Json
         /// </code>
         public AndConstraint<JTokenAssertions> ContainSubtree(JToken subtree, string because = "", params object[] becauseArgs)
         {
-            return BeEquivalentTo(subtree, true, null, because, becauseArgs);
+            return BeEquivalentTo(subtree, true, config => config, because, becauseArgs);
         }
 
         public string Format(JToken value, bool useLineBreaks = false)

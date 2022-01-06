@@ -447,39 +447,35 @@ namespace FluentAssertions.Json.Specs
         }
 
         [Fact]
-        public void When_a_float_is_whithin_approximation_check_should_succeed()
+        public void When_a_float_is_within_approximation_check_should_succeed()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             var actual = JToken.Parse("{ \"id\": 1.1232 }");
             var expected = JToken.Parse("{ \"id\": 1.1235 }");
-
+            const double precision = 1e-3;
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            const double precision = 1e-3;
-            var options = new EquivalencyAssertionOptions<object>();
-            options.Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, precision))
-                .WhenTypeIs<double>();
-            actual.Should().BeEquivalentTo(expected, AssertionOptions => options);           
+
+            actual.Should().BeEquivalentTo(expected, 
+                options => new EquivalencyAssertionOptions<object>()
+                .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, precision))
+                .WhenTypeIs<double>());           
         }
         [Fact]
-        public void When_a_float_is_not_whithin_approximation_check_should_throw()
+        public void When_a_float_is_not_within_approximation_check_should_throw()
         {
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             var actual = JToken.Parse("{ \"id\": 1.1232 }");
             var expected = JToken.Parse("{ \"id\": 1.1235 }");
-
+            const double precision = 1e-5;
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            const double precision = 1e-5;
-            var options = new EquivalencyAssertionOptions<object>();
-            options.Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, precision))
-                .WhenTypeIs<double>();
             var expectedMessage =
                 "JSON document has a different value at $.id." +
                 "Actual document" +
@@ -487,7 +483,10 @@ namespace FluentAssertions.Json.Specs
                 "was expected to be equivalent to" +
                 $"{Format(expected, true)}.";
             
-            actual.Should().Invoking(x => x.BeEquivalentTo(expected, AssertionOptions => options))
+            actual.Should().
+                Invoking(x => x.BeEquivalentTo(expected,options => new EquivalencyAssertionOptions<object>()
+                .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, precision))
+                .WhenTypeIs<double>()))
                 .Should().Throw<XunitException>()
                 .WithMessage(expectedMessage);
         }

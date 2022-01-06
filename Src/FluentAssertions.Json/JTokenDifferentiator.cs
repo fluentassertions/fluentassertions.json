@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FluentAssertions.Json
 {
+    // REFACTOR: Change to non-static and make parameters fields
     internal static class JTokenDifferentiator
     {
 
@@ -219,7 +220,7 @@ namespace FluentAssertions.Json
             }
             try
             {
-                actual.Value.Should().BeEquivalentTo(expected.Value, option => config == null ?option:config(option));
+                actual.Should().BeEquivalentTo(expected, option => config == null ?option:config(option));
             }
             catch
             {
