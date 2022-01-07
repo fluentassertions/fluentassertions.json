@@ -476,19 +476,13 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            var expectedMessage =
-                "JSON document has a different value at $.id." +
-                "Actual document" +
-                $"{Format(actual, true)}" +
-                "was expected to be equivalent to" +
-                $"{Format(expected, true)}.";
             
             actual.Should().
                 Invoking(x => x.BeEquivalentTo(expected,options => new EquivalencyAssertionOptions<object>()
                 .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, precision))
                 .WhenTypeIs<double>()))
                 .Should().Throw<XunitException>()
-                .WithMessage(expectedMessage);
+                .WithMessage("JSON document has a different value at $.id.*");
         }
 
         [Fact]
