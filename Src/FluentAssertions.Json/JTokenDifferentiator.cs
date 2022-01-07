@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions.Equivalency;
+using FluentAssertions.Execution;
 using Newtonsoft.Json.Linq;
 
 namespace FluentAssertions.Json
@@ -218,15 +219,15 @@ namespace FluentAssertions.Json
             {
                 return new Difference(DifferenceKind.OtherType, path, Describe(actual.Type), Describe(expected.Type));
             }
-            try
+
+            bool hasMismatches;
+            using (var scope = new AssertionScope())
             {
-                actual.Should().BeEquivalentTo(expected, option => config == null ?option:config(option));
+                actual.Value.Should().BeEquivalentTo(expected.Value, config);
+                hasMismatches = scope.Discard().Length > 0;
             }
-            catch
-            {
+            if(hasMismatches)
                 return new Difference(DifferenceKind.OtherValue, path);
-            }
-            
             return null;
         }
 
