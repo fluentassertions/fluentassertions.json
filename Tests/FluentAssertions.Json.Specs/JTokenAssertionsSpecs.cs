@@ -459,7 +459,10 @@ namespace FluentAssertions.Json.Specs
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
 
-            actual.Should().BeEquivalentTo(expected, new DoubleElementShouldBeApproximately(precision));           
+            actual.Should().BeEquivalentTo(expected, 
+                options => new EquivalencyAssertionOptions<object>()
+                .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, precision))
+                .WhenTypeIs<double>());           
         }
         [Fact]
         public void When_a_float_is_not_within_approximation_check_should_throw()
@@ -475,7 +478,9 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             
             actual.Should().
-                Invoking(x => x.BeEquivalentTo(expected, new DoubleElementShouldBeApproximately(precision)))
+                Invoking(x => x.BeEquivalentTo(expected,options => new EquivalencyAssertionOptions<object>()
+                .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, precision))
+                .WhenTypeIs<double>()))
                 .Should().Throw<XunitException>()
                 .WithMessage("JSON document has a different value at $.id.*");
         }

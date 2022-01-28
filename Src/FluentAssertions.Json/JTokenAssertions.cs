@@ -85,7 +85,7 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, string because = "",
             params object[] becauseArgs)
         {
-            return BeEquivalentTo(expected, false, null, because, becauseArgs);
+            return BeEquivalentTo(expected, false, config => config, because, becauseArgs);
         }
 
         /// <summary>
@@ -102,19 +102,19 @@ namespace FluentAssertions.Json
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
         public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected,
-            IEquivalencyAssertionOptions option,
+            Func<EquivalencyAssertionOptions<object>, EquivalencyAssertionOptions<object>> config,
             string because = "",
             params object[] becauseArgs)
         {
-            return BeEquivalentTo(expected, false, option, because, becauseArgs);
+            return BeEquivalentTo(expected, false, config, because, becauseArgs);
         }
 
         private AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, bool ignoreExtraProperties,
-            IEquivalencyAssertionOptions option,
+            Func<EquivalencyAssertionOptions<object>, EquivalencyAssertionOptions<object>> config,
             string because = "",
             params object[] becauseArgs)
         {
-            Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected, ignoreExtraProperties, option);
+            Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected, ignoreExtraProperties, config);
 
             var expectation = ignoreExtraProperties ? "was expected to contain" : "was expected to be equivalent to";
 
@@ -487,7 +487,7 @@ namespace FluentAssertions.Json
         /// </code>
         public AndConstraint<JTokenAssertions> ContainSubtree(JToken subtree, string because = "", params object[] becauseArgs)
         {
-            return BeEquivalentTo(subtree, true, null, because, becauseArgs);
+            return BeEquivalentTo(subtree, true, config => config, because, becauseArgs);
         }
 
         public string Format(JToken value, bool useLineBreaks = false)
