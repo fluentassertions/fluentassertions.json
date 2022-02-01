@@ -35,7 +35,7 @@ var expected = JToken.Parse(@"{ ""key2"" : ""value"" }");
 actual.Should().BeEquivalentTo(expected);
 ```
 
-You can also use `EquivalencyAssertionOptions<>` with `shouldBeEquivalentTo` assertions, which contains helper methods that you can use to specify the way you want to compare specific data types.
+You can also use `EquivalencyAssertionOptions<>` with `ShouldBeEquivalentTo` assertions, which contains helper methods that you can use to specify the way you want to compare specific data types.
 
 Example:
 
@@ -47,7 +47,7 @@ using Newtonsoft.Json.Linq;
 ... 
 var actual = JToken.Parse(@"{ ""value"" : 1.5 }");
 var expected = JToken.Parse(@"{ ""value"" : 1.4 }");
-actual.Should().BeEquivalentTo(expected, options => new EquivalencyAssertionOptions<object>()
+actual.Should().BeEquivalentTo(expected, options => options
                 .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, 0.1))
                 .WhenTypeIs<double>()));
 ```
