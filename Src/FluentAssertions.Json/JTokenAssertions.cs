@@ -85,7 +85,7 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, string because = "",
             params object[] becauseArgs)
         {
-            return BeEquivalentTo(expected, false, config => config, because, becauseArgs);
+            return BeEquivalentTo(expected, false, null, because, becauseArgs);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace FluentAssertions.Json
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
         public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected,
-            Func<EquivalencyAssertionOptions<object>, EquivalencyAssertionOptions<object>> config,
+            Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config,
             string because = "",
             params object[] becauseArgs)
         {
@@ -110,7 +110,7 @@ namespace FluentAssertions.Json
         }
 
         private AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, bool ignoreExtraProperties,
-            Func<EquivalencyAssertionOptions<object>, EquivalencyAssertionOptions<object>> config,
+            Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config,
             string because = "",
             params object[] becauseArgs)
         {
@@ -487,7 +487,7 @@ namespace FluentAssertions.Json
         /// </code>
         public AndConstraint<JTokenAssertions> ContainSubtree(JToken subtree, string because = "", params object[] becauseArgs)
         {
-            return BeEquivalentTo(subtree, true, config => config, because, becauseArgs);
+            return BeEquivalentTo(subtree, true, null, because, becauseArgs);
         }
 
         public string Format(JToken value, bool useLineBreaks = false)

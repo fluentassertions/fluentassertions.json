@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using FluentAssertions.Equivalency;
 using FluentAssertions.Formatting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -458,9 +457,8 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-
-            actual.Should().BeEquivalentTo(expected, 
-                options => new EquivalencyAssertionOptions<object>()
+            actual.Should().BeEquivalentTo(expected,
+                options => options
                 .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, precision))
                 .WhenTypeIs<double>());           
         }
@@ -478,7 +476,7 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             
             actual.Should().
-                Invoking(x => x.BeEquivalentTo(expected,options => new EquivalencyAssertionOptions<object>()
+                Invoking(x => x.BeEquivalentTo(expected,options => options
                 .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, precision))
                 .WhenTypeIs<double>()))
                 .Should().Throw<XunitException>()
