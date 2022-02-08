@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions.Equivalency;
 using FluentAssertions.Execution;
 using Newtonsoft.Json.Linq;
 
@@ -11,7 +10,7 @@ namespace FluentAssertions.Json
     internal static class JTokenDifferentiator
     {
 
-        public static Difference FindFirstDifference(JToken actual, JToken expected, bool ignoreExtraProperties, Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config)
+        public static Difference FindFirstDifference(JToken actual, JToken expected, bool ignoreExtraProperties, Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             var path = new JPath();
             
@@ -33,7 +32,7 @@ namespace FluentAssertions.Json
             return FindFirstDifference(actual, expected, path, ignoreExtraProperties, config);
         }
 
-        private static Difference FindFirstDifference(JToken actual, JToken expected, JPath path, bool ignoreExtraProperties, Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config)
+        private static Difference FindFirstDifference(JToken actual, JToken expected, JPath path, bool ignoreExtraProperties, Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             switch (actual)
             {
@@ -52,7 +51,7 @@ namespace FluentAssertions.Json
 
         private static Difference FindJArrayDifference(JArray actualArray, JToken expected, JPath path,
             bool ignoreExtraProperties,
-            Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config)
+            Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             if (!(expected is JArray expectedArray))
             {
@@ -69,7 +68,7 @@ namespace FluentAssertions.Json
             }
         }
 
-        private static Difference CompareExpectedItems(JArray actual, JArray expected, JPath path, Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config)
+        private static Difference CompareExpectedItems(JArray actual, JArray expected, JPath path, Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             JToken[] actualChildren = actual.Children().ToArray();
             JToken[] expectedChildren = expected.Children().ToArray();
@@ -112,7 +111,7 @@ namespace FluentAssertions.Json
         }
 
         private static Difference CompareItems(JArray actual, JArray expected, JPath path,
-            Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config)
+            Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             JToken[] actualChildren = actual.Children().ToArray();
             JToken[] expectedChildren = expected.Children().ToArray();
@@ -137,7 +136,7 @@ namespace FluentAssertions.Json
         }
 
         private static Difference FindJObjectDifference(JObject actual, JToken expected, JPath path, bool ignoreExtraProperties,
-            Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config)
+            Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             if (!(expected is JObject expectedObject))
             {
@@ -149,7 +148,7 @@ namespace FluentAssertions.Json
 
         private static Difference CompareProperties(IEnumerable<JProperty> actual, IEnumerable<JProperty> expected, JPath path,
             bool ignoreExtraProperties,
-            Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config)
+            Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             var actualDictionary = actual?.ToDictionary(p => p.Name, p => p.Value) ?? new Dictionary<string, JToken>();
             var expectedDictionary = expected?.ToDictionary(p => p.Name, p => p.Value) ?? new Dictionary<string, JToken>();
@@ -188,7 +187,7 @@ namespace FluentAssertions.Json
 
         private static Difference FindJPropertyDifference(JProperty actualProperty, JToken expected, JPath path,
             bool ignoreExtraProperties,
-            Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config)
+            Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             if (!(expected is JProperty expectedProperty))
             {
@@ -203,7 +202,7 @@ namespace FluentAssertions.Json
             return FindFirstDifference(actualProperty.Value, expectedProperty.Value, path, ignoreExtraProperties, config);
         }
 
-        private static Difference FindValueDifference(JValue actualValue, JToken expected, JPath path, Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config = null)
+        private static Difference FindValueDifference(JValue actualValue, JToken expected, JPath path, Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config = null)
         {
             if (!(expected is JValue expectedValue))
             {
@@ -213,7 +212,7 @@ namespace FluentAssertions.Json
             return CompareValues(actualValue, expectedValue, path, config);
         }
 
-        private static Difference CompareValues(JValue actual, JValue expected, JPath path, Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config = null)
+        private static Difference CompareValues(JValue actual, JValue expected, JPath path, Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config = null)
         {
             if (actual.Type != expected.Type)
             {
@@ -223,7 +222,7 @@ namespace FluentAssertions.Json
             bool hasMismatches;
             using (var scope = new AssertionScope())
             {
-                actual.Value.Should().BeEquivalentTo(expected.Value, options => config?.Invoke(new JSonAssertionOption<object>())??options);
+                actual.Value.Should().BeEquivalentTo(expected.Value, options => (JsonAssertionOptions<object>)config?.Invoke(new JsonAssertionOptions<object>())??options);
                 hasMismatches = scope.Discard().Length > 0;
             }
             if(hasMismatches)

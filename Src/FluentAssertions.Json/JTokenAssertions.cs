@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using FluentAssertions.Equivalency;
 
 namespace FluentAssertions.Json
 {
@@ -102,7 +101,7 @@ namespace FluentAssertions.Json
         ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
         /// </param>
         public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected,
-            Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config,
+            Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config,
             string because = "",
             params object[] becauseArgs)
         {
@@ -110,7 +109,7 @@ namespace FluentAssertions.Json
         }
 
         private AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, bool ignoreExtraProperties,
-            Func<IJsonAssertionOptions<object>, EquivalencyAssertionOptions<object>> config,
+            Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config,
             string because = "",
             params object[] becauseArgs)
         {
