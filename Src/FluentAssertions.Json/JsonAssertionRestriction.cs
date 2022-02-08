@@ -4,7 +4,7 @@
     {
         private readonly JsonAssertionOptions<T>.Restriction<TProperty> restriction;
 
-        public JsonAssertionRestriction(JsonAssertionOptions<T>.Restriction<TProperty> restriction)
+        internal JsonAssertionRestriction(JsonAssertionOptions<T>.Restriction<TProperty> restriction)
         {
             this.restriction = restriction;
         }

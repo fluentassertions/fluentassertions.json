@@ -226,7 +226,9 @@ namespace FluentAssertions.Json
                 hasMismatches = scope.Discard().Length > 0;
             }
             if(hasMismatches)
+            {
                 return new Difference(DifferenceKind.OtherValue, path);
+            }
             return null;
         }
 
