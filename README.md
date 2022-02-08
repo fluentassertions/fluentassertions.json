@@ -35,7 +35,7 @@ var expected = JToken.Parse(@"{ ""key2"" : ""value"" }");
 actual.Should().BeEquivalentTo(expected);
 ```
 
-You can also use `EquivalencyAssertionOptions<>` with `ShouldBeEquivalentTo` assertions, which contains helper methods that you can use to specify the way you want to compare specific data types.
+You can also use `IJsonAssertionOptions<>` with `Should().BeEquivalentTo()` assertions, which contains helper methods that you can use to specify the way you want to compare specific data types.
 
 Example:
 
