@@ -8,6 +8,10 @@ namespace FluentAssertions.Json
     /// </summary>
     public sealed class JsonAssertionOptions<T> : EquivalencyAssertionOptions<T> , IJsonAssertionOptions<T>
     {
+        public JsonAssertionOptions(EquivalencyAssertionOptions<T> equivalencyAssertionOptions) : base(equivalencyAssertionOptions)
+        {
+
+        }
         public new IJsonAssertionRestriction<T, TProperty> Using<TProperty>(Action<IAssertionContext<TProperty>> action)
         {
             return new JsonAssertionRestriction<T, TProperty>(base.Using(action));

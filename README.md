@@ -49,5 +49,5 @@ var actual = JToken.Parse(@"{ ""value"" : 1.5 }");
 var expected = JToken.Parse(@"{ ""value"" : 1.4 }");
 actual.Should().BeEquivalentTo(expected, options => options
                 .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, 0.1))
-                .WhenTypeIs<double>()));
+                .WhenTypeIs<double>());
 ```

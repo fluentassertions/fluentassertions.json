@@ -202,7 +202,7 @@ namespace FluentAssertions.Json
             return FindFirstDifference(actualProperty.Value, expectedProperty.Value, path, ignoreExtraProperties, config);
         }
 
-        private static Difference FindValueDifference(JValue actualValue, JToken expected, JPath path, Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config = null)
+        private static Difference FindValueDifference(JValue actualValue, JToken expected, JPath path, Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             if (!(expected is JValue expectedValue))
             {
@@ -212,7 +212,7 @@ namespace FluentAssertions.Json
             return CompareValues(actualValue, expectedValue, path, config);
         }
 
-        private static Difference CompareValues(JValue actual, JValue expected, JPath path, Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config = null)
+        private static Difference CompareValues(JValue actual, JValue expected, JPath path, Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             if (actual.Type != expected.Type)
             {
@@ -222,7 +222,7 @@ namespace FluentAssertions.Json
             bool hasMismatches;
             using (var scope = new AssertionScope())
             {
-                actual.Value.Should().BeEquivalentTo(expected.Value, options => (JsonAssertionOptions<object>)config?.Invoke(new JsonAssertionOptions<object>())??options);
+                actual.Value.Should().BeEquivalentTo(expected.Value, options => (JsonAssertionOptions<object>)config.Invoke(new JsonAssertionOptions<object>(options)));
                 hasMismatches = scope.Discard().Length > 0;
             }
             if(hasMismatches)
