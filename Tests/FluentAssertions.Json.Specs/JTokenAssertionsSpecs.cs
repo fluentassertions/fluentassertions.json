@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FluentAssertions.Equivalency;
 using FluentAssertions.Formatting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -485,18 +486,19 @@ namespace FluentAssertions.Json.Specs
         [Fact]
         public void When_default_equivalencyassertionoptions_used_check_shoud_not_change_it()
         {
-            AssertionOptions.AssertEquivalencyUsing(e => e
-                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, 0.1))
-                .WhenTypeIs<double>()
-            );
+            using(new TempDefaultAssertionOptions(e => e
+                      .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, 0.1))
+                      .WhenTypeIs<double>()))
+            {
+                // Arrange
+                var actual = JToken.Parse("{ \"id\": 1.1232 }");
+                var expected = JToken.Parse("{ \"id\": 1.1235 }");
 
-            // Arrange
-            var actual = JToken.Parse("{ \"id\": 1.1232 }");
-            var expected = JToken.Parse("{ \"id\": 1.1235 }");
 
-
-            // Act & Assert
-            actual.Should().BeEquivalentTo(expected, options => options);
+                // Act & Assert
+                actual.Should().BeEquivalentTo(expected, options => options);
+            }
+            
         }
         [Fact]
         public void When_the_value_of_a_property_contains_curly_braces_the_equivalency_check_should_not_choke_on_them()
@@ -1276,6 +1278,17 @@ namespace FluentAssertions.Json.Specs
             }, null);
             
             return output.ToString();
+        }
+        private sealed class TempDefaultAssertionOptions : IDisposable
+        {
+            public TempDefaultAssertionOptions(Func<EquivalencyAssertionOptions, EquivalencyAssertionOptions> config)
+            {
+                AssertionOptions.AssertEquivalencyUsing(config);
+            }
+            public void Dispose()
+            {
+                AssertionOptions.AssertEquivalencyUsing(_ => new EquivalencyAssertionOptions());
+            }
         }
     }
 }
