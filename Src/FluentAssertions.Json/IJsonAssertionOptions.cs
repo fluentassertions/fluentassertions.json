@@ -4,7 +4,7 @@ using FluentAssertions.Equivalency;
 namespace FluentAssertions.Json
 {
     /// <summary>
-    /// Provides the run-time details of the <see cref="T:FluentAssertions.Json.JsonAssertionOptions`1" /> class.
+    /// Provides the run-time details of the <see cref="FluentAssertions.Json.JsonAssertionOptions{T}" /> class.
     /// </summary>
     public interface IJsonAssertionOptions<T>
     {

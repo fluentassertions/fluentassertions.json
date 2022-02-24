@@ -1,7 +1,7 @@
 ﻿namespace FluentAssertions.Json
 {
     /// <summary>
-    /// Defines additional overrides when used with <see cref="T:FluentAssertions.Json.JsonAssertionRestriction`2" />
+    /// Defines additional overrides when used with <see cref="FluentAssertions.Json.JsonAssertionRestriction{T, TProperty}" />
     /// </summary>
     public interface IJsonAssertionRestriction<T, TMember>
     {
