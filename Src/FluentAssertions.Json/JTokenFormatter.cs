@@ -24,7 +24,7 @@ namespace FluentAssertions.Json
         public void Format(object value, FormattedObjectGraph formattedGraph, FormattingContext context, FormatChild formatChild)
         {
             var jToken = value as JToken;
-                
+
             if (context.UseLineBreaks)
             {
                 var result = jToken?.ToString(Newtonsoft.Json.Formatting.Indented);
@@ -34,7 +34,7 @@ namespace FluentAssertions.Json
                 }
                 else
                 {
-                    formattedGraph.AddFragment("<null>");    
+                    formattedGraph.AddFragment("<null>");
                 }
             }
             else

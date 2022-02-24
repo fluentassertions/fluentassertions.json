@@ -1,5 +1,5 @@
 using Newtonsoft.Json.Linq;
-using FluentAssertions;	
+using FluentAssertions;
 using FluentAssertions.Json;
 using Xunit;
 
@@ -15,7 +15,7 @@ namespace SomeOtherNamespace
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var assertions = new []
+            var assertions = new[]
             {
                 JToken.Parse("{\"token\":\"value\"}").Should()
                 , new JProperty("property","value").Should()
@@ -29,7 +29,7 @@ namespace SomeOtherNamespace
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            foreach(var sut in assertions)
+            foreach (var sut in assertions)
                 sut.Should().BeOfType<JTokenAssertions>("extensions should provide assertions for all JSon primitives, i.e. JObject, JToken and JProperty");
         }
     }

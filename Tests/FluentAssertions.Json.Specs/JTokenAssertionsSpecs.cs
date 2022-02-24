@@ -53,7 +53,7 @@ namespace FluentAssertions.Json.Specs
                     ]
                 }
                 ";
-            
+
             var a = JToken.Parse(json);
             var b = JToken.Parse(json);
 
@@ -150,7 +150,6 @@ namespace FluentAssertions.Json.Specs
             }
         }
 
-        
         [Theory, MemberData(nameof(FailingBeEquivalentCases))]
         public void When_both_tokens_are_not_equivalent_it_should_throw_and_mention_the_difference(
             string actualJson, string expectedJson, string expectedDifference)
@@ -163,9 +162,9 @@ namespace FluentAssertions.Json.Specs
 
             var expectedMessage =
                 $"JSON document {expectedDifference}." +
-                $"Actual document" +
+                "Actual document" +
                 $"{Format(actual, true)}" +
-                $"was expected to be equivalent to" +
+                "was expected to be equivalent to" +
                 $"{Format(expected, true)}.";
 
             //-----------------------------------------------------------------------------------------------------------
@@ -182,7 +181,7 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var testCases = new []
+            var testCases = new[]
             {
                 Tuple.Create<JToken, JToken, string>(
                     new JProperty("eyes", "blue"),
@@ -204,9 +203,9 @@ namespace FluentAssertions.Json.Specs
 
                 var expectedMessage =
                     $"JSON document {expectedDifference}." +
-                    $"Actual document" +
+                    "Actual document" +
                     $"{Format(actual, true)}" +
-                    $"was expected to be equivalent to" +
+                    "was expected to be equivalent to" +
                     $"{Format(expected, true)}.";
 
                 //-----------------------------------------------------------------------------------------------------------
@@ -239,7 +238,7 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
-            var testCases = new []
+            var testCases = new[]
             {
                 Tuple.Create(
                     new JArray(1, 2, 3),
@@ -258,7 +257,7 @@ namespace FluentAssertions.Json.Specs
             {
                 var actual = testCase.Item1;
                 var expected = testCase.Item2;
-                
+
                 //-----------------------------------------------------------------------------------------------------------
                 // Act & Assert
                 //-----------------------------------------------------------------------------------------------------------
@@ -322,7 +321,7 @@ namespace FluentAssertions.Json.Specs
                     ]
                 }
                 ";
-            
+
             var actualJSON = JToken.Parse(jsonString);
 
             //-----------------------------------------------------------------------------------------------------------
@@ -366,7 +365,7 @@ namespace FluentAssertions.Json.Specs
                 .WithMessage($"Unable to parse unexpected JSON string:{unexpectedString}*")
                 .WithInnerException<JsonReaderException>();
         }
-        
+
         [Fact]
         public void When_specifying_a_reason_why_a_token_should_be_equivalent_it_should_use_that_in_the_error_message()
         {
@@ -377,10 +376,10 @@ namespace FluentAssertions.Json.Specs
             var expected = JToken.Parse("{ child: { expected: 'bar' } }");
 
             var expectedMessage =
-                $"JSON document misses property $.child.expected." +
-                $"Actual document" +
+                "JSON document misses property $.child.expected." +
+                "Actual document" +
                 $"{Format(subject, true)}" +
-                $"was expected to be equivalent to" +
+                "was expected to be equivalent to" +
                 $"{Format(expected, true)} " +
                 "because we want to test the failure message.";
 
@@ -456,11 +455,11 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            actual.Should().BeEquivalentTo(expected,
-                options => options
+            actual.Should().BeEquivalentTo(expected, options => options
                 .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, 1e-3))
-                .WhenTypeIs<double>());           
+                .WhenTypeIs<double>());
         }
+
         [Fact]
         public void When_a_float_is_not_within_approximation_check_should_throw()
         {
@@ -472,14 +471,15 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
             //-----------------------------------------------------------------------------------------------------------
-            
+
             actual.Should().
-                Invoking(x => x.BeEquivalentTo(expected,options => options
-                .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, 1e-5))
-                .WhenTypeIs<double>()))
+                Invoking(x => x.BeEquivalentTo(expected, options => options
+                    .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, 1e-5))
+                    .WhenTypeIs<double>()))
                 .Should().Throw<XunitException>()
                 .WithMessage("JSON document has a different value at $.id.*");
         }
+
         [Fact]
         public void When_the_value_of_a_property_contains_curly_braces_the_equivalency_check_should_not_choke_on_them()
         {
@@ -521,7 +521,7 @@ namespace FluentAssertions.Json.Specs
             //-----------------------------------------------------------------------------------------------------------
             subject["id"].Should().HaveValue("42");
         }
-        
+
         [Fact]
         public void When_the_token_is_null_then_asserting_on_a_value_expectation_should_throw()
         {
@@ -529,12 +529,12 @@ namespace FluentAssertions.Json.Specs
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             JToken subject = null;
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             Action act = () => subject.Should().HaveValue("foo");
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
@@ -578,12 +578,12 @@ namespace FluentAssertions.Json.Specs
             // Arrange
             //-----------------------------------------------------------------------------------------------------------
             JToken subject = null;
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Act
             //-----------------------------------------------------------------------------------------------------------
             Action act = () => subject.Should().NotHaveValue("foo");
-            
+
             //-----------------------------------------------------------------------------------------------------------
             // Assert
             //-----------------------------------------------------------------------------------------------------------
@@ -1038,7 +1038,7 @@ namespace FluentAssertions.Json.Specs
         }
 
         #endregion HaveCount
-        
+
         #region ContainSubtree
 
         [Fact]
@@ -1251,12 +1251,12 @@ namespace FluentAssertions.Json.Specs
         private static string Format(JToken value, bool useLineBreaks = false)
         {
             var output = new FormattedObjectGraph(100);
-            
+
             new JTokenFormatter().Format(value, output, new FormattingContext
             {
                 UseLineBreaks = useLineBreaks
             }, null);
-            
+
             return output.ToString();
         }
     }

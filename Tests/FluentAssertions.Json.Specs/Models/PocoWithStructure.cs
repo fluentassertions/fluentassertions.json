@@ -3,7 +3,7 @@
     // ReSharper disable UnusedMember.Global
     public class PocoWithStructure
     {
-        public int Id{ get; set; }
+        public int Id { get; set; }
         public AddressDto Address { get; set; }
         public EmploymentDto Employment { get; set; }
     }

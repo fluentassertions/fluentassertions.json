@@ -5,9 +5,6 @@ using Xunit;
 
 namespace FluentAssertions.Json.Specs
 {
-    // Due to tests that call AssertionOptions
-    [CollectionDefinition("AssertionOptionsSpecs", DisableParallelization = true)]
-    public class AssertionOptionsSpecsDefinition { }
     [Collection("AssertionOptionsSpecs")]
     public class JsonAssertionOptionsSpecs
     {
@@ -17,6 +14,7 @@ namespace FluentAssertions.Json.Specs
             using var assertionOptions = new TempDefaultAssertionOptions(e => e
                        .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, 0.1))
                        .WhenTypeIs<double>());
+
             // Arrange
             var actual = JToken.Parse("{ \"id\": 1.1232 }");
             var expected = JToken.Parse("{ \"id\": 1.1235 }");
@@ -24,17 +22,22 @@ namespace FluentAssertions.Json.Specs
             // Act & Assert
             actual.Should().BeEquivalentTo(expected, options => options);
         }
+
         private sealed class TempDefaultAssertionOptions : IDisposable
         {
             public TempDefaultAssertionOptions(Func<EquivalencyAssertionOptions, EquivalencyAssertionOptions> config)
             {
                 AssertionOptions.AssertEquivalencyUsing(config);
             }
+
             public void Dispose()
             {
                 AssertionOptions.AssertEquivalencyUsing(_ => new EquivalencyAssertionOptions());
             }
         }
     }
-   
+
+    // Due to tests that call AssertionOptions
+    [CollectionDefinition("AssertionOptionsSpecs", DisableParallelization = true)]
+    public class AssertionOptionsSpecsDefinition { }
 }

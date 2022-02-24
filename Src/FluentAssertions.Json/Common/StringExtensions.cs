@@ -52,11 +52,11 @@ namespace FluentAssertions.Json.Common
         /// Joins a string with one or more other strings using a specified separator.
         /// </summary>
         /// <remarks>
-        /// Any string that is empty (including the original string) is ignored. 
+        /// Any string that is empty (including the original string) is ignored.
         /// </remarks>
         public static string Combine(this string @this, string other, string separator = ".")
         {
-            var strings = new[] { @this }.Concat(new[] {other}).Where(s => s.Length > 0).ToArray();
+            var strings = new[] { @this }.Concat(new[] { other }).Where(s => s.Length > 0).ToArray();
             return string.Join(separator, strings);
         }
 

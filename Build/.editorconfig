@@ -5,7 +5,12 @@ dotnet_style_qualification_for_method = false:warning
 dotnet_style_qualification_for_event = false:warning
 dotnet_style_require_accessibility_modifiers = never:warning
 
-csharp_style_expression_bodied_methods = true:silent
 csharp_style_expression_bodied_properties = true:warning
 csharp_style_expression_bodied_indexers = true:warning
 csharp_style_expression_bodied_accessors = true:warning
+
+dotnet_diagnostic.ide0044.severity = none
+dotnet_diagnostic.ide0051.severity = none
+
+# ReSharper properties
+resharper_place_field_attribute_on_same_line = false

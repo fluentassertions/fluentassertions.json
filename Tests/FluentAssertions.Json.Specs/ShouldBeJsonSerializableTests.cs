@@ -107,7 +107,7 @@ namespace SomeOtherNamespace
 
             // assert
             act.Should()
-                .Throw<Xunit.Sdk.XunitException>(because:"This is consistent with BeBinarySerializable() and BeDataContractSerializable()")
+                .Throw<Xunit.Sdk.XunitException>(because: "This is consistent with BeBinarySerializable() and BeDataContractSerializable()")
                 .WithMessage("*value is null*Please provide a value for the assertion*");
         }
 
@@ -140,6 +140,4 @@ namespace SomeOtherNamespace
             act.Should().Throw<Xunit.Sdk.XunitException>("The derived class is not serializable due to a JsonIgnore attribute");
         }
     }
-
 }
-

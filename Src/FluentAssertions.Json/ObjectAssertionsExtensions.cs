@@ -17,7 +17,7 @@ namespace FluentAssertions.Json
         /// </summary>
         /// <param name="assertions"></param>
         /// <param name="because">
-        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion 
+        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
         /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
         /// </param>
         /// <param name="becauseArgs">
@@ -35,7 +35,7 @@ namespace FluentAssertions.Json
         /// </summary>
         /// <param name="assertions"></param>
         /// <param name="because">
-        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion 
+        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
         /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
         /// </param>
         /// <param name="becauseArgs">
@@ -51,15 +51,15 @@ namespace FluentAssertions.Json
         /// Asserts that an object can be serialized and deserialized using the JSON serializer and that it stills retains
         /// the values of all members.
         /// </summary>
+        /// <param name="assertions"></param>
         /// <param name="options"></param>
         /// <param name="because">
-        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion 
+        /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
         /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
         /// </param>
         /// <param name="becauseArgs">
         /// Zero or more objects to format using the placeholders in <see cref="because" />.
         /// </param>
-        /// <param name="assertions"></param>
         [CustomAssertion]
         public static AndConstraint<ObjectAssertions> BeJsonSerializable<T>(this ObjectAssertions assertions, Func<EquivalencyAssertionOptions<T>, EquivalencyAssertionOptions<T>> options, string because = "", params object[] becauseArgs)
         {

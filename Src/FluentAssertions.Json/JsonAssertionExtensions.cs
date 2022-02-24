@@ -36,6 +36,5 @@ namespace FluentAssertions.Json
         {
             return new JTokenAssertions(jValue);
         }
-
     }
 }
