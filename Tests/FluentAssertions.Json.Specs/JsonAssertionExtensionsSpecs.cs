@@ -1,6 +1,6 @@
-using Newtonsoft.Json.Linq;
 using FluentAssertions;
 using FluentAssertions.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 // NOTE that we are using both namespaces 'FluentAssertions' & 'FluentAssertions.Json' from an external namespace to force compiler disambiguation warnings
@@ -18,7 +18,7 @@ namespace SomeOtherNamespace
                 JToken.Parse("{\"token\":\"value\"}").Should()
                 , new JProperty("property","value").Should()
                 , new JObject(new JProperty("object", "value")).Should()
-                , new JArray(new [] { 42, 43}).Should()
+                , new JArray(new[] { 42, 43 }).Should()
                 , new JConstructor("property","value").Should()
                 , new JValue("value").Should()
                 , new JRaw("value").Should()
@@ -26,7 +26,9 @@ namespace SomeOtherNamespace
 
             // Act & Assert
             foreach (var sut in assertions)
+            {
                 sut.Should().BeOfType<JTokenAssertions>("extensions should provide assertions for all JSon primitives, i.e. JObject, JToken and JProperty");
+            }
         }
     }
 }

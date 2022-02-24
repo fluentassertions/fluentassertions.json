@@ -142,7 +142,8 @@ namespace FluentAssertions.Json.Specs
             }
         }
 
-        [Theory, MemberData(nameof(FailingBeEquivalentCases))]
+        [Theory]
+        [MemberData(nameof(FailingBeEquivalentCases))]
         public void When_both_tokens_are_not_equivalent_it_should_throw_and_mention_the_difference(
             string actualJson, string expectedJson, string expectedDifference)
         {
@@ -964,7 +965,8 @@ namespace FluentAssertions.Json.Specs
             }
         }
 
-        [Theory, MemberData(nameof(FailingContainSubtreeCases))]
+        [Theory]
+        [MemberData(nameof(FailingContainSubtreeCases))]
         public void When_some_JSON_does_not_contain_all_elements_from_a_subtree_it_should_throw(
             string actualJson, string expectedJson, string expectedDifference)
         {

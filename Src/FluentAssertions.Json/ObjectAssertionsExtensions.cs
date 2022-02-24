@@ -83,7 +83,9 @@ namespace FluentAssertions.Json
                 var typedSubject = (T)assertions.Subject;
                 ((T)deserializedObject).Should().BeEquivalentTo(typedSubject, _ => options(defaultOptions));
             }
+#pragma warning disable CA1031 // Ignore catching general exception
             catch (Exception exc)
+#pragma warning restore CA1031 // Ignore catching general exception
             {
                 Execute.Assertion
                     .BecauseOf(because, becauseArgs)

@@ -256,7 +256,8 @@ namespace FluentAssertions.Json
 
     internal class Difference
     {
-        public Difference(DifferenceKind kind, JPath path, object actual, object expected) : this(kind, path)
+        public Difference(DifferenceKind kind, JPath path, object actual, object expected)
+            : this(kind, path)
         {
             Actual = actual;
             Expected = expected;
@@ -290,7 +291,9 @@ namespace FluentAssertions.Json
                 DifferenceKind.ExpectedMissesProperty => $"has extra property {Path}",
                 DifferenceKind.ActualMissesElement => $"misses expected element {Path}",
                 DifferenceKind.WrongOrder => $"has expected element {Path} in the wrong order",
+#pragma warning disable S3928 // Parameter names used into ArgumentException constructors should match an existing one 
                 _ => throw new ArgumentOutOfRangeException(),
+#pragma warning restore S3928 // Parameter names used into ArgumentException constructors should match an existing one 
             };
         }
     }

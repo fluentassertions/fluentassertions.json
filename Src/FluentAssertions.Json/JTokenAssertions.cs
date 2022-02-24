@@ -1,12 +1,12 @@
-﻿using FluentAssertions.Collections;
-using FluentAssertions.Json.Common;
-using FluentAssertions.Execution;
-using FluentAssertions.Formatting;
-using FluentAssertions.Primitives;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using FluentAssertions.Collections;
+using FluentAssertions.Execution;
+using FluentAssertions.Formatting;
+using FluentAssertions.Json.Common;
+using FluentAssertions.Primitives;
+using Newtonsoft.Json.Linq;
 
 namespace FluentAssertions.Json
 {
@@ -27,7 +27,8 @@ namespace FluentAssertions.Json
         ///     Initializes a new instance of the <see cref="JTokenAssertions" /> class.
         /// </summary>
         /// <param name="subject">The subject</param>
-        public JTokenAssertions(JToken subject) : base(subject)
+        public JTokenAssertions(JToken subject)
+            : base(subject)
         {
             EnumerableSubject = new GenericCollectionAssertions<JToken>(subject);
         }
@@ -491,6 +492,7 @@ namespace FluentAssertions.Json
             return BeEquivalentTo(subtree, true, options => options, because, becauseArgs);
         }
 
+#pragma warning disable CA1822 // Making this method static is a breaking chan
         public string Format(JToken value, bool useLineBreaks = false)
         {
             // SMELL: Why is this method necessary at all?
@@ -504,5 +506,6 @@ namespace FluentAssertions.Json
 
             return output.ToString();
         }
+#pragma warning restore CA1822 // Making this method static is a breaking chan
     }
 }

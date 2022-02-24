@@ -41,21 +41,12 @@ namespace FluentAssertions.Json.Specs
         {
             // Arrange
             string subject = null;
-            Exception caughtException = null;
 
             // Act
-            try
-            {
-                subject.Should().BeValidJson("null is not allowed");
-            }
-            catch (Exception ex)
-            {
-                caughtException = ex;
-            }
+            Action act = () => subject.Should().BeValidJson("null is not allowed");
 
             // Assert
-            caughtException.Should()
-                .BeOfType<XunitException>()
+            act.Should().Throw<XunitException>()
                 .Which.Message.Should()
                 .Match("Expected subject to be valid JSON because null is not allowed, but parsing failed with \"*\".");
         }
@@ -65,21 +56,13 @@ namespace FluentAssertions.Json.Specs
         {
             // Arrange
             string subject = "invalid json";
-            Exception caughtException = null;
 
             // Act
-            try
-            {
-                subject.Should().BeValidJson("we like {0}", "JSON");
-            }
-            catch (Exception ex)
-            {
-                caughtException = ex;
-            }
+            Action act = () => subject.Should().BeValidJson("we like {0}", "JSON");
 
             // Assert
-            caughtException.Should()
-                .BeOfType<XunitException>()
+            act.Should()
+                .Throw<XunitException>()
                 .Which.Message.Should()
                 .Match("Expected subject to be valid JSON because we like JSON, but parsing failed with \"*\".");
         }
