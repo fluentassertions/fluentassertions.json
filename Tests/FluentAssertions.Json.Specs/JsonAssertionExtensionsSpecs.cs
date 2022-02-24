@@ -12,9 +12,7 @@ namespace SomeOtherNamespace
         [Fact]
         public void Should_Provide_Unambiguos_JTokenAssertions()
         {
-            //-----------------------------------------------------------------------------------------------------------
             // Arrange
-            //-----------------------------------------------------------------------------------------------------------
             var assertions = new[]
             {
                 JToken.Parse("{\"token\":\"value\"}").Should()
@@ -26,9 +24,7 @@ namespace SomeOtherNamespace
                 , new JRaw("value").Should()
             };
 
-            //-----------------------------------------------------------------------------------------------------------
             // Act & Assert
-            //-----------------------------------------------------------------------------------------------------------
             foreach (var sut in assertions)
                 sut.Should().BeOfType<JTokenAssertions>("extensions should provide assertions for all JSon primitives, i.e. JObject, JToken and JProperty");
         }
