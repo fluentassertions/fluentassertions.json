@@ -7,6 +7,8 @@ namespace FluentAssertions.Json.Specs
 {
     // Due to tests that call AssertionOptions
     [CollectionDefinition("AssertionOptionsSpecs", DisableParallelization = true)]
+    public class AssertionOptionsSpecsDefinition { }
+    [Collection("AssertionOptionsSpecs")]
     public class JsonAssertionOptionsSpecs
     {
         [Fact]
