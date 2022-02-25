@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
 
         <IsPackable>false</IsPackable>
-
+        <LangVersion>8.0</LangVersion>
         <TargetFrameworks>net47;netcoreapp3.0</TargetFrameworks>
     </PropertyGroup>
 

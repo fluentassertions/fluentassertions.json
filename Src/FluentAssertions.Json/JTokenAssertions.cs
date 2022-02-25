@@ -84,13 +84,36 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, string because = "",
             params object[] becauseArgs)
         {
-            return BeEquivalentTo(expected, false, because, becauseArgs);
+            return BeEquivalentTo(expected, false, options => options, because, becauseArgs);
         }
 
-        private AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, bool ignoreExtraProperties, string because = "",
+        /// <summary>
+        ///     Asserts that the current <see cref="JToken" /> is equivalent to the <paramref name="expected" /> element,
+        ///     using an equivalent of <see cref="JToken.DeepEquals(JToken, JToken)" />.
+        /// </summary>
+        /// <param name="expected">The expected element</param>
+        /// <param name="config">The options to consider while asserting values</param>
+        /// <param name="because">
+        ///     A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+        ///     is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+        /// </param>
+        /// <param name="becauseArgs">
+        ///     Zero or more objects to format using the placeholders in <see paramref="because" />.
+        /// </param>
+        public AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected,
+            Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config,
+            string because = "",
             params object[] becauseArgs)
         {
-            Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected, ignoreExtraProperties);
+            return BeEquivalentTo(expected, false, config, because, becauseArgs);
+        }
+
+        private AndConstraint<JTokenAssertions> BeEquivalentTo(JToken expected, bool ignoreExtraProperties,
+            Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config,
+            string because = "",
+            params object[] becauseArgs)
+        {
+            Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected, ignoreExtraProperties, config);
 
             var expectation = ignoreExtraProperties ? "was expected to contain" : "was expected to be equivalent to";
 
@@ -463,7 +486,7 @@ namespace FluentAssertions.Json
         /// </code>
         public AndConstraint<JTokenAssertions> ContainSubtree(JToken subtree, string because = "", params object[] becauseArgs)
         {
-            return BeEquivalentTo(subtree, true, because, becauseArgs);
+            return BeEquivalentTo(subtree, true, options => options, because, becauseArgs);
         }
 
         public string Format(JToken value, bool useLineBreaks = false)
