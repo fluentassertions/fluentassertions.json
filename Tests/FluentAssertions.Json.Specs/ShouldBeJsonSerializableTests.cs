@@ -8,22 +8,22 @@ using Xunit;
 // NOTE that we are using both namespaces 'FluentAssertions' & 'FluentAssertions.Json' from an external namespace to force compiler disambiguation warnings
 // ReSharper disable CheckNamespace
 namespace SomeOtherNamespace
-// ReSharper restore CheckNamespace
 {
+    // ReSharper restore CheckNamespace
     public class ShouldBeJsonSerializableTests
     {
-        private readonly Fixture _fixture;
+        private readonly Fixture fixture;
 
         public ShouldBeJsonSerializableTests()
         {
-            _fixture = new Fixture();
+            fixture = new Fixture();
         }
 
         [Fact]
         public void Simple_poco_should_be_serializable()
         {
             // arrange
-            var target = _fixture.Create<SimplePocoWithPrimitiveTypes>();
+            var target = fixture.Create<SimplePocoWithPrimitiveTypes>();
 
             // act
             Action act = () => target.Should().BeJsonSerializable();
@@ -36,7 +36,7 @@ namespace SomeOtherNamespace
         public void Complex_poco_should_be_serializable()
         {
             // arrange
-            var target = _fixture.Create<PocoWithStructure>();
+            var target = fixture.Create<PocoWithStructure>();
 
             // act
             Action act = () => target.Should().BeJsonSerializable();
@@ -50,7 +50,7 @@ namespace SomeOtherNamespace
         {
             // arrange
             const string reasonText = "this is the reason";
-            var target = _fixture.Create<PocoWithNoDefaultConstructor>();
+            var target = fixture.Create<PocoWithNoDefaultConstructor>();
 
             // act
             Action act = () => target.Should().BeJsonSerializable(reasonText);
@@ -69,7 +69,7 @@ namespace SomeOtherNamespace
         {
             // arrange
             const string reasonText = "this is the reason";
-            var target = _fixture.Create<PocoWithIgnoredProperty>();
+            var target = fixture.Create<PocoWithIgnoredProperty>();
 
             // act
             Action act = () => target.Should().BeJsonSerializable(reasonText);
@@ -87,7 +87,7 @@ namespace SomeOtherNamespace
         public void Class_that_has_ignored_property_should_be_serializable_when_equivalency_options_are_configured()
         {
             // arrange
-            var target = _fixture.Create<PocoWithIgnoredProperty>();
+            var target = fixture.Create<PocoWithIgnoredProperty>();
 
             // act
             Action act = () => target.Should().BeJsonSerializable<PocoWithIgnoredProperty>(opts => opts.Excluding(p => p.Name));
@@ -107,7 +107,7 @@ namespace SomeOtherNamespace
 
             // assert
             act.Should()
-                .Throw<Xunit.Sdk.XunitException>(because:"This is consistent with BeBinarySerializable() and BeDataContractSerializable()")
+                .Throw<Xunit.Sdk.XunitException>(because: "This is consistent with BeBinarySerializable() and BeDataContractSerializable()")
                 .WithMessage("*value is null*Please provide a value for the assertion*");
         }
 
@@ -131,7 +131,7 @@ namespace SomeOtherNamespace
         public void Should_fail_when_derived_type_is_not_serializable_when_presented_as_base_class()
         {
             // arrange
-            AddressDto target = _fixture.Create<DerivedFromAddressDto>();
+            AddressDto target = fixture.Create<DerivedFromAddressDto>();
 
             // act
             Action act = () => target.Should().BeJsonSerializable();
@@ -140,6 +140,4 @@ namespace SomeOtherNamespace
             act.Should().Throw<Xunit.Sdk.XunitException>("The derived class is not serializable due to a JsonIgnore attribute");
         }
     }
-
 }
-

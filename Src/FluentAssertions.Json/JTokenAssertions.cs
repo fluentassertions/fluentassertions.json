@@ -1,12 +1,12 @@
-﻿using FluentAssertions.Collections;
-using FluentAssertions.Json.Common;
-using FluentAssertions.Execution;
-using FluentAssertions.Formatting;
-using FluentAssertions.Primitives;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using FluentAssertions.Collections;
+using FluentAssertions.Execution;
+using FluentAssertions.Formatting;
+using FluentAssertions.Json.Common;
+using FluentAssertions.Primitives;
+using Newtonsoft.Json.Linq;
 
 namespace FluentAssertions.Json
 {
@@ -27,7 +27,8 @@ namespace FluentAssertions.Json
         ///     Initializes a new instance of the <see cref="JTokenAssertions" /> class.
         /// </summary>
         /// <param name="subject">The subject</param>
-        public JTokenAssertions(JToken subject) : base(subject)
+        public JTokenAssertions(JToken subject)
+            : base(subject)
         {
             EnumerableSubject = new GenericCollectionAssertions<JToken>(subject);
         }
@@ -123,7 +124,7 @@ namespace FluentAssertions.Json
                           $"{expectation}{Environment.NewLine}" +
                           $"{Format(expected, true).EscapePlaceholders()}{Environment.NewLine}" +
                           "{reason}.";
-             
+
             Execute.Assertion
                 .ForCondition(difference == null)
                 .BecauseOf(because, becauseArgs)
@@ -179,7 +180,7 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> NotBeEquivalentTo(JToken unexpected, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion
-                .ForCondition((ReferenceEquals(Subject, null) && !ReferenceEquals(unexpected, null)) ||
+                .ForCondition((Subject is null && unexpected is not null) ||
                               !JToken.DeepEquals(Subject, unexpected))
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected JSON document not to be equivalent to {0}{reason}.", unexpected);
@@ -210,10 +211,10 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> HaveValue(string expected, string because, params object[] becauseArgs)
         {
             Execute.Assertion
-                .ForCondition(Subject is object)
+                .ForCondition(Subject is not null)
                 .BecauseOf(because, becauseArgs)
-                .FailWith("Expected JSON token to have value {0}, but the element was <null>.", expected); 
-            
+                .FailWith("Expected JSON token to have value {0}, but the element was <null>.", expected);
+
             Execute.Assertion
                 .ForCondition(Subject.Value<string>() == expected)
                 .BecauseOf(because, becauseArgs)
@@ -237,10 +238,10 @@ namespace FluentAssertions.Json
         public AndConstraint<JTokenAssertions> NotHaveValue(string unexpected, string because = "", params object[] becauseArgs)
         {
             Execute.Assertion
-                .ForCondition(Subject is object)
+                .ForCondition(Subject is not null)
                 .BecauseOf(because, becauseArgs)
-                .FailWith("Did not expect the JSON property to have value {0}, but the token was <null>.", unexpected); 
-            
+                .FailWith("Did not expect the JSON property to have value {0}, but the token was <null>.", unexpected);
+
             Execute.Assertion
                 .ForCondition(Subject.Value<string>() != unexpected)
                 .BecauseOf(because, becauseArgs)
@@ -272,7 +273,8 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> MatchRegex(string regularExpression, string because, params object[] becauseArgs)
         {
-            if (regularExpression == null) {
+            if (regularExpression == null)
+            {
                 throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
             }
 
@@ -298,7 +300,8 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> NotMatchRegex(string regularExpression, string because = "", params object[] becauseArgs)
         {
-            if (regularExpression == null) {
+            if (regularExpression == null)
+            {
                 throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
             }
 
@@ -424,7 +427,7 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         /// Zero or more objects to format using the placeholders in <see cref="because" />.
         /// </param>
-        /// <remarks>Use this method to match the current <see cref="JToken"/> against an arbitrary subtree, 
+        /// <remarks>Use this method to match the current <see cref="JToken"/> against an arbitrary subtree,
         /// permitting it to contain any additional properties or elements. This way we can test multiple properties on a <see cref="JObject"/> at once,
         /// or test if a <see cref="JArray"/> contains any items that match a set of properties, assert that a JSON document has a given shape, etc. </remarks>
         /// <example>
@@ -469,7 +472,7 @@ namespace FluentAssertions.Json
         /// <param name="becauseArgs">
         /// Zero or more objects to format using the placeholders in <see cref="because" />.
         /// </param>
-        /// <remarks>Use this method to match the current <see cref="JToken"/> against an arbitrary subtree, 
+        /// <remarks>Use this method to match the current <see cref="JToken"/> against an arbitrary subtree,
         /// permitting it to contain any additional properties or elements. This way we can test multiple properties on a <see cref="JObject"/> at once,
         /// or test if a <see cref="JArray"/> contains any items that match a set of properties, assert that a JSON document has a given shape, etc. </remarks>
         /// <example>
@@ -489,18 +492,20 @@ namespace FluentAssertions.Json
             return BeEquivalentTo(subtree, true, options => options, because, becauseArgs);
         }
 
+#pragma warning disable CA1822 // Making this method static is a breaking chan
         public string Format(JToken value, bool useLineBreaks = false)
         {
             // SMELL: Why is this method necessary at all?
             // SMELL: Why aren't we using the Formatter class directly?
             var output = new FormattedObjectGraph(maxLines: 100);
-            
-            new JTokenFormatter().Format(value,  output, new FormattingContext
+
+            new JTokenFormatter().Format(value, output, new FormattingContext
             {
                 UseLineBreaks = useLineBreaks
             }, null);
-            
+
             return output.ToString();
         }
+#pragma warning restore CA1822 // Making this method static is a breaking chan
     }
 }
