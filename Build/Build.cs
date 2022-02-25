@@ -52,7 +52,6 @@ class Build : NukeBuild
     string SemVer;
 
     Target Clean => _ => _
-        .Before(Restore)
         .Executes(() =>
         {
             SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
@@ -79,6 +78,7 @@ class Build : NukeBuild
     bool IsPullRequest => BranchSpec != null && BranchSpec.Contains("pull", StringComparison.InvariantCultureIgnoreCase);
 
     Target Restore => _ => _
+        .DependsOn(Clean)
         .Executes(() =>
         {
             DotNetRestore(s => s
@@ -111,14 +111,22 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
         {
+            if (EnvironmentInfo.IsWin)
+            {
+                DotNetTest(s => s
+                    .SetProjectFile(Solution.FluentAssertions_Json_Specs)
+                    .SetFramework("net47")
+                    .SetConfiguration("Debug")
+                    .EnableNoBuild());
+            }
+
             DotNetTest(s => s
                 .SetProjectFile(Solution.FluentAssertions_Json_Specs)
+                .SetFramework("netcoreapp3.0")
                 .SetConfiguration("Debug")
                 .EnableNoBuild()
-                .SetResultsDirectory(RootDirectory / "TestResults")
-                .CombineWith(
-                    cc => cc.SetFramework("net47"),
-                    cc => cc.SetFramework("netcoreapp3.0").SetDataCollector("XPlat Code Coverage")));
+                .SetDataCollector("XPlat Code Coverage")
+                .SetResultsDirectory(RootDirectory / "TestResults"));
         });
 
     Target CodeCoverage => _ => _
