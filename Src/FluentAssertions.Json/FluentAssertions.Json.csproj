@@ -23,12 +23,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <OutputPath>..\..\Artifacts\bin\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <OutputPath>..\..\Artifacts\bin\</OutputPath>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />

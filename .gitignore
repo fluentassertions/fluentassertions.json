@@ -169,3 +169,6 @@ Tools/**
 
 # Rider
 .idea*
+
+# Approval Tests
+*.received.txt

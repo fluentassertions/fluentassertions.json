@@ -1,0 +1,74 @@
+﻿[assembly: System.Reflection.AssemblyMetadata("RepositoryUrl", "https://github.com/fluentassertions/fluentassertions.json.git")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETFramework,Version=v4.7", FrameworkDisplayName=".NET Framework 4.7")]
+namespace FluentAssertions.Json
+{
+    public interface IJsonAssertionOptions<T>
+    {
+        FluentAssertions.Json.IJsonAssertionRestriction<T, TProperty> Using<TProperty>(System.Action<FluentAssertions.Equivalency.IAssertionContext<TProperty>> action);
+    }
+    public interface IJsonAssertionRestriction<T, TMember>
+    {
+        FluentAssertions.Json.IJsonAssertionOptions<T> WhenTypeIs<TMemberType>()
+            where TMemberType : TMember;
+    }
+    public class JTokenAssertions : FluentAssertions.Primitives.ReferenceTypeAssertions<Newtonsoft.Json.Linq.JToken, FluentAssertions.Json.JTokenAssertions>
+    {
+        public JTokenAssertions(Newtonsoft.Json.Linq.JToken subject) { }
+        protected override string Identifier { get; }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> BeEquivalentTo(Newtonsoft.Json.Linq.JToken expected, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> BeEquivalentTo(string expected, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> BeEquivalentTo(Newtonsoft.Json.Linq.JToken expected, System.Func<FluentAssertions.Json.IJsonAssertionOptions<object>, FluentAssertions.Json.IJsonAssertionOptions<object>> config, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndWhichConstraint<FluentAssertions.Json.JTokenAssertions, Newtonsoft.Json.Linq.JToken> ContainSingleItem(string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> ContainSubtree(Newtonsoft.Json.Linq.JToken subtree, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> ContainSubtree(string subtree, string because = "", params object[] becauseArgs) { }
+        public string Format(Newtonsoft.Json.Linq.JToken value, bool useLineBreaks = false) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> HaveCount(int expected, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndWhichConstraint<FluentAssertions.Json.JTokenAssertions, Newtonsoft.Json.Linq.JToken> HaveElement(string expected) { }
+        public FluentAssertions.AndWhichConstraint<FluentAssertions.Json.JTokenAssertions, Newtonsoft.Json.Linq.JToken> HaveElement(string expected, string because, params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> HaveValue(string expected) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> HaveValue(string expected, string because, params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> MatchRegex(string regularExpression) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> MatchRegex(string regularExpression, string because, params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> NotBeEquivalentTo(Newtonsoft.Json.Linq.JToken unexpected, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> NotBeEquivalentTo(string unexpected, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndWhichConstraint<FluentAssertions.Json.JTokenAssertions, Newtonsoft.Json.Linq.JToken> NotHaveElement(string unexpected, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> NotHaveValue(string unexpected, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> NotMatchRegex(string regularExpression, string because = "", params object[] becauseArgs) { }
+    }
+    public class JTokenFormatter : FluentAssertions.Formatting.IValueFormatter
+    {
+        public JTokenFormatter() { }
+        public bool CanHandle(object value) { }
+        public void Format(object value, FluentAssertions.Formatting.FormattedObjectGraph formattedGraph, FluentAssertions.Formatting.FormattingContext context, FluentAssertions.Formatting.FormatChild formatChild) { }
+    }
+    public static class JsonAssertionExtensions
+    {
+        public static FluentAssertions.Json.JTokenAssertions Should(this Newtonsoft.Json.Linq.JObject jObject) { }
+        public static FluentAssertions.Json.JTokenAssertions Should(this Newtonsoft.Json.Linq.JToken jToken) { }
+        public static FluentAssertions.Json.JTokenAssertions Should(this Newtonsoft.Json.Linq.JValue jValue) { }
+    }
+    public sealed class JsonAssertionOptions<T> : FluentAssertions.Equivalency.EquivalencyAssertionOptions<T>, FluentAssertions.Json.IJsonAssertionOptions<T>
+    {
+        public JsonAssertionOptions(FluentAssertions.Equivalency.EquivalencyAssertionOptions<T> equivalencyAssertionOptions) { }
+        public FluentAssertions.Json.IJsonAssertionRestriction<T, TProperty> Using<TProperty>(System.Action<FluentAssertions.Equivalency.IAssertionContext<TProperty>> action) { }
+    }
+    public sealed class JsonAssertionRestriction<T, TProperty> : FluentAssertions.Json.IJsonAssertionRestriction<T, TProperty>
+    {
+        public FluentAssertions.Json.IJsonAssertionOptions<T> WhenTypeIs<TMemberType>()
+            where TMemberType : TProperty { }
+    }
+    public static class ObjectAssertionsExtensions
+    {
+        [FluentAssertions.CustomAssertion]
+        public static FluentAssertions.AndConstraint<FluentAssertions.Primitives.ObjectAssertions> BeJsonSerializable(this FluentAssertions.Primitives.ObjectAssertions assertions, string because = "", params object[] becauseArgs) { }
+        [FluentAssertions.CustomAssertion]
+        public static FluentAssertions.AndConstraint<FluentAssertions.Primitives.ObjectAssertions> BeJsonSerializable<T>(this FluentAssertions.Primitives.ObjectAssertions assertions, string because = "", params object[] becauseArgs) { }
+        [FluentAssertions.CustomAssertion]
+        public static FluentAssertions.AndConstraint<FluentAssertions.Primitives.ObjectAssertions> BeJsonSerializable<T>(this FluentAssertions.Primitives.ObjectAssertions assertions, System.Func<FluentAssertions.Equivalency.EquivalencyAssertionOptions<T>, FluentAssertions.Equivalency.EquivalencyAssertionOptions<T>> options, string because = "", params object[] becauseArgs) { }
+    }
+    public static class StringAssertionsExtensions
+    {
+        [FluentAssertions.CustomAssertion]
+        public static FluentAssertions.AndWhichConstraint<FluentAssertions.Primitives.StringAssertions, Newtonsoft.Json.Linq.JToken> BeValidJson(this FluentAssertions.Primitives.StringAssertions stringAssertions, string because = "", params object[] becauseArgs) { }
+    }
+}
