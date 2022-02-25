@@ -1,7 +1,13 @@
+[![build](https://github.com/fluentassertions/fluentassertions.json/actions/workflows/build.yml/badge.svg)](https://github.com/fluentassertions/fluentassertions.json/actions/workflows/build.yml)
+[![](https://img.shields.io/github/release/FluentAssertions/FluentAssertions.Json.svg?label=latest%20release)](https://github.com/FluentAssertions/FluentAssertions.Json/releases/latest)
+[![](https://img.shields.io/nuget/dt/FluentAssertions.Json.svg?label=nuget%20downloads)](https://www.nuget.org/packages/FluentAssertions.Json)
+[![](https://img.shields.io/librariesio/dependents/nuget/FluentAssertions.Json.svg?label=dependent%20libraries)](https://libraries.io/nuget/FluentAssertions.Json)
+![](https://img.shields.io/badge/release%20strategy-githubflow-orange.svg)
+[![Coverage Status](https://coveralls.io/repos/github/fluentassertions/fluentassertions.json/badge.svg?branch=master)](https://coveralls.io/github/fluentassertions/fluentassertions.json?branch=master)
+
 ## *"With Fluent Assertions, the assertions look beautiful, natural and most importantly, extremely readable"* (by [Girish](https://twitter.com/girishracharya))
 
 * See [www.fluentassertions.com](http://www.fluentassertions.com/) for more information about the main library.
-* The build status is [![Build status](https://ci.appveyor.com/api/projects/status/ub0dfcmad2cf26tf/branch/master?svg=true)](https://ci.appveyor.com/project/dennisdoomen/fluentassertions-json/branch/master)
 * Join the chat at [![Join the chat at https://gitter.im/dennisdoomen/fluentassertions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dennisdoomen/fluentassertions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### Available extension methods
