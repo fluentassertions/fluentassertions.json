@@ -114,7 +114,8 @@ namespace FluentAssertions.Json
             string because = "",
             params object[] becauseArgs)
         {
-            Difference difference = JTokenDifferentiator.FindFirstDifference(Subject, expected, ignoreExtraProperties, config);
+            var differentiator = new JTokenDifferentiator(ignoreExtraProperties, config);
+            Difference difference = differentiator.FindFirstDifference(Subject, expected);
 
             var expectation = ignoreExtraProperties ? "was expected to contain" : "was expected to be equivalent to";
 
