@@ -15,6 +15,6 @@ namespace FluentAssertions.Json
         /// <param name="action">
         /// The assertion to execute when the predicate is met.
         /// </param>
-        IJsonAssertionRestriction<T,TProperty> Using<TProperty>(Action<IAssertionContext<TProperty>> action);
+        IJsonAssertionRestriction<T, TProperty> Using<TProperty>(Action<IAssertionContext<TProperty>> action);
     }
 }
