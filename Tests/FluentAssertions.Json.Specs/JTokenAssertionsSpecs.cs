@@ -57,90 +57,74 @@ namespace FluentAssertions.Json.Specs
             a.Should().BeEquivalentTo(b);
         }
 
-        public static IEnumerable<object[]> FailingBeEquivalentCases
+        public static TheoryData<string, string, string> FailingBeEquivalentCases => new()
         {
-            get
             {
-                yield return new object[]
-                {
-                    null,
-                    "{ id: 2 }",
-                    "is null"
-                };
-                yield return new object[]
-                {
-                    "{ id: 1 }",
-                    null,
-                    "is not null"
-                };
-                yield return new object[]
-                {
-                    "{ items: [] }",
-                    "{ items: 2 }",
-                    "has an array instead of an integer at $.items"
-                };
-                yield return new object[]
-                {
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
-                    "{ items: [ \"fork\", \"knife\" ] }",
-                    "has 3 elements instead of 2 at $.items"
-                };
-                yield return new object[]
-                {
-                    "{ items: [ \"fork\", \"knife\" ] }",
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
-                    "has 2 elements instead of 3 at $.items"
-                };
-                yield return new object[]
-                {
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
-                    "{ items: [ \"fork\", \"spoon\", \"knife\" ] }",
-                    "has a different value at $.items[1]"
-                };
-                yield return new object[]
-                {
-                    "{ tree: { } }",
-                    "{ tree: \"oak\" }",
-                    "has an object instead of a string at $.tree"
-                };
-                yield return new object[]
-                {
-                    "{ tree: { leaves: 10} }",
-                    "{ tree: { branches: 5, leaves: 10 } }",
-                    "misses property $.tree.branches"
-                };
-                yield return new object[]
-                {
-                    "{ tree: { branches: 5, leaves: 10 } }",
-                    "{ tree: { leaves: 10} }",
-                    "has extra property $.tree.branches"
-                };
-                yield return new object[]
-                {
-                    "{ tree: { leaves: 5 } }",
-                    "{ tree: { leaves: 10} }",
-                    "has a different value at $.tree.leaves"
-                };
-                yield return new object[]
-                {
-                    "{ eyes: \"blue\" }",
-                    "{ eyes: [] }",
-                    "has a string instead of an array at $.eyes"
-                };
-                yield return new object[]
-                {
-                    "{ eyes: \"blue\" }",
-                    "{ eyes: 2 }",
-                    "has a string instead of an integer at $.eyes"
-                };
-                yield return new object[]
-                {
-                    "{ id: 1 }",
-                    "{ id: 2 }",
-                    "has a different value at $.id"
-                };
+                null,
+                "{ id: 2 }",
+                "is null"
+            },
+            {
+                "{ id: 1 }",
+                null,
+                "is not null"
+            },
+            {
+                "{ items: [] }",
+                "{ items: 2 }",
+                "has an array instead of an integer at $.items"
+            },
+            {
+                "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                "{ items: [ \"fork\", \"knife\" ] }",
+                "has 3 elements instead of 2 at $.items"
+            },
+            {
+                "{ items: [ \"fork\", \"knife\" ] }",
+                "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                "has 2 elements instead of 3 at $.items"
+            },
+            {
+                "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                "{ items: [ \"fork\", \"spoon\", \"knife\" ] }",
+                "has a different value at $.items[1]"
+            },
+            {
+                "{ tree: { } }",
+                "{ tree: \"oak\" }",
+                "has an object instead of a string at $.tree"
+            },
+            {
+                "{ tree: { leaves: 10} }",
+                "{ tree: { branches: 5, leaves: 10 } }",
+                "misses property $.tree.branches"
+            },
+            {
+                "{ tree: { branches: 5, leaves: 10 } }",
+                "{ tree: { leaves: 10} }",
+                "has extra property $.tree.branches"
+            },
+            {
+                "{ tree: { leaves: 5 } }",
+                "{ tree: { leaves: 10} }",
+                "has a different value at $.tree.leaves"
+            },
+            {
+                "{ eyes: \"blue\" }",
+                "{ eyes: [] }",
+                "has a string instead of an array at $.eyes"
+            },
+            {
+                "{ eyes: \"blue\" }",
+                "{ eyes: 2 }",
+                "has a string instead of an integer at $.eyes"
+            },
+            {
+                "{ id: 1 }",
+                "{ id: 2 }",
+                "has a different value at $.id"
             }
-        }
+        };
 
         [Theory]
         [MemberData(nameof(FailingBeEquivalentCases))]
@@ -862,108 +846,89 @@ namespace FluentAssertions.Json.Specs
             act.Should().NotThrow();
         }
 
-        public static IEnumerable<object[]> FailingContainSubtreeCases
+        public static TheoryData<string, string, string> FailingContainSubtreeCases => new()
         {
-            get
             {
-                yield return new object[]
-                {
-                    null,
-                    "{ id: 2 }",
-                    "is null"
-                };
-                yield return new object[]
-                {
-                    "{ id: 1 }",
-                    null,
-                    "is not null"
-                };
-                yield return new object[]
-                {
-                    "{ foo: 'foo', bar: 'bar' }",
-                    "{ baz: 'baz' }",
-                    "misses property $.baz"
-                };
-                yield return new object[]
-                {
-                    "{ items: [] }",
-                    "{ items: 2 }",
-                    "has an array instead of an integer at $.items"
-                };
-                yield return new object[]
-                {
-                    "{ items: [ \"fork\", \"knife\" ] }",
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
-                    "misses expected element $.items[2]"
-                };
-                yield return new object[]
-                {
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
-                    "{ items: [ \"fork\", \"spoon\", \"knife\" ] }",
-                    "has expected element $.items[2] in the wrong order"
-                };
-                yield return new object[]
-                {
-                    "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
-                    "{ items: [ \"fork\", \"fork\" ] }",
-                    "has a different value at $.items[1]"
-                };
-                yield return new object[]
-                {
-                    "{ tree: { } }",
-                    "{ tree: \"oak\" }",
-                    "has an object instead of a string at $.tree"
-                };
-                yield return new object[]
-                {
-                    "{ tree: { leaves: 10} }",
-                    "{ tree: { branches: 5, leaves: 10 } }",
-                    "misses property $.tree.branches"
-                };
-                yield return new object[]
-                {
-                    "{ tree: { leaves: 5 } }",
-                    "{ tree: { leaves: 10} }",
-                    "has a different value at $.tree.leaves"
-                };
-                yield return new object[]
-                {
-                    "{ eyes: \"blue\" }",
-                    "{ eyes: [] }",
-                    "has a string instead of an array at $.eyes"
-                };
-                yield return new object[]
-                {
-                    "{ eyes: \"blue\" }",
-                    "{ eyes: 2 }",
-                    "has a string instead of an integer at $.eyes"
-                };
-                yield return new object[]
-                {
-                    "{ id: 1 }",
-                    "{ id: 2 }",
-                    "has a different value at $.id"
-                };
-                yield return new object[]
-                {
-                    "{ items: [ { id: 1 }, { id: 3 }, { id: 5 } ] }",
-                    "{ items: [ { id: 1 }, { id: 2 } ] }",
-                    "has a different value at $.items[1].id"
-                };
-                yield return new object[]
-                {
-                    "{ foo: '1' }",
-                    "{ foo: 1 }",
-                    "has a string instead of an integer at $.foo"
-                };
-                yield return new object[]
-                {
-                    "{ foo: 'foo', bar: 'bar', child: { x: 1, y: 2, grandchild: { tag: 'abrakadabra' } } }",
-                    "{ child: { grandchild: { tag: 'ooops' } } }",
-                    "has a different value at $.child.grandchild.tag"
-                };
+                null,
+                "{ id: 2 }",
+                "is null"
+            },
+            {
+                "{ id: 1 }",
+                null,
+                "is not null"
+            },
+            {
+                "{ foo: 'foo', bar: 'bar' }",
+                "{ baz: 'baz' }",
+                "misses property $.baz"
+            },
+            {
+                "{ items: [] }",
+                "{ items: 2 }",
+                "has an array instead of an integer at $.items"
+            },
+            {
+                "{ items: [ \"fork\", \"knife\" ] }",
+                "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                "misses expected element $.items[2]"
+            },
+            {
+                "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                "{ items: [ \"fork\", \"spoon\", \"knife\" ] }",
+                "has expected element $.items[2] in the wrong order"
+            },
+            {
+                "{ items: [ \"fork\", \"knife\" , \"spoon\" ] }",
+                "{ items: [ \"fork\", \"fork\" ] }",
+                "has a different value at $.items[1]"
+            },
+            {
+                "{ tree: { } }",
+                "{ tree: \"oak\" }",
+                "has an object instead of a string at $.tree"
+            },
+            {
+                "{ tree: { leaves: 10} }",
+                "{ tree: { branches: 5, leaves: 10 } }",
+                "misses property $.tree.branches"
+            },
+            {
+                "{ tree: { leaves: 5 } }",
+                "{ tree: { leaves: 10} }",
+                "has a different value at $.tree.leaves"
+            },
+            {
+                "{ eyes: \"blue\" }",
+                "{ eyes: [] }",
+                "has a string instead of an array at $.eyes"
+            },
+            {
+                "{ eyes: \"blue\" }",
+                "{ eyes: 2 }",
+                "has a string instead of an integer at $.eyes"
+            },
+            {
+                "{ id: 1 }",
+                "{ id: 2 }",
+                "has a different value at $.id"
+            },
+            {
+                "{ items: [ { id: 1 }, { id: 3 }, { id: 5 } ] }",
+                "{ items: [ { id: 1 }, { id: 2 } ] }",
+                "has a different value at $.items[1].id"
+            },
+            {
+                "{ foo: '1' }",
+                "{ foo: 1 }",
+                "has a string instead of an integer at $.foo"
+            },
+            {
+                "{ foo: 'foo', bar: 'bar', child: { x: 1, y: 2, grandchild: { tag: 'abrakadabra' } } }",
+                "{ child: { grandchild: { tag: 'ooops' } } }",
+                "has a different value at $.child.grandchild.tag"
             }
-        }
+        };
 
         [Theory]
         [MemberData(nameof(FailingContainSubtreeCases))]

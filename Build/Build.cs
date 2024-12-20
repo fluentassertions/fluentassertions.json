@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Nuke.Common;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
@@ -11,13 +11,11 @@ using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.ReportGenerator;
 using Nuke.Common.Tools.Xunit;
 using Nuke.Common.Utilities.Collections;
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 
-[CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
+[DotNetVerbosityMapping]
 class Build : NukeBuild
 {
     /* Support plugins are available for:
@@ -28,19 +26,20 @@ class Build : NukeBuild
     */
     public static int Main() => Execute<Build>(x => x.Push);
 
-    [Parameter("A branch specification such as develop or refs/pull/1775/merge")]
-    readonly string BranchSpec;
+    GitHubActions GitHubActions => GitHubActions.Instance;
 
-    [Parameter("An incrementing build number as provided by the build engine")]
-    readonly string BuildNumber;
+    string BranchSpec => GitHubActions?.Ref;
+
+    string BuildNumber => GitHubActions?.RunNumber.ToString();
 
     [Parameter("The key to push to Nuget")]
+    [Secret]
     readonly string ApiKey;
 
     [Solution(GenerateProjects = true)]
     readonly Solution Solution;
 
-    [GitVersion(Framework = "net5.0")]
+    [GitVersion(Framework = "net6.0")]
     readonly GitVersion GitVersion;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
@@ -54,9 +53,9 @@ class Build : NukeBuild
     Target Clean => _ => _
         .Executes(() =>
         {
-            SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            TestsDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            EnsureCleanDirectory(ArtifactsDirectory);
+            SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(path => path.DeleteDirectory());
+            TestsDirectory.GlobDirectories("**/bin", "**/obj").ForEach(path => path.DeleteDirectory());
+            ArtifactsDirectory.CreateOrCleanDirectory();
         });
 
     Target CalculateNugetVersion => _ => _
@@ -75,7 +74,7 @@ class Build : NukeBuild
             Serilog.Log.Information("SemVer = {semver}", SemVer);
         });
 
-    bool IsPullRequest => BranchSpec != null && BranchSpec.Contains("pull", StringComparison.InvariantCultureIgnoreCase);
+    bool IsPullRequest => GitHubActions?.IsPullRequest ?? false;
 
     Target Restore => _ => _
         .DependsOn(Clean)
@@ -122,7 +121,7 @@ class Build : NukeBuild
 
             DotNetTest(s => s
                 .SetProjectFile(Solution.FluentAssertions_Json_Specs)
-                .SetFramework("netcoreapp3.0")
+                .SetFramework("net8.0")
                 .SetConfiguration("Debug")
                 .EnableNoBuild()
                 .SetDataCollector("XPlat Code Coverage")
@@ -134,7 +133,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             ReportGenerator(s => s
-                .SetProcessToolPath(ToolPathResolver.GetPackageExecutable("ReportGenerator", "ReportGenerator.dll", framework: "net5.0"))
+                .SetProcessToolPath(NuGetToolPathResolver.GetPackageExecutable("ReportGenerator", "ReportGenerator.dll", framework: "net6.0"))
                 .SetTargetDirectory(RootDirectory / "TestResults" / "reports")
                 .AddReports(RootDirectory / "TestResults/**/coverage.cobertura.xml")
                 .AddReportTypes("HtmlInline_AzurePipelines_Dark", "lcov")
@@ -168,9 +167,9 @@ class Build : NukeBuild
         .OnlyWhenDynamic(() => IsTag)
         .Executes(() =>
         {
-            IReadOnlyCollection<string> packages = GlobFiles(ArtifactsDirectory, "*.nupkg");
+            var packages = ArtifactsDirectory.GlobFiles("*.nupkg");
 
-            Assert.NotEmpty(packages.ToList());
+            Assert.NotEmpty(packages);
 
             DotNetNuGetPush(s => s
                 .SetApiKey(ApiKey)
@@ -181,5 +180,5 @@ class Build : NukeBuild
                     (v, path) => v.SetTargetPath(path)));
         });
 
-    bool IsTag => BranchSpec != null && BranchSpec.Contains("refs/tags", StringComparison.InvariantCultureIgnoreCase);
+    bool IsTag => BranchSpec != null && BranchSpec.Contains("refs/tags", StringComparison.OrdinalIgnoreCase);
 }

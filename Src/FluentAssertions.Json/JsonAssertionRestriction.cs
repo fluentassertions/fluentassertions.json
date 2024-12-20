@@ -9,7 +9,8 @@
             this.restriction = restriction;
         }
 
-        public IJsonAssertionOptions<T> WhenTypeIs<TMemberType>() where TMemberType : TProperty
+        public IJsonAssertionOptions<T> WhenTypeIs<TMemberType>()
+            where TMemberType : TProperty
         {
             return (JsonAssertionOptions<T>)restriction.WhenTypeIs<TMemberType>();
         }

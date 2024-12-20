@@ -230,6 +230,7 @@ namespace FluentAssertions.Json
 
             return null;
         }
+
         private static string Describe(JTokenType jTokenType)
         {
             return jTokenType switch
