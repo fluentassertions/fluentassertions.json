@@ -1,5 +1,4 @@
 ﻿using System;
-using AutoFixture;
 using FluentAssertions;
 using FluentAssertions.Json;
 using FluentAssertions.Json.Specs.Models;
@@ -12,18 +11,23 @@ namespace SomeOtherNamespace
     // ReSharper restore CheckNamespace
     public class ShouldBeJsonSerializableTests
     {
-        private readonly Fixture fixture;
-
-        public ShouldBeJsonSerializableTests()
-        {
-            fixture = new Fixture();
-        }
-
         [Fact]
         public void Simple_poco_should_be_serializable()
         {
             // arrange
-            var target = fixture.Create<SimplePocoWithPrimitiveTypes>();
+            var target = new SimplePocoWithPrimitiveTypes
+            {
+                Id = 1,
+                GlobalId = Guid.NewGuid(),
+                Name = "Name",
+                DateOfBirth = DateTime.UtcNow,
+                Height = 1,
+                Weight = 1,
+                ShoeSize = 1,
+                IsActive = true,
+                Image = new[] { (byte)1 },
+                Category = '1'
+            };
 
             // act
             Action act = () => target.Should().BeJsonSerializable();
@@ -36,7 +40,21 @@ namespace SomeOtherNamespace
         public void Complex_poco_should_be_serializable()
         {
             // arrange
-            var target = fixture.Create<PocoWithStructure>();
+            var target = new PocoWithStructure
+            {
+                Address = new AddressDto
+                {
+                    AddressLine1 = "AddressLine1",
+                    AddressLine2 = "AddressLine2",
+                    AddressLine3 = "AddressLine3",
+                },
+                Employment = new EmploymentDto
+                {
+                    JobTitle = "JobTitle",
+                    PhoneNumber = "PhoneNumber",
+                },
+                Id = 1,
+            };
 
             // act
             Action act = () => target.Should().BeJsonSerializable();
@@ -50,7 +68,7 @@ namespace SomeOtherNamespace
         {
             // arrange
             const string reasonText = "this is the reason";
-            var target = fixture.Create<PocoWithNoDefaultConstructor>();
+            var target = new PocoWithNoDefaultConstructor(1);
 
             // act
             Action act = () => target.Should().BeJsonSerializable(reasonText);
@@ -69,7 +87,11 @@ namespace SomeOtherNamespace
         {
             // arrange
             const string reasonText = "this is the reason";
-            var target = fixture.Create<PocoWithIgnoredProperty>();
+            var target = new PocoWithIgnoredProperty
+            {
+                Id = 1,
+                Name = "Name",
+            };
 
             // act
             Action act = () => target.Should().BeJsonSerializable(reasonText);
@@ -87,7 +109,11 @@ namespace SomeOtherNamespace
         public void Class_that_has_ignored_property_should_be_serializable_when_equivalency_options_are_configured()
         {
             // arrange
-            var target = fixture.Create<PocoWithIgnoredProperty>();
+            var target = new PocoWithIgnoredProperty
+            {
+                Id = 1,
+                Name = "Name",
+            };
 
             // act
             Action act = () => target.Should().BeJsonSerializable<PocoWithIgnoredProperty>(opts => opts.Excluding(p => p.Name));
@@ -131,7 +157,13 @@ namespace SomeOtherNamespace
         public void Should_fail_when_derived_type_is_not_serializable_when_presented_as_base_class()
         {
             // arrange
-            AddressDto target = fixture.Create<DerivedFromAddressDto>();
+            AddressDto target = new DerivedFromAddressDto
+            {
+                AddressLine1 = "AddressLine1",
+                AddressLine2 = "AddressLine2",
+                AddressLine3 = "AddressLine3",
+                LastUpdated = DateTime.UtcNow,
+            };
 
             // act
             Action act = () => target.Should().BeJsonSerializable();
