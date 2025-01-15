@@ -6,9 +6,9 @@ namespace FluentAssertions.Json
     /// <summary>
     /// Represents the run-time type-specific behavior of a JSON structural equivalency assertion. It is the equivalent of <see cref="FluentAssertions.Equivalency.EquivalencyAssertionOptions{T}"/>
     /// </summary>
-    public sealed class JsonAssertionOptions<T> : EquivalencyAssertionOptions<T>, IJsonAssertionOptions<T>
+    public sealed class JsonAssertionOptions<T> : EquivalencyOptions<T>, IJsonAssertionOptions<T>
     {
-        public JsonAssertionOptions(EquivalencyAssertionOptions<T> equivalencyAssertionOptions) : base(equivalencyAssertionOptions)
+        public JsonAssertionOptions(EquivalencyOptions<T> equivalencyAssertionOptions) : base(equivalencyAssertionOptions)
         {
 
         }

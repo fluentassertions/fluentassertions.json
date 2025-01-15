@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
@@ -16,7 +17,7 @@ namespace FluentAssertions.Json
         [Pure]
         public static JTokenAssertions Should(this JToken jToken)
         {
-            return new JTokenAssertions(jToken);
+            return new JTokenAssertions(jToken, AssertionChain.GetOrCreate());
         }
 
         /// <summary>
@@ -25,7 +26,7 @@ namespace FluentAssertions.Json
         [Pure]
         public static JTokenAssertions Should(this JObject jObject)
         {
-            return new JTokenAssertions(jObject);
+            return new JTokenAssertions(jObject, AssertionChain.GetOrCreate());
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace FluentAssertions.Json
         [Pure]
         public static JTokenAssertions Should(this JValue jValue)
         {
-            return new JTokenAssertions(jValue);
+            return new JTokenAssertions(jValue, AssertionChain.GetOrCreate());
         }
     }
 }
