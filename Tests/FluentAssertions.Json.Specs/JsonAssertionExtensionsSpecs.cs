@@ -27,7 +27,7 @@ namespace SomeOtherNamespace
             // Act & Assert
             foreach (var sut in assertions)
             {
-                sut.Should().BeOfType<JTokenAssertions>("extensions should provide assertions for all JSon primitives, i.e. JObject, JToken and JProperty");
+                ((object)sut).Should().BeOfType<JTokenAssertions>("extensions should provide assertions for all JSon primitives, i.e. JObject, JToken and JProperty");
             }
         }
     }

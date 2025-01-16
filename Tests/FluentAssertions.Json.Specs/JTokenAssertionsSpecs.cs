@@ -773,7 +773,7 @@ namespace FluentAssertions.Json.Specs
 
             // Assert
             act.Should().Throw<XunitException>()
-                .WithMessage("Expected JSON document * to contain 1 item(s) because numbers matter, but found 0.");
+                .WithMessage("Expected JSON document * to contain 1 item(s) because numbers matter, but found 0*");
         }
 
         [Fact]
@@ -800,7 +800,7 @@ namespace FluentAssertions.Json.Specs
 
             // Assert
             act.Should().Throw<XunitException>()
-                .WithMessage("Expected JSON document * to contain 3 item(s) because the more the better, but found 2.");
+                .WithMessage("Expected JSON document * to contain 3 item(s) because the more the better, but found 2*");
         }
 
         #endregion HaveCount

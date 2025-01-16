@@ -25,14 +25,14 @@ namespace FluentAssertions.Json.Specs
 
         private sealed class TempDefaultAssertionOptions : IDisposable
         {
-            public TempDefaultAssertionOptions(Func<EquivalencyAssertionOptions, EquivalencyAssertionOptions> config)
+            public TempDefaultAssertionOptions(Func<EquivalencyOptions, EquivalencyOptions> config)
             {
-                AssertionOptions.AssertEquivalencyUsing(config);
+                AssertionConfiguration.Current.Equivalency.Modify(config);
             }
 
             public void Dispose()
             {
-                AssertionOptions.AssertEquivalencyUsing(_ => new EquivalencyAssertionOptions());
+                AssertionConfiguration.Current.Equivalency.Modify(_ => new());
             }
         }
     }

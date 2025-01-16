@@ -12,7 +12,7 @@ namespace FluentAssertions.Json
     }
     public class JTokenAssertions : FluentAssertions.Primitives.ReferenceTypeAssertions<Newtonsoft.Json.Linq.JToken, FluentAssertions.Json.JTokenAssertions>
     {
-        public JTokenAssertions(Newtonsoft.Json.Linq.JToken subject) { }
+        public JTokenAssertions(Newtonsoft.Json.Linq.JToken subject, FluentAssertions.Execution.AssertionChain assertionChain) { }
         protected override string Identifier { get; }
         public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> BeEquivalentTo(Newtonsoft.Json.Linq.JToken expected, string because = "", params object[] becauseArgs) { }
         public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> BeEquivalentTo(string expected, string because = "", params object[] becauseArgs) { }
@@ -46,9 +46,9 @@ namespace FluentAssertions.Json
         public static FluentAssertions.Json.JTokenAssertions Should(this Newtonsoft.Json.Linq.JToken jToken) { }
         public static FluentAssertions.Json.JTokenAssertions Should(this Newtonsoft.Json.Linq.JValue jValue) { }
     }
-    public sealed class JsonAssertionOptions<T> : FluentAssertions.Equivalency.EquivalencyAssertionOptions<T>, FluentAssertions.Json.IJsonAssertionOptions<T>
+    public sealed class JsonAssertionOptions<T> : FluentAssertions.Equivalency.EquivalencyOptions<T>, FluentAssertions.Json.IJsonAssertionOptions<T>
     {
-        public JsonAssertionOptions(FluentAssertions.Equivalency.EquivalencyAssertionOptions<T> equivalencyAssertionOptions) { }
+        public JsonAssertionOptions(FluentAssertions.Equivalency.EquivalencyOptions<T> equivalencyAssertionOptions) { }
         public FluentAssertions.Json.IJsonAssertionRestriction<T, TProperty> Using<TProperty>(System.Action<FluentAssertions.Equivalency.IAssertionContext<TProperty>> action) { }
     }
     public sealed class JsonAssertionRestriction<T, TProperty> : FluentAssertions.Json.IJsonAssertionRestriction<T, TProperty>
@@ -63,7 +63,7 @@ namespace FluentAssertions.Json
         [FluentAssertions.CustomAssertion]
         public static FluentAssertions.AndConstraint<FluentAssertions.Primitives.ObjectAssertions> BeJsonSerializable<T>(this FluentAssertions.Primitives.ObjectAssertions assertions, string because = "", params object[] becauseArgs) { }
         [FluentAssertions.CustomAssertion]
-        public static FluentAssertions.AndConstraint<FluentAssertions.Primitives.ObjectAssertions> BeJsonSerializable<T>(this FluentAssertions.Primitives.ObjectAssertions assertions, System.Func<FluentAssertions.Equivalency.EquivalencyAssertionOptions<T>, FluentAssertions.Equivalency.EquivalencyAssertionOptions<T>> options, string because = "", params object[] becauseArgs) { }
+        public static FluentAssertions.AndConstraint<FluentAssertions.Primitives.ObjectAssertions> BeJsonSerializable<T>(this FluentAssertions.Primitives.ObjectAssertions assertions, System.Func<FluentAssertions.Equivalency.EquivalencyOptions<T>, FluentAssertions.Equivalency.EquivalencyOptions<T>> options, string because = "", params object[] becauseArgs) { }
     }
     public static class StringAssertionsExtensions
     {

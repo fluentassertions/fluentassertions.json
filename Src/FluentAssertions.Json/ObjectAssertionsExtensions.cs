@@ -61,13 +61,13 @@ namespace FluentAssertions.Json
         /// Zero or more objects to format using the placeholders in <see cref="because" />.
         /// </param>
         [CustomAssertion]
-        public static AndConstraint<ObjectAssertions> BeJsonSerializable<T>(this ObjectAssertions assertions, Func<EquivalencyAssertionOptions<T>, EquivalencyAssertionOptions<T>> options, string because = "", params object[] becauseArgs)
+        public static AndConstraint<ObjectAssertions> BeJsonSerializable<T>(this ObjectAssertions assertions, Func<EquivalencyOptions<T>, EquivalencyOptions<T>> options, string because = "", params object[] becauseArgs)
         {
-            Execute.Assertion.ForCondition(assertions.Subject != null)
+            assertions.CurrentAssertionChain.ForCondition(assertions.Subject != null)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected {context:object} to be JSON serializable{reason}, but the value is null.  Please provide a value for the assertion.");
 
-            Execute.Assertion.ForCondition(assertions.Subject is T)
+            assertions.CurrentAssertionChain.ForCondition(assertions.Subject is T)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected {context:object} to be JSON serializable{reason}, but {context:object} is not assignable to {0}", typeof(T));
 
@@ -75,8 +75,8 @@ namespace FluentAssertions.Json
             {
                 var deserializedObject = CreateCloneUsingJsonSerializer(assertions.Subject);
 
-                var defaultOptions = AssertionOptions.CloneDefaults<T>()
-                    .RespectingRuntimeTypes()
+                var defaultOptions = AssertionConfiguration.Current.Equivalency.CloneDefaults<T>()
+                    .PreferringRuntimeMemberTypes()
                     .IncludingFields()
                     .IncludingProperties();
 
@@ -87,7 +87,7 @@ namespace FluentAssertions.Json
             catch (Exception exc)
 #pragma warning restore CA1031 // Ignore catching general exception
             {
-                Execute.Assertion
+                assertions.CurrentAssertionChain
                     .BecauseOf(because, becauseArgs)
                     .FailWith("Expected {context:object} to be JSON serializable{reason}, but serializing {0} failed with {1}", assertions.Subject, exc);
             }

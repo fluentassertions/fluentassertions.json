@@ -27,10 +27,11 @@ namespace FluentAssertions.Json
         ///     Initializes a new instance of the <see cref="JTokenAssertions" /> class.
         /// </summary>
         /// <param name="subject">The subject</param>
-        public JTokenAssertions(JToken subject)
-            : base(subject)
+        /// <param name="orCreate"></param>
+        public JTokenAssertions(JToken subject, AssertionChain assertionChain)
+            : base(subject, assertionChain)
         {
-            EnumerableSubject = new GenericCollectionAssertions<JToken>(subject);
+            EnumerableSubject = new GenericCollectionAssertions<JToken>(subject, assertionChain);
         }
 
         /// <summary>
@@ -126,7 +127,7 @@ namespace FluentAssertions.Json
                           $"{Format(expected, true).EscapePlaceholders()}{Environment.NewLine}" +
                           "{reason}.";
 
-            Execute.Assertion
+            CurrentAssertionChain
                 .ForCondition(difference == null)
                 .BecauseOf(because, becauseArgs)
                 .FailWith(message);
@@ -180,7 +181,7 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> NotBeEquivalentTo(JToken unexpected, string because = "", params object[] becauseArgs)
         {
-            Execute.Assertion
+            CurrentAssertionChain
                 .ForCondition((Subject is null && unexpected is not null) ||
                               !JToken.DeepEquals(Subject, unexpected))
                 .BecauseOf(because, becauseArgs)
@@ -211,12 +212,12 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> HaveValue(string expected, string because, params object[] becauseArgs)
         {
-            Execute.Assertion
+            CurrentAssertionChain
                 .ForCondition(Subject is not null)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected JSON token to have value {0}, but the element was <null>.", expected);
 
-            Execute.Assertion
+            CurrentAssertionChain
                 .ForCondition(Subject.Value<string>() == expected)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected JSON property {0} to have value {1}{reason}, but found {2}.",
@@ -238,12 +239,12 @@ namespace FluentAssertions.Json
         /// </param>
         public AndConstraint<JTokenAssertions> NotHaveValue(string unexpected, string because = "", params object[] becauseArgs)
         {
-            Execute.Assertion
+            CurrentAssertionChain
                 .ForCondition(Subject is not null)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Did not expect the JSON property to have value {0}, but the token was <null>.", unexpected);
 
-            Execute.Assertion
+            CurrentAssertionChain
                 .ForCondition(Subject.Value<string>() != unexpected)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Did not expect JSON property {0} to have value {1}{reason}.",
@@ -279,7 +280,7 @@ namespace FluentAssertions.Json
                 throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
             }
 
-            Execute.Assertion
+            CurrentAssertionChain
                 .ForCondition(Regex.IsMatch(Subject.Value<string>(), regularExpression))
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected {context:JSON property} {0} to match regex pattern {1}{reason}, but found {2}.",
@@ -306,7 +307,7 @@ namespace FluentAssertions.Json
                 throw new ArgumentNullException(nameof(regularExpression), "MatchRegex does not support <null> pattern");
             }
 
-            Execute.Assertion
+            CurrentAssertionChain
                 .ForCondition(!Regex.IsMatch(Subject.Value<string>(), regularExpression))
                  .BecauseOf(because, becauseArgs)
                  .FailWith("Did not expect {context:JSON property} {0} to match regex pattern {1}{reason}.",
@@ -341,7 +342,8 @@ namespace FluentAssertions.Json
             params object[] becauseArgs)
         {
             JToken jToken = Subject[expected];
-            Execute.Assertion
+
+            CurrentAssertionChain
                 .ForCondition(jToken != null)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Expected JSON document {0} to have element \"" + expected.EscapePlaceholders() + "\"{reason}" +
@@ -366,7 +368,8 @@ namespace FluentAssertions.Json
             params object[] becauseArgs)
         {
             JToken jToken = Subject[unexpected];
-            Execute.Assertion
+
+            CurrentAssertionChain
                 .ForCondition(jToken == null)
                 .BecauseOf(because, becauseArgs)
                 .FailWith("Did not expect JSON document {0} to have element \"" + unexpected.EscapePlaceholders() + "\"{reason}.", Subject);

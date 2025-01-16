@@ -23,7 +23,7 @@ namespace FluentAssertions.Json
             catch (Exception ex)
 #pragma warning restore CA1031 // Ignore catching general exception
             {
-                Execute.Assertion.BecauseOf(because, becauseArgs)
+                stringAssertions.CurrentAssertionChain.BecauseOf(because, becauseArgs)
                     .FailWith("Expected {context:string} to be valid JSON{reason}, but parsing failed with {0}.", ex.Message);
             }
 
