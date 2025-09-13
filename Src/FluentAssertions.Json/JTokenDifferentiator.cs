@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions.Execution;
+using FluentAssertions.Json.Common;
 using Newtonsoft.Json.Linq;
 
 namespace FluentAssertions.Json
@@ -11,12 +12,14 @@ namespace FluentAssertions.Json
         private readonly bool ignoreExtraProperties;
 
         private readonly Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config;
+        private readonly JsonAssertionOptions<object> options;
 
         public JTokenDifferentiator(bool ignoreExtraProperties,
             Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config)
         {
             this.ignoreExtraProperties = ignoreExtraProperties;
             this.config = config;
+            this.options = (JsonAssertionOptions<object>)config(new JsonAssertionOptions<object>());
         }
 
         public Difference FindFirstDifference(JToken actual, JToken expected)
@@ -36,6 +39,12 @@ namespace FluentAssertions.Json
             if (expected == null)
             {
                 return new Difference(DifferenceKind.ExpectedIsNull, path);
+            }
+
+            if (options.IsStrictOrdering is false)
+            {
+                actual = actual.Normalize();
+                expected = expected.Normalize();
             }
 
             return FindFirstDifference(actual, expected, path);

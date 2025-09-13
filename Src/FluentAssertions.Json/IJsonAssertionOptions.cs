@@ -16,5 +16,10 @@ namespace FluentAssertions.Json
         /// The assertion to execute when the predicate is met.
         /// </param>
         IJsonAssertionRestriction<T, TProperty> Using<TProperty>(Action<IAssertionContext<TProperty>> action);
+
+        /// <summary>
+        /// Configures the JSON assertion to ignore the order of elements in arrays or collections during comparison, allowing for equivalency checks regardless of element sequence.
+        /// </summary>
+        IJsonAssertionOptions<T> WithoutStrictOrdering();
     }
 }
