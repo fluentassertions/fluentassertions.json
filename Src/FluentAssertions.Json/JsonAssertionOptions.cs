@@ -14,7 +14,7 @@ namespace FluentAssertions.Json
         {
         }
 
-        public bool IsStrictOrdering { get; private set; } = true;
+        internal bool IsStrictOrdering { get; private set; } = true;
 
         public new IJsonAssertionRestriction<T, TProperty> Using<TProperty>(Action<IAssertionContext<TProperty>> action)
         {

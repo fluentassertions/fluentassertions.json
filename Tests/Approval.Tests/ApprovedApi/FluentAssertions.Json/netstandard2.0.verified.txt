@@ -4,6 +4,7 @@ namespace FluentAssertions.Json
     public interface IJsonAssertionOptions<T>
     {
         FluentAssertions.Json.IJsonAssertionRestriction<T, TProperty> Using<TProperty>(System.Action<FluentAssertions.Equivalency.IAssertionContext<TProperty>> action);
+        FluentAssertions.Json.IJsonAssertionOptions<T> WithoutStrictOrdering();
     }
     public interface IJsonAssertionRestriction<T, TMember>
     {
@@ -50,6 +51,7 @@ namespace FluentAssertions.Json
     {
         public JsonAssertionOptions(FluentAssertions.Equivalency.EquivalencyOptions<T> equivalencyAssertionOptions) { }
         public FluentAssertions.Json.IJsonAssertionRestriction<T, TProperty> Using<TProperty>(System.Action<FluentAssertions.Equivalency.IAssertionContext<TProperty>> action) { }
+        public FluentAssertions.Json.IJsonAssertionOptions<T> WithoutStrictOrdering() { }
     }
     public sealed class JsonAssertionRestriction<T, TProperty> : FluentAssertions.Json.IJsonAssertionRestriction<T, TProperty>
     {
