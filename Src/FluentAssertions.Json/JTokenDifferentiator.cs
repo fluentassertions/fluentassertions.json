@@ -41,7 +41,7 @@ namespace FluentAssertions.Json
                 return new Difference(DifferenceKind.ExpectedIsNull, path);
             }
 
-            if (options.IsStrictOrdering is false)
+            if (!options.IsStrictlyOrdered)
             {
                 actual = actual.Normalize();
                 expected = expected.Normalize();

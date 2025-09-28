@@ -5,6 +5,11 @@ namespace FluentAssertions.Json.Common
 {
     internal static class JTokenExtensions
     {
+        /// <summary>
+        /// Recursively sorts the properties of JObject instances by name and
+        /// the elements of JArray instances by their string representation,
+        /// producing a normalized JToken for consistent comparison
+        /// </summary>
         public static JToken Normalize(this JToken token)
         {
             return token switch
