@@ -70,21 +70,10 @@ namespace FluentAssertions.Json.Common
                 if (countComparison != 0)
                     return countComparison;
 
-                var xProperties = x.Properties().OrderBy(p => p.Name).ToArray();
-                var yProperties = y.Properties().OrderBy(p => p.Name).ToArray();
-
-                for (var i = 0; i < xProperties.Length; i++)
-                {
-                    var nameComparison = string.Compare(xProperties[i].Name, yProperties[i].Name, StringComparison.Ordinal);
-                    if (nameComparison != 0)
-                        return nameComparison;
-
-                    var valueComparison = Comparer.Compare(xProperties[i].Value, yProperties[i].Value);
-                    if (valueComparison != 0)
-                        return valueComparison;
-                }
-
-                return 0;
+                return x.Properties()
+                    .OrderBy(p => p.Name)
+                    .Zip(y.Properties().OrderBy(p => p.Name), (px, py) => Compare(px, py))
+                    .FirstOrDefault(itemComparison => itemComparison != 0);
             }
 
             private static int Compare(JProperty x, JProperty y)
