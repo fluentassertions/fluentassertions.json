@@ -110,5 +110,49 @@ namespace FluentAssertions.Json.Specs
             Comparer.Compare(prop2, prop3).Should().Be(1);
             Comparer.Compare(prop3, prop2).Should().Be(-1);
         }
+
+        [Fact]
+        public void Should_compare_jconstructors_by_name()
+        {
+            // Arrange
+            var ctor1 = new JConstructor("foo", new JValue(1));
+            var ctor2 = new JConstructor("bar", new JValue(1));
+
+            // Act & Assert
+            Comparer.Compare(ctor1, ctor2).Should().BeGreaterThan(0); // "foo" > "bar"
+        }
+
+        [Fact]
+        public void Should_compare_jconstructors_by_argument_count()
+        {
+            // Arrange
+            var ctor1 = new JConstructor("foo", new JValue(1));
+            var ctor2 = new JConstructor("foo", new JValue(1), new JValue(2));
+
+            // Act & Assert
+            Comparer.Compare(ctor1, ctor2).Should().Be(-1);
+        }
+
+        [Fact]
+        public void Should_compare_jconstructors_by_argument_values()
+        {
+            // Arrange
+            var ctor1 = new JConstructor("foo", new JValue(1), new JValue(2));
+            var ctor2 = new JConstructor("foo", new JValue(1), new JValue(3));
+
+            // Act & Assert
+            Comparer.Compare(ctor1, ctor2).Should().Be(-1);
+        }
+
+        [Fact]
+        public void Should_return_zero_for_equal_jconstructors()
+        {
+            // Arrange
+            var ctor1 = new JConstructor("foo", new JValue(1), new JValue(2));
+            var ctor2 = new JConstructor("foo", new JValue(1), new JValue(2));
+
+            // Act & Assert
+            Comparer.Compare(ctor1, ctor2).Should().Be(0);
+        }
     }
 }

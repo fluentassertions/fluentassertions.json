@@ -47,13 +47,20 @@ namespace FluentAssertions.Json.Common
                     JObject o => Compare(o, (JObject)y),
                     JProperty p => Compare(p, (JProperty)y),
                     JValue v => Compare(v, (JValue)y),
+                    JConstructor c => Compare(c, (JConstructor)y),
                     _ => string.Compare(x.ToString(), y.ToString(), StringComparison.Ordinal)
                 };
             }
 
             private static int Compare(JValue x, JValue y) => Comparer<object>.Default.Compare(x.Value, y.Value);
 
-            private static int Compare(JArray x, JArray y)
+            private static int Compare(JConstructor x, JConstructor y)
+            {
+                var nameComparison = string.Compare(x.Name, y.Name, StringComparison.Ordinal);
+                return nameComparison != 0 ? nameComparison : Compare(x, (JContainer)y);
+            }
+
+            private static int Compare(JContainer x, JContainer y)
             {
                 var countComparison = x.Count.CompareTo(y.Count);
                 if (countComparison != 0)
