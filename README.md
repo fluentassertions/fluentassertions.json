@@ -57,3 +57,21 @@ actual.Should().BeEquivalentTo(expected, options => options
                 .Using<double>(d => d.Subject.Should().BeApproximately(d.Expectation, 0.1))
                 .WhenTypeIs<double>());
 ```
+
+Also, there is `WithoutStrictOrdering()` which allows you to compare JSON arrays while ignoring the order of their elements.
+This is useful when the sequence of items is not important for your test scenario. When applied, assertions like `BeEquivalentTo()` will
+succeed as long as the arrays contain the same elements, regardless of their order.
+
+Example:
+
+```c#
+using FluentAssertions;
+using FluentAssertions.Json;
+using Newtonsoft.Json.Linq;
+
+...
+var actual = JToken.Parse(@"{ ""array"" : [1, 2, 3] }");
+var expected = JToken.Parse(@"{ ""array"" : [3, 2, 1] }");
+actual.Should().BeEquivalentTo(expected, options => options
+                .WithoutStrictOrdering());
+```
