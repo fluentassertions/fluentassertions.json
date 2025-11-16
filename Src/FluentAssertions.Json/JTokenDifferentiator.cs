@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FluentAssertions.Json
 {
-    internal class JTokenDifferentiator
+    internal sealed class JTokenDifferentiator
     {
         private readonly bool ignoreExtraProperties;
 

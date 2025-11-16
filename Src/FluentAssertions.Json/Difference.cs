@@ -2,7 +2,7 @@
 
 namespace FluentAssertions.Json
 {
-    internal class Difference
+    internal sealed class Difference
     {
         public Difference(DifferenceKind kind, JPath path, object actual, object expected)
             : this(kind, path)

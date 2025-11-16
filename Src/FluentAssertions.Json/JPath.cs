@@ -2,7 +2,7 @@
 
 namespace FluentAssertions.Json
 {
-    internal class JPath
+    internal sealed class JPath
     {
         private readonly List<string> nodes = new();
 
