@@ -25,7 +25,7 @@ namespace SomeOtherNamespace
                 Weight = 1,
                 ShoeSize = 1,
                 IsActive = true,
-                Image = new[] { (byte)1 },
+                Image = [1],
                 Category = '1'
             };
 
