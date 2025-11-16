@@ -18,7 +18,7 @@ namespace FluentAssertions.Json.Common
         {
             return token switch
             {
-                JObject obj => new JObject(obj.Properties().OrderBy(p => p.Name).Select(p => new JProperty(p.Name, Normalize(p.Value)))),
+                JObject obj => new JObject(obj.Properties().OrderBy(p => p.Name, StringComparer.Ordinal).Select(p => new JProperty(p.Name, Normalize(p.Value)))),
                 JArray array => new JArray(array.Select(Normalize).OrderBy(x => x, Comparer)),
                 _ => token
             };
@@ -78,8 +78,8 @@ namespace FluentAssertions.Json.Common
                     return countComparison;
 
                 return x.Properties()
-                    .OrderBy(p => p.Name)
-                    .Zip(y.Properties().OrderBy(p => p.Name), (px, py) => Compare(px, py))
+                    .OrderBy(p => p.Name, StringComparer.Ordinal)
+                    .Zip(y.Properties().OrderBy(p => p.Name, StringComparer.Ordinal), (px, py) => Compare(px, py))
                     .FirstOrDefault(itemComparison => itemComparison != 0);
             }
 

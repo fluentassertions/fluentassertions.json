@@ -156,8 +156,8 @@ namespace FluentAssertions.Json
 
         private Difference CompareProperties(IEnumerable<JProperty> actual, IEnumerable<JProperty> expected, JPath path)
         {
-            var actualDictionary = actual?.ToDictionary(p => p.Name, p => p.Value) ?? new Dictionary<string, JToken>();
-            var expectedDictionary = expected?.ToDictionary(p => p.Name, p => p.Value) ?? new Dictionary<string, JToken>();
+            var actualDictionary = actual?.ToDictionary(p => p.Name, p => p.Value, StringComparer.Ordinal) ?? new Dictionary<string, JToken>(StringComparer.Ordinal);
+            var expectedDictionary = expected?.ToDictionary(p => p.Name, p => p.Value, StringComparer.Ordinal) ?? new Dictionary<string, JToken>(StringComparer.Ordinal);
 
             foreach (KeyValuePair<string, JToken> expectedPair in expectedDictionary)
             {
