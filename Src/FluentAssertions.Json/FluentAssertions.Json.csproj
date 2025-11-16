@@ -29,9 +29,6 @@
     <Copyright>Copyright 2024-$([System.DateTime]::Now.ToString(yyyy)) Xceed Software Inc., all rights reserved</Copyright>
     <LangVersion>9.0</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="8.0.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" PrivateAssets="all" />
