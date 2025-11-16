@@ -29,17 +29,25 @@ namespace FluentAssertions.Json.Common
             public int Compare(JToken x, JToken y)
             {
                 if (ReferenceEquals(x, y))
+                {
                     return 0;
+                }
 
                 if (x is null)
+                {
                     return -1;
+                }
 
                 if (y is null)
+                {
                     return 1;
+                }
 
                 var typeComparison = x.Type.CompareTo(y.Type);
                 if (typeComparison != 0)
+                {
                     return typeComparison;
+                }
 
                 return x switch
                 {
@@ -64,7 +72,9 @@ namespace FluentAssertions.Json.Common
             {
                 var countComparison = x.Count.CompareTo(y.Count);
                 if (countComparison != 0)
+                {
                     return countComparison;
+                }
 
                 return x
                     .Select((t, i) => Comparer.Compare(t, y[i]))
@@ -75,7 +85,9 @@ namespace FluentAssertions.Json.Common
             {
                 var countComparison = x.Count.CompareTo(y.Count);
                 if (countComparison != 0)
+                {
                     return countComparison;
+                }
 
                 return x.Properties()
                     .OrderBy(p => p.Name, StringComparer.Ordinal)
