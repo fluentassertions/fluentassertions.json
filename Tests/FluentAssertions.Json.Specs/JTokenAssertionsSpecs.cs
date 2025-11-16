@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using FluentAssertions.Formatting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -149,43 +148,36 @@ namespace FluentAssertions.Json.Specs
                 .WithMessage(expectedMessage);
         }
 
-        [Fact]
-        public void When_properties_differ_between_two_tokens_it_should_not_treat_them_as_equivalent()
+        [Theory]
+        [MemberData(nameof(PropertiesDifferingBetweenTwoTokens))]
+        public void When_properties_differ_between_two_tokens_it_should_not_treat_them_as_equivalent(JToken actual, JToken expected, string expectedDifference)
         {
-            // Arrange
-            var testCases = new[]
-            {
-                Tuple.Create<JToken, JToken, string>(
-                    new JProperty("eyes", "blue"),
-                    new JArray(),
-                    "has a property instead of an array at $")
-                ,
-                Tuple.Create<JToken, JToken, string>(
-                    new JProperty("eyes", "blue"),
-                    new JProperty("hair", "black"),
-                    "has a different name at $")
-                ,
-            };
-
-            foreach (var testCase in testCases)
-            {
-                var actual = testCase.Item1;
-                var expected = testCase.Item2;
-                var expectedDifference = testCase.Item3;
-
-                var expectedMessage =
+            // Act & Assert
+            var expectedMessage =
                     $"JSON document {expectedDifference}." +
                     "Actual document" +
                     $"{Format(actual, true)}" +
                     "was expected to be equivalent to" +
                     $"{Format(expected, true)}.";
 
-                // Act & Assert
-                actual.Should().Invoking(x => x.BeEquivalentTo(expected))
-                    .Should().Throw<XunitException>()
-                    .WithMessage(expectedMessage);
-            }
+            actual.Should().Invoking(x => x.BeEquivalentTo(expected))
+                .Should().Throw<XunitException>()
+                .WithMessage(expectedMessage);
         }
+
+        public static TheoryData<JToken, JToken, string> PropertiesDifferingBetweenTwoTokens => new()
+        {
+            {
+                new JProperty("eyes", "blue"),
+                new JArray(),
+                "has a property instead of an array at $"
+            },
+            {
+                new JProperty("eyes", "blue"),
+                new JProperty("hair", "black"),
+                "has a different name at $"
+            },
+        };
 
         [Fact]
         public void When_both_property_values_are_null_it_should_treat_them_as_equivalent()
@@ -198,62 +190,49 @@ namespace FluentAssertions.Json.Specs
             actual.Should().BeEquivalentTo(expected);
         }
 
-        [Fact]
-        public void When_two_json_arrays_have_the_same_properties_in_the_same_order_they_should_be_treated_as_equivalent()
+        [Theory]
+        [MemberData(nameof(JsonArraysHavingTheSamePropertiesInTheSameOrder))]
+        public void When_two_json_arrays_have_the_same_properties_in_the_same_order_they_should_be_treated_as_equivalent(JArray actual, JArray expected)
         {
-            // Arrange
-            var testCases = new[]
-            {
-                Tuple.Create(
-                    new JArray(1, 2, 3),
-                    new JArray(1, 2, 3))
-                ,
-                Tuple.Create(
-                    new JArray("blue", "green"),
-                    new JArray("blue", "green"))
-                ,
-                Tuple.Create(
-                    new JArray(JToken.Parse("{ car: { color: \"blue\" }}"), JToken.Parse("{ flower: { color: \"red\" }}")),
-                    new JArray(JToken.Parse("{ car: { color: \"blue\" }}"), JToken.Parse("{ flower: { color: \"red\" }}")))
-            };
-
-            foreach (var testCase in testCases)
-            {
-                var actual = testCase.Item1;
-                var expected = testCase.Item2;
-
-                // Act & Assert
-                actual.Should().BeEquivalentTo(expected);
-            }
+            // Act & Assert
+            actual.Should().BeEquivalentTo(expected);
         }
 
-        [Fact]
-        public void When_only_the_order_of_properties_differ_they_should_be_treated_as_equivalent()
+        public static TheoryData<JArray, JArray> JsonArraysHavingTheSamePropertiesInTheSameOrder => new()
         {
-            // Arrange
-            var testCases = new Dictionary<string, string>
             {
-                {
-                    "{ friends: [{ id: 123, name: \"Corby Page\" }, { id: 456, name: \"Carter Page\" }] }",
-                    "{ friends: [{ name: \"Corby Page\", id: 123 }, { id: 456, name: \"Carter Page\" }] }"
-                },
-                {
-                    "{ id: 2, admin: true }",
-                    "{ admin: true, id: 2}"
-                }
-            };
-
-            foreach (var testCase in testCases)
+                new JArray(1, 2, 3),
+                new JArray(1, 2, 3)
+            },
             {
-                var actualJson = testCase.Key;
-                var expectedJson = testCase.Value;
-                var a = JToken.Parse(actualJson);
-                var b = JToken.Parse(expectedJson);
+                new JArray("blue", "green"),
+                new JArray("blue", "green")
+            },
+            {
+                new JArray(JToken.Parse("{ car: { color: \"blue\" }}"), JToken.Parse("{ flower: { color: \"red\" }}")),
+                new JArray(JToken.Parse("{ car: { color: \"blue\" }}"), JToken.Parse("{ flower: { color: \"red\" }}"))
+            },
+        };
 
-                // Act & Assert
-                a.Should().BeEquivalentTo(b);
-            }
+        [Theory]
+        [MemberData(nameof(JsonArraysHavingTheSamePropertiesInDifferentOrder))]
+        public void When_only_the_order_of_properties_differ_they_should_be_treated_as_equivalent(JToken actual, JToken expected)
+        {
+            // Act & Assert
+            actual.Should().BeEquivalentTo(expected);
         }
+
+        public static TheoryData<JToken, JToken> JsonArraysHavingTheSamePropertiesInDifferentOrder => new()
+        {
+            {
+                JToken.Parse("{ friends: [{ id: 123, name: \"Corby Page\" }, { id: 456, name: \"Carter Page\" }] }"),
+                JToken.Parse("{ friends: [{ name: \"Corby Page\", id: 123 }, { id: 456, name: \"Carter Page\" }] }")
+            },
+            {
+                JToken.Parse("{ id: 2, admin: true }"),
+                JToken.Parse("{ admin: true, id: 2}")
+            },
+        };
 
         [Fact]
         public void When_a_token_is_compared_to_its_string_representation_they_should_be_treated_as_equivalent()
