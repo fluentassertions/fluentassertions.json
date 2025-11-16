@@ -8,9 +8,12 @@ namespace FluentAssertions.Json
     /// </summary>
     public sealed class JsonAssertionOptions<T> : EquivalencyOptions<T>, IJsonAssertionOptions<T>
     {
-        internal JsonAssertionOptions() { }
+        internal JsonAssertionOptions()
+        {
+        }
 
-        public JsonAssertionOptions(EquivalencyOptions<T> equivalencyAssertionOptions) : base(equivalencyAssertionOptions)
+        public JsonAssertionOptions(EquivalencyOptions<T> equivalencyAssertionOptions)
+            : base(equivalencyAssertionOptions)
         {
         }
 
