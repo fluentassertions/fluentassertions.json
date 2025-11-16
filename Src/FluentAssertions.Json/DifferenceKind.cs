@@ -1,16 +1,15 @@
-﻿namespace FluentAssertions.Json
+﻿namespace FluentAssertions.Json;
+
+internal enum DifferenceKind
 {
-    internal enum DifferenceKind
-    {
-        ActualIsNull,
-        ExpectedIsNull,
-        OtherType,
-        OtherName,
-        OtherValue,
-        DifferentLength,
-        ActualMissesProperty,
-        ExpectedMissesProperty,
-        ActualMissesElement,
-        WrongOrder
-    }
+    ActualIsNull,
+    ExpectedIsNull,
+    OtherType,
+    OtherName,
+    OtherValue,
+    DifferentLength,
+    ActualMissesProperty,
+    ExpectedMissesProperty,
+    ActualMissesElement,
+    WrongOrder
 }

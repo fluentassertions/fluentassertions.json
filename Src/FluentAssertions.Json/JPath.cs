@@ -1,35 +1,34 @@
 ﻿using System.Collections.Generic;
 
-namespace FluentAssertions.Json
+namespace FluentAssertions.Json;
+
+internal sealed class JPath
 {
-    internal sealed class JPath
+    private readonly List<string> nodes = new();
+
+    public JPath()
     {
-        private readonly List<string> nodes = new();
+        nodes.Add("$");
+    }
 
-        public JPath()
-        {
-            nodes.Add("$");
-        }
+    private JPath(JPath existingPath, string extraNode)
+    {
+        nodes.AddRange(existingPath.nodes);
+        nodes.Add(extraNode);
+    }
 
-        private JPath(JPath existingPath, string extraNode)
-        {
-            nodes.AddRange(existingPath.nodes);
-            nodes.Add(extraNode);
-        }
+    public JPath AddProperty(string name)
+    {
+        return new JPath(this, $".{name}");
+    }
 
-        public JPath AddProperty(string name)
-        {
-            return new JPath(this, $".{name}");
-        }
+    public JPath AddIndex(int index)
+    {
+        return new JPath(this, $"[{index}]");
+    }
 
-        public JPath AddIndex(int index)
-        {
-            return new JPath(this, $"[{index}]");
-        }
-
-        public override string ToString()
-        {
-            return string.Concat(nodes);
-        }
+    public override string ToString()
+    {
+        return string.Concat(nodes);
     }
 }

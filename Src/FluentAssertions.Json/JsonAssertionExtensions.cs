@@ -3,39 +3,38 @@ using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
-namespace FluentAssertions.Json
+namespace FluentAssertions.Json;
+
+/// <summary>
+///     Contains extension methods for JToken assertions.
+/// </summary>
+[DebuggerNonUserCode]
+public static class JsonAssertionExtensions
 {
     /// <summary>
-    ///     Contains extension methods for JToken assertions.
+    ///     Returns an <see cref="JTokenAssertions"/> object that can be used to assert the current <see cref="JToken"/>.
     /// </summary>
-    [DebuggerNonUserCode]
-    public static class JsonAssertionExtensions
+    [Pure]
+    public static JTokenAssertions Should(this JToken jToken)
     {
-        /// <summary>
-        ///     Returns an <see cref="JTokenAssertions"/> object that can be used to assert the current <see cref="JToken"/>.
-        /// </summary>
-        [Pure]
-        public static JTokenAssertions Should(this JToken jToken)
-        {
-            return new JTokenAssertions(jToken, AssertionChain.GetOrCreate());
-        }
+        return new JTokenAssertions(jToken, AssertionChain.GetOrCreate());
+    }
 
-        /// <summary>
-        ///     Returns an <see cref="JTokenAssertions"/> object that can be used to assert the current <see cref="JObject"/>.
-        /// </summary>
-        [Pure]
-        public static JTokenAssertions Should(this JObject jObject)
-        {
-            return new JTokenAssertions(jObject, AssertionChain.GetOrCreate());
-        }
+    /// <summary>
+    ///     Returns an <see cref="JTokenAssertions"/> object that can be used to assert the current <see cref="JObject"/>.
+    /// </summary>
+    [Pure]
+    public static JTokenAssertions Should(this JObject jObject)
+    {
+        return new JTokenAssertions(jObject, AssertionChain.GetOrCreate());
+    }
 
-        /// <summary>
-        ///     Returns an <see cref="JTokenAssertions"/> object that can be used to assert the current <see cref="JValue"/>.
-        /// </summary>
-        [Pure]
-        public static JTokenAssertions Should(this JValue jValue)
-        {
-            return new JTokenAssertions(jValue, AssertionChain.GetOrCreate());
-        }
+    /// <summary>
+    ///     Returns an <see cref="JTokenAssertions"/> object that can be used to assert the current <see cref="JValue"/>.
+    /// </summary>
+    [Pure]
+    public static JTokenAssertions Should(this JValue jValue)
+    {
+        return new JTokenAssertions(jValue, AssertionChain.GetOrCreate());
     }
 }
