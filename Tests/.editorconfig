@@ -1,4 +1,14 @@
 [*.cs]
 
-# CA1825: Avoid unnecessary zero-length array allocations.  Use Array.Empty<int>() instead
-dotnet_diagnostic.CA1825.severity = none
+# CA1861: Avoid constant arrays as arguments
+dotnet_diagnostic.CA1861.severity = none
+
+# Purpose: Use an overload that has a IEqualityComparer<string> or IComparer<string> parameter
+# Reason: Not important in tests
+dotnet_diagnostic.MA0002.severity = none
+
+# File name must match type name. Too many purposeful violations.
+dotnet_diagnostic.MA0048.severity = none
+
+# Mark local variable as const.
+dotnet_diagnostic.RCS1118.severity = none
