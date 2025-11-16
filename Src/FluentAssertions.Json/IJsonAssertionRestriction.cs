@@ -9,6 +9,7 @@
         /// Allows overriding the way structural equality is applied to (nested) objects of type
         /// <typeparamref name="TMemberType" />
         /// </summary>
-        public IJsonAssertionOptions<T> WhenTypeIs<TMemberType>() where TMemberType : TMember;
+        IJsonAssertionOptions<T> WhenTypeIs<TMemberType>()
+            where TMemberType : TMember;
     }
 }
