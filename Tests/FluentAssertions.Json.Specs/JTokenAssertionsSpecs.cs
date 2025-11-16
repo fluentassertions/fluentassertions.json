@@ -29,24 +29,25 @@ namespace FluentAssertions.Json.Specs
         public void When_both_tokens_represent_the_same_json_content_they_should_be_treated_as_equivalent()
         {
             // Arrange
-            string json = @"
+            string json =
+                """
                 {
                     friends:
                     [{
                             id: 123,
-                            name: ""John Doe""
+                            name: "John Doe"
                         }, {
                             id: 456,
-                            name: ""Jane Doe"",
+                            name: "Jane Doe",
                             kids:
                             [
-                                ""Jimmy"",
-                                ""James""
+                                "Jimmy",
+                                "James"
                             ]
                         }
                     ]
                 }
-                ";
+                """;
 
             var a = JToken.Parse(json);
             var b = JToken.Parse(json);
@@ -258,24 +259,25 @@ namespace FluentAssertions.Json.Specs
         public void When_a_token_is_compared_to_its_string_representation_they_should_be_treated_as_equivalent()
         {
             // Arrange
-            string jsonString = @"
+            string jsonString =
+                """
                 {
                     friends:
                     [{
                             id: 123,
-                            name: ""John Doe""
+                            name: "John Doe"
                         }, {
                             id: 456,
-                            name: ""Jane Doe"",
+                            name: "Jane Doe",
                             kids:
                             [
-                                ""Jimmy"",
-                                ""James""
+                                "Jimmy",
+                                "James"
                             ]
                         }
                     ]
-                }
-                ";
+                }                
+                """;
 
             var actualJSON = JToken.Parse(jsonString);
 
