@@ -27,7 +27,7 @@ namespace FluentAssertions.Json
         ///     Initializes a new instance of the <see cref="JTokenAssertions" /> class.
         /// </summary>
         /// <param name="subject">The subject</param>
-        /// <param name="orCreate"></param>
+        /// <param name="assertionChain">The assertion chain</param>
         public JTokenAssertions(JToken subject, AssertionChain assertionChain)
             : base(subject, assertionChain)
         {
