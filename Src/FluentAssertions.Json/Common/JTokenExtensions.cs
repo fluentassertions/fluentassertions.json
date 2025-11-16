@@ -56,7 +56,7 @@ namespace FluentAssertions.Json.Common
                     JProperty p => Compare(p, (JProperty)y),
                     JValue v => Compare(v, (JValue)y),
                     JConstructor c => Compare(c, (JConstructor)y),
-                    _ => string.Compare(x.ToString(), y.ToString(), StringComparison.Ordinal)
+                    _ => string.CompareOrdinal(x.ToString(), y.ToString())
                 };
             }
 
@@ -64,7 +64,7 @@ namespace FluentAssertions.Json.Common
 
             private static int Compare(JConstructor x, JConstructor y)
             {
-                var nameComparison = string.Compare(x.Name, y.Name, StringComparison.Ordinal);
+                var nameComparison = string.CompareOrdinal(x.Name, y.Name);
                 return nameComparison != 0 ? nameComparison : Compare(x, (JContainer)y);
             }
 
@@ -97,7 +97,7 @@ namespace FluentAssertions.Json.Common
 
             private static int Compare(JProperty x, JProperty y)
             {
-                var nameComparison = string.Compare(x.Name, y.Name, StringComparison.Ordinal);
+                var nameComparison = string.CompareOrdinal(x.Name, y.Name);
                 return nameComparison != 0 ? nameComparison : Comparer.Compare(x.Value, y.Value);
             }
         }
