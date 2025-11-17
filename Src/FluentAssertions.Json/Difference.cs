@@ -39,9 +39,9 @@ internal sealed class Difference
             DifferenceKind.ExpectedMissesProperty => $"has extra property {Path}",
             DifferenceKind.ActualMissesElement => $"misses expected element {Path}",
             DifferenceKind.WrongOrder => $"has expected element {Path} in the wrong order",
-#pragma warning disable S3928, MA0015 // Parameter names used into ArgumentException constructors should match an existing one
+#pragma warning disable MA0015 // Specify the parameter name in ArgumentException
             _ => throw new ArgumentOutOfRangeException(),
-#pragma warning restore S3928, MA0015 // Parameter names used into ArgumentException constructors should match an existing one
+#pragma warning restore MA0015 // Specify the parameter name in ArgumentException
         };
     }
 }
