@@ -218,6 +218,11 @@ dotnet_diagnostic.SA1633.severity = none
 dotnet_diagnostic.SA1642.severity = suggestion
 
 # CSharpGuidelines
+
+# Purpose: Argument for parameter calls nested method
+# Rationale: Modern debuggers allow stepping into nested calls, so no need to avoid them.
+dotnet_diagnostic.AV1580.severity = none
+
 dotnet_diagnostic.AV1561.max_parameter_count = 5
 # AV1008: Class should be non-static or its name should be suffixed with Extensions
 dotnet_diagnostic.AV1008.severity = none
@@ -261,6 +266,16 @@ dotnet_diagnostic.AV2202.severity = none
 dotnet_diagnostic.AV2305.severity = none
 # AV2407: Region should be removed
 dotnet_diagnostic.AV2407.severity = none
+
+# Meziantou.Analyzer
+
+# Purpose: Use string.Equals instead of Equals operator
+# Rationale: Does not improve readability
+dotnet_diagnostic.MA0006.severity = none
+
+# Purpose: Regular expressions should not be vulnerable to Denial of Service attacks
+# Rationale: See https://github.com/meziantou/Meziantou.Analyzer/blob/main/docs/Rules/MA0009.md
+dotnet_diagnostic.MA0009.severity = suggestion
 
 # ReSharper/Rider
 # Convert lambda expression to method group

@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace FluentAssertions.Json.Specs.Models
-{
-    public class PocoWithIgnoredProperty
-    {
-        public int Id { get; set; }
+namespace FluentAssertions.Json.Specs.Models;
 
-        [JsonIgnore]
-        public string Name { get; set; }
-    }
+public class PocoWithIgnoredProperty
+{
+    public int Id { get; set; }
+
+    [JsonIgnore]
+    public string Name { get; set; }
 }
