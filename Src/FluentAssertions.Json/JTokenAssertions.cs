@@ -54,19 +54,7 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     public AndConstraint<JTokenAssertions> BeEquivalentTo(string expected, string because = "",
         params object[] becauseArgs)
     {
-        JToken parsedExpected;
-        try
-        {
-            parsedExpected = JToken.Parse(expected);
-        }
-        catch (Exception ex)
-        {
-            throw new ArgumentException(
-                $"Unable to parse expected JSON string:{Environment.NewLine}" +
-                $"{expected}{Environment.NewLine}" +
-                "Check inner exception for more details.",
-                nameof(expected), ex);
-        }
+        JToken parsedExpected = Parse(expected, nameof(expected));
 
         return BeEquivalentTo(parsedExpected, because, becauseArgs);
     }
@@ -150,19 +138,7 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     public AndConstraint<JTokenAssertions> NotBeEquivalentTo(string unexpected, string because = "",
         params object[] becauseArgs)
     {
-        JToken parsedUnexpected;
-        try
-        {
-            parsedUnexpected = JToken.Parse(unexpected);
-        }
-        catch (Exception ex)
-        {
-            throw new ArgumentException(
-                $"Unable to parse unexpected JSON string:{Environment.NewLine}" +
-                $"{unexpected}{Environment.NewLine}" +
-                "Check inner exception for more details.",
-                nameof(unexpected), ex);
-        }
+        JToken parsedUnexpected = Parse(unexpected, nameof(unexpected));
 
         return NotBeEquivalentTo(parsedUnexpected, because, becauseArgs);
     }
@@ -448,19 +424,7 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     /// </code>
     public AndConstraint<JTokenAssertions> ContainSubtree(string subtree, string because = "", params object[] becauseArgs)
     {
-        JToken subtreeToken;
-        try
-        {
-            subtreeToken = JToken.Parse(subtree);
-        }
-        catch (Exception ex)
-        {
-            throw new ArgumentException(
-                $"Unable to parse expected JSON string:{Environment.NewLine}" +
-                $"{subtree}{Environment.NewLine}" +
-                "Check inner exception for more details.",
-                nameof(subtree), ex);
-        }
+        JToken subtreeToken = Parse(subtree, nameof(subtree));
 
         return ContainSubtree(subtreeToken, because, becauseArgs);
     }
@@ -494,6 +458,22 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     public AndConstraint<JTokenAssertions> ContainSubtree(JToken subtree, string because = "", params object[] becauseArgs)
     {
         return BeEquivalentTo(subtree, true, options => options, because, becauseArgs);
+    }
+
+    private static JToken Parse(string json, string paramName)
+    {
+        try
+        {
+            return JToken.Parse(json);
+        }
+        catch (Exception ex)
+        {
+            throw new ArgumentException(
+                $"Unable to parse {paramName} JSON string:{Environment.NewLine}" +
+                $"{json}{Environment.NewLine}" +
+                "Check inner exception for more details.",
+                paramName, ex);
+        }
     }
 
 #pragma warning disable CA1822 // Making this method static is a breaking chan

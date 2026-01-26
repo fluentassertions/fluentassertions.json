@@ -943,7 +943,7 @@ public class JTokenAssertionsSpecs
         // Act & Assert
         actualJson.Should().Invoking(x => x.ContainSubtree(invalidSubtree))
             .Should().Throw<ArgumentException>()
-            .WithMessage($"Unable to parse expected JSON string:{invalidSubtree}*")
+            .WithMessage($"Unable to parse subtree JSON string:{invalidSubtree}*")
             .WithInnerException<JsonReaderException>();
     }
 
