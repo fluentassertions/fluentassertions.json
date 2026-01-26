@@ -21,6 +21,8 @@ namespace FluentAssertions.Json
         public FluentAssertions.AndWhichConstraint<FluentAssertions.Json.JTokenAssertions, Newtonsoft.Json.Linq.JToken> ContainSingleItem(string because = "", params object[] becauseArgs) { }
         public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> ContainSubtree(Newtonsoft.Json.Linq.JToken subtree, string because = "", params object[] becauseArgs) { }
         public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> ContainSubtree(string subtree, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> ContainSubtree(Newtonsoft.Json.Linq.JToken subtree, System.Func<FluentAssertions.Json.IJsonAssertionOptions<object>, FluentAssertions.Json.IJsonAssertionOptions<object>> config, string because = "", params object[] becauseArgs) { }
+        public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> ContainSubtree(string subtree, System.Func<FluentAssertions.Json.IJsonAssertionOptions<object>, FluentAssertions.Json.IJsonAssertionOptions<object>> config, string because = "", params object[] becauseArgs) { }
         public string Format(Newtonsoft.Json.Linq.JToken value, bool useLineBreaks = false) { }
         public FluentAssertions.AndConstraint<FluentAssertions.Json.JTokenAssertions> HaveCount(int expected, string because = "", params object[] becauseArgs) { }
         public FluentAssertions.AndWhichConstraint<FluentAssertions.Json.JTokenAssertions, Newtonsoft.Json.Linq.JToken> HaveElement(string expected) { }
