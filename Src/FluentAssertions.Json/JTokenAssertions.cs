@@ -54,19 +54,7 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     public AndConstraint<JTokenAssertions> BeEquivalentTo(string expected, string because = "",
         params object[] becauseArgs)
     {
-        JToken parsedExpected;
-        try
-        {
-            parsedExpected = JToken.Parse(expected);
-        }
-        catch (Exception ex)
-        {
-            throw new ArgumentException(
-                $"Unable to parse expected JSON string:{Environment.NewLine}" +
-                $"{expected}{Environment.NewLine}" +
-                "Check inner exception for more details.",
-                nameof(expected), ex);
-        }
+        JToken parsedExpected = Parse(expected, nameof(expected));
 
         return BeEquivalentTo(parsedExpected, because, becauseArgs);
     }
@@ -150,19 +138,7 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     public AndConstraint<JTokenAssertions> NotBeEquivalentTo(string unexpected, string because = "",
         params object[] becauseArgs)
     {
-        JToken parsedUnexpected;
-        try
-        {
-            parsedUnexpected = JToken.Parse(unexpected);
-        }
-        catch (Exception ex)
-        {
-            throw new ArgumentException(
-                $"Unable to parse unexpected JSON string:{Environment.NewLine}" +
-                $"{unexpected}{Environment.NewLine}" +
-                "Check inner exception for more details.",
-                nameof(unexpected), ex);
-        }
+        JToken parsedUnexpected = Parse(unexpected, nameof(unexpected));
 
         return NotBeEquivalentTo(parsedUnexpected, because, becauseArgs);
     }
@@ -385,7 +361,7 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
     /// </param>
     /// <param name="becauseArgs">
-    /// Zero or more objects to format using the placeholders in <see cref="because" />.
+    /// Zero or more objects to format using the placeholders in <paramref name="because"/>.
     /// </param>
     public AndWhichConstraint<JTokenAssertions, JToken> ContainSingleItem(string because = "", params object[] becauseArgs)
     {
@@ -407,7 +383,7 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
     /// </param>
     /// <param name="becauseArgs">
-    /// Zero or more objects to format using the placeholders in <see cref="because" />.
+    /// Zero or more objects to format using the placeholders in <paramref name="because"/>.
     /// </param>
     public AndConstraint<JTokenAssertions> HaveCount(int expected, string because = "", params object[] becauseArgs)
     {
@@ -429,7 +405,7 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
     /// </param>
     /// <param name="becauseArgs">
-    /// Zero or more objects to format using the placeholders in <see cref="because" />.
+    /// Zero or more objects to format using the placeholders in <paramref name="because"/>.
     /// </param>
     /// <remarks>Use this method to match the current <see cref="JToken"/> against an arbitrary subtree,
     /// permitting it to contain any additional properties or elements. This way we can test multiple properties on a <see cref="JObject"/> at once,
@@ -437,32 +413,65 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     /// <example>
     /// This example asserts the values of multiple properties of a child object within a JSON document.
     /// <code>
-    /// var json = JToken.Parse("{ success: true, data: { id: 123, type: 'my-type', name: 'Noone' } }");
-    /// json.Should().ContainSubtree(JToken.Parse("{ success: true, data: { type: 'my-type', name: 'Noone' } }"));
+    /// var json = JToken.Parse("{ success: true, data: { id: 123, type: 'my-type', name: 'John' } }");
+    /// json.Should().ContainSubtree("{ success: true, data: { type: 'my-type', name: 'John' } }");
     /// </code>
     /// </example>
-    /// <example>This example asserts that a <see cref="JArray"/> within a <see cref="JObject"/> has at least one element with at least the given properties</example>
+    /// <example>
+    /// This example asserts that a <see cref="JArray"/> within a <see cref="JObject"/> has at least one element with at least the given properties
     /// <code>
     /// var json = JToken.Parse("{ id: 1, items: [ { id: 2, type: 'my-type', name: 'Alpha' }, { id: 3, type: 'other-type', name: 'Bravo' } ] }");
-    /// json.Should().ContainSubtree(JToken.Parse("{ items: [ { type: 'my-type', name: 'Alpha' } ] }"));
+    /// json.Should().ContainSubtree("{ items: [ { type: 'my-type', name: 'Alpha' } ] }");
     /// </code>
+    /// </example>
     public AndConstraint<JTokenAssertions> ContainSubtree(string subtree, string because = "", params object[] becauseArgs)
     {
-        JToken subtreeToken;
-        try
-        {
-            subtreeToken = JToken.Parse(subtree);
-        }
-        catch (Exception ex)
-        {
-            throw new ArgumentException(
-                $"Unable to parse expected JSON string:{Environment.NewLine}" +
-                $"{subtree}{Environment.NewLine}" +
-                "Check inner exception for more details.",
-                nameof(subtree), ex);
-        }
+        JToken subtreeToken = Parse(subtree, nameof(subtree));
 
         return ContainSubtree(subtreeToken, because, becauseArgs);
+    }
+
+    /// <summary>
+    ///     Recursively asserts that the current <see cref="JToken"/> contains at least the properties or elements of the specified <paramref name="subtree"/>.
+    /// </summary>
+    /// <param name="subtree">The subtree to search for</param>
+    /// <param name="config">The options to consider while asserting values</param>
+    /// <param name="because">
+    /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+    /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+    /// </param>
+    /// <param name="becauseArgs">
+    /// Zero or more objects to format using the placeholders in <paramref name="because"/>.
+    /// </param>
+    /// <remarks>Use this method to match the current <see cref="JToken"/> against an arbitrary subtree,
+    /// permitting it to contain any additional properties or elements. This way we can test multiple properties on a <see cref="JObject"/> at once,
+    /// or test if a <see cref="JArray"/> contains any items that match a set of properties, assert that a JSON document has a given shape, etc. </remarks>
+    /// <example>
+    /// This example asserts the values of multiple properties of a child object within a JSON document using a specified double precision.
+    /// <code>
+    /// var json = JToken.Parse("{ success: true, data: { id: 123, type: 'my-type', value: 0.99 } }");
+    /// json.Should().ContainSubtree(JToken.Parse("{ success: true, data: { type: 'my-type', value: 1.0 } }"), options => options
+    ///     .Using&lt;double&gt;(d => d.Subject.Should().BeApproximately(d.Expectation, 1e-1))
+    ///     .WhenTypeIs&lt;double&gt;());
+    /// </code>
+    /// </example>
+    /// <example>
+    /// This example asserts that a <see cref="JArray"/> within a <see cref="JObject"/> has at least one element with at least the given properties, using a specified double precision.
+    /// <code>
+    /// var json = JToken.Parse("{ id: 1, items: [ { id: 2, type: 'my-type', value: 0.99 }, { id: 3, type: 'other-type', value: 3 } ] }");
+    /// json.Should().ContainSubtree("{ items: [ { type: 'my-type', value: 1 } ] }", options => options
+    ///     .Using&lt;double&gt;(d => d.Subject.Should().BeApproximately(d.Expectation, 1e-1))
+    ///     .WhenTypeIs&lt;double&gt;());
+    /// </code>
+    /// </example>
+    public AndConstraint<JTokenAssertions> ContainSubtree(string subtree,
+        Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config,
+        string because = "",
+        params object[] becauseArgs)
+    {
+        JToken subtreeToken = Parse(subtree, nameof(subtree));
+
+        return BeEquivalentTo(subtreeToken, true, config, because, becauseArgs);
     }
 
     /// <summary>
@@ -474,7 +483,7 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
     /// </param>
     /// <param name="becauseArgs">
-    /// Zero or more objects to format using the placeholders in <see cref="because" />.
+    /// Zero or more objects to format using the placeholders in <paramref name="because"/>.
     /// </param>
     /// <remarks>Use this method to match the current <see cref="JToken"/> against an arbitrary subtree,
     /// permitting it to contain any additional properties or elements. This way we can test multiple properties on a <see cref="JObject"/> at once,
@@ -482,18 +491,77 @@ public class JTokenAssertions : ReferenceTypeAssertions<JToken, JTokenAssertions
     /// <example>
     /// This example asserts the values of multiple properties of a child object within a JSON document.
     /// <code>
-    /// var json = JToken.Parse("{ success: true, data: { id: 123, type: 'my-type', name: 'Noone' } }");
-    /// json.Should().ContainSubtree(JToken.Parse("{ success: true, data: { type: 'my-type', name: 'Noone' } }"));
+    /// var json = JToken.Parse("{ success: true, data: { id: 123, type: 'my-type', name: 'John' } }");
+    /// json.Should().ContainSubtree(JToken.Parse("{ success: true, data: { type: 'my-type', name: 'John' } }"));
     /// </code>
     /// </example>
-    /// <example>This example asserts that a <see cref="JArray"/> within a <see cref="JObject"/> has at least one element with at least the given properties</example>
+    /// <example>
+    /// This example asserts that a <see cref="JArray"/> within a <see cref="JObject"/> has at least one element with at least the given properties
     /// <code>
     /// var json = JToken.Parse("{ id: 1, items: [ { id: 2, type: 'my-type', name: 'Alpha' }, { id: 3, type: 'other-type', name: 'Bravo' } ] }");
     /// json.Should().ContainSubtree(JToken.Parse("{ items: [ { type: 'my-type', name: 'Alpha' } ] }"));
     /// </code>
+    /// </example>
     public AndConstraint<JTokenAssertions> ContainSubtree(JToken subtree, string because = "", params object[] becauseArgs)
     {
         return BeEquivalentTo(subtree, true, options => options, because, becauseArgs);
+    }
+
+    /// <summary>
+    ///     Recursively asserts that the current <see cref="JToken"/> contains at least the properties or elements of the specified <paramref name="subtree"/>.
+    /// </summary>
+    /// <param name="subtree">The subtree to search for</param>
+    /// <param name="config">The options to consider while asserting values</param>
+    /// <param name="because">
+    /// A formatted phrase as is supported by <see cref="string.Format(string,object[])" /> explaining why the assertion
+    /// is needed. If the phrase does not start with the word <i>because</i>, it is prepended automatically.
+    /// </param>
+    /// <param name="becauseArgs">
+    /// Zero or more objects to format using the placeholders in <paramref name="because"/>.
+    /// </param>
+    /// <remarks>Use this method to match the current <see cref="JToken"/> against an arbitrary subtree,
+    /// permitting it to contain any additional properties or elements. This way we can test multiple properties on a <see cref="JObject"/> at once,
+    /// or test if a <see cref="JArray"/> contains any items that match a set of properties, assert that a JSON document has a given shape, etc. </remarks>
+    /// <example>
+    /// This example asserts the values of multiple properties of a child object within a JSON document, using a specified double precision.
+    /// <code>
+    /// var json = JToken.Parse("{ success: true, data: { id: 123, type: 'my-type', value: 0.99 } }");
+    /// json.Should().ContainSubtree(JToken.Parse("{ success: true, data: { type: 'my-type', value: 1.0 } }"), options => options
+    ///     .Using&lt;double&gt;(d => d.Subject.Should().BeApproximately(d.Expectation, 1e-1))
+    ///     .WhenTypeIs&lt;double&gt;());
+    /// </code>
+    /// </example>
+    /// <example>
+    /// This example asserts that a <see cref="JArray"/> within a <see cref="JObject"/> has at least one element with at least the given properties, using a specified double precision.
+    /// <code>
+    /// var json = JToken.Parse("{ id: 1, items: [ { id: 2, type: 'my-type', value: 0.99 }, { id: 3, type: 'other-type', value: 3 } ] }");
+    /// json.Should().ContainSubtree(JToken.Parse("{ items: [ { type: 'my-type', value: 1 } ] }"), options => options
+    ///     .Using&lt;double&gt;(d => d.Subject.Should().BeApproximately(d.Expectation, 1e-1))
+    ///     .WhenTypeIs&lt;double&gt;());
+    /// </code>
+    /// </example>
+    public AndConstraint<JTokenAssertions> ContainSubtree(JToken subtree,
+        Func<IJsonAssertionOptions<object>, IJsonAssertionOptions<object>> config,
+        string because = "",
+        params object[] becauseArgs)
+    {
+        return BeEquivalentTo(subtree, true, config, because, becauseArgs);
+    }
+
+    private static JToken Parse(string json, string paramName)
+    {
+        try
+        {
+            return JToken.Parse(json);
+        }
+        catch (Exception ex)
+        {
+            throw new ArgumentException(
+                $"Unable to parse {paramName} JSON string:{Environment.NewLine}" +
+                $"{json}{Environment.NewLine}" +
+                "Check inner exception for more details.",
+                paramName, ex);
+        }
     }
 
 #pragma warning disable CA1822 // Making this method static is a breaking chan
