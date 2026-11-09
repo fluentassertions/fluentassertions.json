@@ -16,6 +16,10 @@ jobs:
     env:
       DOTNET_NOLOGO: true
 
+    permissions:
+      actions: write
+      pull-requests: write
+
     steps:
     - uses: actions/checkout@v7
       with:
@@ -35,11 +39,8 @@ jobs:
         BuildNumber: ${{ github.run_number }}
         ApiKey: ${{ secrets.NUGETAPIKEY }}
 
-    - name: coveralls
-      uses: coverallsapp/github-action@v2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        file: TestResults/reports/lcov.info
+    - name: Report code coverage
+      uses: k1LoW/octocov-action@v1
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v7
